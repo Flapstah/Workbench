@@ -215,6 +215,38 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<Filter
+			Name="engine"
+			>
+			<Filter
+				Name="independent"
+				>
+				<Filter
+					Name="kernel"
+					>
+					<Filter
+						Name="time"
+						>
+						<File
+							RelativePath="..\engine\independent\kernel\time\timesource.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\time\timesource.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="common"
+					>
+					<File
+						RelativePath="..\engine\independent\common\itime.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>
