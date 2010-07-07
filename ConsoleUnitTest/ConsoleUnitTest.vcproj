@@ -228,6 +228,14 @@
 						Name="time"
 						>
 						<File
+							RelativePath="..\engine\independent\kernel\time\systemclock.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\time\systemclock.h"
+							>
+						</File>
+						<File
 							RelativePath="..\engine\independent\kernel\time\timesource.cpp"
 							>
 						</File>

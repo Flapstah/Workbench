@@ -1,32 +1,37 @@
-#if !defined(__TIMESOURCE_H__)
-#define __TIMESOURCE_H__
+#if !defined(__SYSTEMCLOCK_H__)
+#define __SYSTEMCLOCK_H__
 
 //==============================================================================
 
-#include "common/itime.h"
+#include "itime.h"
 
 //==============================================================================
 
 namespace engine
 {
 	//============================================================================
-	// CTimeSource
+	// CSystemClock
 	//============================================================================
-	class CTimeSource : public ITimeSource
+	class CSystemClock : public ISystemClock
 	{
-		typedef ITimeSource PARENT;
+		typedef ISystemClock PARENT;
 
 	public:
-										CTimeSource(void)		{};
-		virtual					~CTimeSource(void)	{};
+										CSystemClock(void)	{};
+		virtual					~CSystemClock(void)	{};
 
 		// ITimeSource
 		virtual	bool		Tick(void);
 		// ~ITimeSource
-	}; // End [class CTimeSource : public ITimeSource]
+
+		// ISystemClock
+		virtual char*		GetLocalDateString(void);
+		virtual char*		GetLocalTimeString(void);
+		// ~ISystemClock
+	}; // End [class CSystemClock : public ISystemClock]
 } // End [namespace engine]
 
 //==============================================================================
 
-#endif // End [!defined(__TIMESOURCE_H__)]
+#endif // End [!defined(__SYSTEMCLOCK_H__)]
 // [EOF]

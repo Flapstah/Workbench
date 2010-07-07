@@ -10,15 +10,23 @@ namespace engine
 	//============================================================================
 	struct ITimeSource
 	{
+										ITimeSource(void) : m_currentTime(0.0), m_frameTime(0.0), m_frameCount(0) {}
+		virtual					~ITimeSource(void) {};
+
 		virtual	bool		Tick(void) = 0;
 
-		virtual	float		GetCurrentTime(void) const = 0;
-		virtual	double	GetCurrentTimePrecise(void) const = 0;
+						float		GetCurrentTime(void) const				{	return static_cast<float>(m_currentTime);	}
+						double	GetCurrentTimePrecise(void) const	{	return m_currentTime;											}
 
-		virtual	float		GetFrameTime(void) const = 0;
-		virtual	double	GetFrameTimePrecise(void) = 0;
+						float		GetFrameTime(void) const					{	return static_cast<float>(m_frameTime);		}
+						double	GetFrameTimePrecise(void)					{	return m_frameTime;												}
 
-		virtual uint32	GetFrameCount(void) const = 0;
+						uint32	GetFrameCount(void) const					{ return m_frameCount;											}
+
+	protected:
+		double	m_currentTime;
+		double	m_frameTime;
+		uint32	m_frameCount;
 	}; // End [struct ITimeSource]
 
 	//============================================================================
