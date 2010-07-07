@@ -17,8 +17,8 @@ namespace engine
 		typedef ITimeSource PARENT;
 
 	public:
-										CTimeSource(void)		{};
-		virtual					~CTimeSource(void)	{};
+										CTimeSource(void)		{}
+		virtual					~CTimeSource(void)	{}
 
 		// ITimeSource
 		virtual	bool		Tick(void);

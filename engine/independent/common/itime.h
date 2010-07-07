@@ -11,7 +11,7 @@ namespace engine
 	struct ITimeSource
 	{
 										ITimeSource(void) : m_currentTime(0.0), m_frameTime(0.0), m_frameCount(0) {}
-		virtual					~ITimeSource(void) {};
+		virtual					~ITimeSource(void) {}
 
 		virtual	bool		Tick(void) = 0;
 
