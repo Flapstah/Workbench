@@ -236,6 +236,14 @@
 							>
 						</File>
 						<File
+							RelativePath="..\engine\independent\kernel\time\timer.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\time\timer.h"
+							>
+						</File>
+						<File
 							RelativePath="..\engine\independent\kernel\time\timesource.cpp"
 							>
 						</File>
@@ -250,6 +258,30 @@
 					>
 					<File
 						RelativePath="..\engine\independent\common\itime.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="windows"
+				>
+				<Filter
+					Name="kernel"
+					>
+					<Filter
+						Name="time"
+						>
+						<File
+							RelativePath="..\engine\windows\kernel\time\platform_systemclock.cpp"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="common"
+					>
+					<File
+						RelativePath="..\engine\windows\common\types.h"
 						>
 					</File>
 				</Filter>
