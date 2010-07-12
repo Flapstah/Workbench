@@ -39,8 +39,8 @@ namespace engine
 #endif
 
 			m_frameTime = frameTime * m_scale;
-			m_currentTime += m_frameTime;
-			m_frameCount = m_pSource->m_frameCount;
+			m_currentTime = GetCurrentTimePrecise();
+			m_frameCount = GetFrameCount();
 			ticked = true;
 		}
 

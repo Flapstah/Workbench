@@ -43,6 +43,11 @@ namespace engine
 		virtual char*		GetLocalTimeString(void) = 0;
 	}; // End [struct ISystemClock : public ITimeSource]
 
+	//----------------------------------------------------------------------------
+	// This sytem clock is available everywhere
+	//----------------------------------------------------------------------------
+	extern ISystemClock g_systemClock;
+
 	//============================================================================
 	// ITimer
 	//============================================================================
@@ -56,11 +61,6 @@ namespace engine
 
 		virtual void		Reset(void) = 0;
 	}; // End [struct ITimer : public ITimeSource]
-
-	//----------------------------------------------------------------------------
-	// This sytem clock is available everywhere
-	//----------------------------------------------------------------------------
-	extern ISystemClock g_systemClock;
 
 	//----------------------------------------------------------------------------
 	// This game clock is available everywhere
