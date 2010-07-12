@@ -45,12 +45,6 @@ namespace engine
 		double	m_secondsPerTick;
 		char		m_textBuffer[SYSTEM_CLOCK_ALIGNED_BUFFER_SIZE];
 	}; // End [class CSystemClock : public ISystemClock]
-
-	//----------------------------------------------------------------------------
-	// This sytem clock is available everywhere
-	//----------------------------------------------------------------------------
-	extern CSystemClock g_systemClock;
-
 } // End [namespace engine]
 
 //==============================================================================

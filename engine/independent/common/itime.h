@@ -57,6 +57,16 @@ namespace engine
 		virtual void		Reset(void) = 0;
 	}; // End [struct ITimer : public ITimeSource]
 
+	//----------------------------------------------------------------------------
+	// This sytem clock is available everywhere
+	//----------------------------------------------------------------------------
+	extern ISystemClock g_systemClock;
+
+	//----------------------------------------------------------------------------
+	// This game clock is available everywhere
+	//----------------------------------------------------------------------------
+	extern ITimer g_gameClock;
+
 } // End [namespace engine]
 
 //==============================================================================

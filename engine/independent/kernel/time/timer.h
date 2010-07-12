@@ -32,12 +32,6 @@ namespace engine
 		float					m_scale;
 		bool					m_paused;
 	}; // End [class CTimer : public ITimer]
-
-	//----------------------------------------------------------------------------
-	// This game clock is available everywhere
-	//----------------------------------------------------------------------------
-	extern ITimer g_gameClock;
-
 } // End [namespace engine]
 
 //==============================================================================
