@@ -1,3 +1,4 @@
+#include "common/types.h"
 #include "timer.h"
 
 //==============================================================================
@@ -39,8 +40,8 @@ namespace engine
 #endif
 
 			m_frameTime = frameTime * m_scale;
-			m_currentTime = GetCurrentTimePrecise();
-			m_frameCount = GetFrameCount();
+			m_currentTime = m_pSource->GetCurrentTimePrecise();
+			m_frameCount = m_pSource->GetFrameCount();
 			ticked = true;
 		}
 
