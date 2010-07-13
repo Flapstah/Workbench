@@ -19,7 +19,7 @@ namespace engine
 
 	//============================================================================
 
-	CTimer::~Timer(void)
+	CTimer::~CTimer(void)
 	{
 	}
 
@@ -57,7 +57,7 @@ namespace engine
 	// Use the game clock as the root of all timers (rather than the system clock)
 	// as it's current time count will be elapsed *game* time, not *real* time.
 	//----------------------------------------------------------------------------
-	CTimer g_gameClock(g_systemClock);
+	//CTimer g_gameClock(g_systemClock);
 
 } // End [namespace engine]
 

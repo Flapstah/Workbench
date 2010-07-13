@@ -46,7 +46,7 @@ namespace engine
 	//----------------------------------------------------------------------------
 	// This sytem clock is available everywhere
 	//----------------------------------------------------------------------------
-	extern ISystemClock g_systemClock;
+	//extern ISystemClock g_systemClock;
 
 	//============================================================================
 	// ITimer
@@ -65,7 +65,7 @@ namespace engine
 	//----------------------------------------------------------------------------
 	// This game clock is available everywhere
 	//----------------------------------------------------------------------------
-	extern ITimer g_gameClock;
+	//extern ITimer g_gameClock;
 
 } // End [namespace engine]
 
