@@ -1,4 +1,5 @@
-#include "common/types.h"
+#include "stdafx.h"
+
 #include "timesource.h"
 
 //==============================================================================
