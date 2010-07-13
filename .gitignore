@@ -2,4 +2,6 @@
 *.ncb
 *.suo
 *.vcproj.*
+ConsoleUnitTest/Debug/
+buildlog.txt
 
