@@ -19,7 +19,7 @@ namespace engine
 										ITimeSource(void) : m_currentTime(0.0), m_frameTime(0.0), m_frameCount(0) {}
 		virtual					~ITimeSource(void) {}
 
-		virtual	bool		Tick(void) = 0;
+		virtual	bool		Tick(void) = 0										{	++m_frameCount; return true;							}
 
 						float		GetCurrentTime(void) const				{	return static_cast<float>(m_currentTime);	}
 						double	GetCurrentTimePrecise(void) const	{	return m_currentTime;											}
