@@ -244,6 +244,10 @@
 							RelativePath="..\engine\independent\kernel\time\timer.h"
 							>
 						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\time\timesource.cpp"
+							>
+						</File>
 					</Filter>
 				</Filter>
 				<Filter

@@ -27,6 +27,8 @@ namespace engine
 		// Nothing to do
 	}
 
+	//============================================================================
+
 	bool CSystemClock::Platform_Tick(void)
 	{
 		LARGE_INTEGER time;

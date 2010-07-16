@@ -9,12 +9,15 @@
 
 namespace engine
 {
+	//============================================================================
+	// CTimer
+	//============================================================================
 	class CTimer : public ITimer
 	{
 		typedef ITimer PARENT;
 
 	public:
-										CTimer(ITimeSource* pSource, float scale = 1.0f);
+										CTimer(ITimeSource* pSource, float scale, float maxFrameTime);
 		virtual					~CTimer(void);
 
 		// ITimeSource
@@ -34,6 +37,7 @@ namespace engine
 	protected:
 		ITimeSource*	m_pSource;
 		float					m_scale;
+		float					m_maxFrameTime;
 		bool					m_paused;
 	}; // End [class CTimer : public ITimer]
 } // End [namespace engine]

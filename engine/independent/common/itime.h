@@ -3,73 +3,34 @@
 
 //==============================================================================
 
-#define TIMER_FRAME_CLAMPING (1)
-#define TIMER_MAXIMUM_FRAME_TIME (100)
-
-//==============================================================================
-
 namespace engine
 {
 	//============================================================================
-	// ITimeSource
+	// CTimeSource
 	//============================================================================
-	class ITimeSource
+	class CTimeSource
 	{
 	public:
-										ITimeSource(void) : m_currentTime(0.0), m_frameTime(0.0), m_frameCount(0) {}
-		virtual					~ITimeSource(void) {}
+										CTimeSource(void)						: m_currentTime(0.0), m_referenceCount(0)	 {}
+		virtual					~CTimeSource(void)					{	assert(m_referenceCount == 0);						}
 
-		virtual	bool		Tick(void) = 0										{	++m_frameCount; return true;							}
+		virtual	bool		Tick(void) = 0;
 
-						float		GetCurrentTime(void) const				{	return static_cast<float>(m_currentTime);	}
-						double	GetCurrentTimePrecise(void) const	{	return m_currentTime;											}
+						float		GetTime(void) const					{ return static_cast<float>(m_currentTime);	}
+						double	GetTimePrecise(void) const	{ return m_currentTime;											}
+		virtual	char*		GetTimeString(void) const;
 
-						float		GetFrameTime(void) const					{	return static_cast<float>(m_frameTime);		}
-						double	GetFrameTimePrecise(void)					{	return m_frameTime;												}
-
-						uint32	GetFrameCount(void) const					{ return m_frameCount;											}
+						void		AddReference(void)					{ ++m_referenceCount;												}
+						uint32	Release(void)								{ return --m_referenceCount;								}
 
 	protected:
-		double	m_currentTime;
-		double	m_frameTime;
-		uint32	m_frameCount;
-	}; // End [class ITimeSource]
+		double m_currentTime;
+		uint32 m_referenceCount;
+
+	private:
+	}; // End [class CTimeSource]
 
 	//============================================================================
-	// ISystemClock
-	//============================================================================
-	class ISystemClock : public ITimeSource
-	{
-	public:
-		virtual char*		GetLocalDateString(void) = 0;
-		virtual char*		GetLocalTimeString(void) = 0;
-	}; // End [class ISystemClock : public ITimeSource]
-
-	//----------------------------------------------------------------------------
-	// This sytem clock is available everywhere
-	//----------------------------------------------------------------------------
-	//extern ISystemClock g_systemClock;
-
-	//============================================================================
-	// ITimer
-	//============================================================================
-	class ITimer : public ITimeSource
-	{
-	public:
-		virtual void		SetScale(float scale) = 0;
-		virtual float		GetScale(void) const = 0;
-
-		virtual void		Pause(bool pause) = 0;
-		virtual bool		IsPaused(void) const = 0;
-
-		virtual void		Reset(void) = 0;
-	}; // End [class ITimer : public ITimeSource]
-
-	//----------------------------------------------------------------------------
-	// This game clock is available everywhere
-	//----------------------------------------------------------------------------
-	//extern ITimer g_gameClock;
-
 } // End [namespace engine]
 
 //==============================================================================

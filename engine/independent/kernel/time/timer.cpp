@@ -8,13 +8,16 @@ namespace engine
 {
 	//============================================================================
 
-	CTimer::CTimer(ITimeSource* pSource, float scale /* = 1.0f */)
+	CTimer::CTimer(ITimeSource* pSource, float scale, float maxFrameTime)
 		: m_pSource(pSource)
 		, m_scale(scale)
+		, m_maxFrameTime(maxFrameTime)
 		, m_paused(false)
 	{
-		m_frameCount = 0;
-		Tick();
+		if (pSource != NULL)
+		{
+			Tick();
+		}
 	}
 
 	//============================================================================
@@ -57,7 +60,7 @@ namespace engine
 	// Use the game clock as the root of all timers (rather than the system clock)
 	// as it's current time count will be elapsed *game* time, not *real* time.
 	//----------------------------------------------------------------------------
-	//CTimer g_gameClock(g_systemClock);
+	CTimer g_gameClock(g_systemClock);
 
 } // End [namespace engine]
 
