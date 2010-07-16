@@ -282,7 +282,11 @@
 					Name="common"
 					>
 					<File
-						RelativePath="..\engine\windows\common\types.h"
+						RelativePath="..\engine\windows\common\platform_stdafx.h"
+						>
+					</File>
+					<File
+						RelativePath="..\engine\windows\common\platform_types.h"
 						>
 					</File>
 				</Filter>

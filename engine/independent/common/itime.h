@@ -13,8 +13,9 @@ namespace engine
 	//============================================================================
 	// ITimeSource
 	//============================================================================
-	struct ITimeSource
+	class ITimeSource
 	{
+	public:
 										ITimeSource(void) : m_currentTime(0.0), m_frameTime(0.0), m_frameCount(0) {}
 		virtual					~ITimeSource(void) {}
 
@@ -32,16 +33,17 @@ namespace engine
 		double	m_currentTime;
 		double	m_frameTime;
 		uint32	m_frameCount;
-	}; // End [struct ITimeSource]
+	}; // End [class ITimeSource]
 
 	//============================================================================
 	// ISystemClock
 	//============================================================================
-	struct ISystemClock : public ITimeSource
+	class ISystemClock : public ITimeSource
 	{
+	public:
 		virtual char*		GetLocalDateString(void) = 0;
 		virtual char*		GetLocalTimeString(void) = 0;
-	}; // End [struct ISystemClock : public ITimeSource]
+	}; // End [class ISystemClock : public ITimeSource]
 
 	//----------------------------------------------------------------------------
 	// This sytem clock is available everywhere
@@ -51,8 +53,9 @@ namespace engine
 	//============================================================================
 	// ITimer
 	//============================================================================
-	struct ITimer : public ITimeSource
+	class ITimer : public ITimeSource
 	{
+	public:
 		virtual void		SetScale(float scale) = 0;
 		virtual float		GetScale(void) const = 0;
 
@@ -60,7 +63,7 @@ namespace engine
 		virtual bool		IsPaused(void) const = 0;
 
 		virtual void		Reset(void) = 0;
-	}; // End [struct ITimer : public ITimeSource]
+	}; // End [class ITimer : public ITimeSource]
 
 	//----------------------------------------------------------------------------
 	// This game clock is available everywhere

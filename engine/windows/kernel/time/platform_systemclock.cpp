@@ -31,7 +31,7 @@ namespace engine
 	{
 		LARGE_INTEGER time;
 
-		::QueryPerformanceCounter(time);
+		::QueryPerformanceCounter(&time);
 		double currentTime = time.QuadPart * m_secondsPerTick;
 		m_frameTime = currentTime - m_currentTime;
 		m_currentTime = currentTime;

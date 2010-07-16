@@ -29,9 +29,9 @@ namespace engine
 	{
 		bool ticked = false;
 
-		if ((!m_paused) && (m_frameCount < m_pSource->m_frameCount))
+		if ((!m_paused) && (m_frameCount < m_pSource->GetFrameCount()))
 		{
-			double frameTime = m_pSource->m_frameTime;
+			double frameTime = m_pSource->GetFrameTimePrecise();
 
 #if TIMER_FRAME_CLAMPING
 			if (frameTime > TIMER_MAXIMUM_FRAME_TIME)

@@ -1,5 +1,5 @@
-#if !defined(__TYPES_H__)
-#define __TYPES_H__
+#if !defined(__PLATFORM_TYPES_H__)
+#define __PLATFORM_TYPES_H__
 
 typedef signed char				int8;
 typedef signed short			int16;
@@ -11,5 +11,5 @@ typedef unsigned short		uint16;
 typedef unsigned int			uint32;
 typedef unsigned __int64	uint64;
 
-#endif // End [!defined(__TYPES_H__)]
+#endif // End [!defined(__PLATFORM_TYPES_H__)]
 // [EOF]
