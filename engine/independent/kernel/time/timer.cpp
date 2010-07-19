@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
-#include "timer.h"
+#include "common/itime.h"
+#include "kernel/time/systemclock.h"
 
 //==============================================================================
 
@@ -8,44 +9,22 @@ namespace engine
 {
 	//============================================================================
 
-	CTimer::CTimer(ITimeSource* pSource, float scale, float maxFrameTime)
-		: m_pSource(pSource)
-		, m_scale(scale)
-		, m_maxFrameTime(maxFrameTime)
-		, m_paused(false)
-	{
-		if (pSource != NULL)
-		{
-			Tick();
-		}
-	}
-
-	//============================================================================
-
-	CTimer::~CTimer(void)
-	{
-	}
-
-	//============================================================================
-
 	bool CTimer::Tick(void)
 	{
 		bool ticked = false;
 
-		if ((!m_paused) && (m_frameCount < m_pSource->GetFrameCount()))
+		if ((!m_paused) && (m_frameCount < m_timeSource.GetFrameCount()))
 		{
-			double frameTime = m_pSource->GetFrameTimePrecise();
+			double frameTime = m_timeSource.GetFrameTimePrecise();
 
-#if TIMER_FRAME_CLAMPING
-			if (frameTime > TIMER_MAXIMUM_FRAME_TIME)
+			if ((m_maxFrameTime > 0.0) && (frameTime > m_maxFrameTime))
 			{
-				frameTime = TIMER_MAXIMUM_FRAME_TIME;
+				frameTime = m_maxFrameTime;
 			}
-#endif
 
 			m_frameTime = frameTime * m_scale;
-			m_currentTime = m_pSource->GetCurrentTimePrecise();
-			m_frameCount = m_pSource->GetFrameCount();
+			m_currentTime += m_frameTime;
+			m_frameCount = m_timeSource.GetFrameCount();
 			ticked = true;
 		}
 
@@ -60,7 +39,7 @@ namespace engine
 	// Use the game clock as the root of all timers (rather than the system clock)
 	// as it's current time count will be elapsed *game* time, not *real* time.
 	//----------------------------------------------------------------------------
-	CTimer g_gameClock(g_systemClock);
+	CTimer g_gameClock(g_systemClock, 1.0, 0.1);
 
 } // End [namespace engine]
 

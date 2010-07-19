@@ -43,7 +43,7 @@ namespace engine
 
 	//============================================================================
 
-	char* CSystemClock::Platform_GetLocalDateString(void)
+	char* CSystemClock::Platform_GetLocalDateString(void) const
 	{
 		::time_t absoluteTime;
 		::time(&absoluteTime);
@@ -58,7 +58,7 @@ namespace engine
 
 	//============================================================================
 
-	char* CSystemClock::Platform_GetLocalTimeString(void)
+	char* CSystemClock::Platform_GetLocalTimeString(void) const
 	{
 		::time_t absoluteTime;
 		::time(&absoluteTime);
