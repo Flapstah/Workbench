@@ -249,10 +249,22 @@
 							>
 						</File>
 					</Filter>
+					<Filter
+						Name="file"
+						>
+						<File
+							RelativePath="..\engine\independent\kernel\file\file.cpp"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="common"
 					>
+					<File
+						RelativePath="..\engine\independent\common\ifile.h"
+						>
+					</File>
 					<File
 						RelativePath="..\engine\independent\common\ilogfile.h"
 						>
@@ -274,6 +286,14 @@
 						>
 						<File
 							RelativePath="..\engine\windows\kernel\time\platform_systemclock.cpp"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="file"
+						>
+						<File
+							RelativePath="..\engine\windows\kernel\file\platform_file.cpp"
 							>
 						</File>
 					</Filter>
