@@ -241,10 +241,22 @@
 							>
 						</File>
 					</Filter>
+					<Filter
+						Name="log"
+						>
+						<File
+							RelativePath="..\engine\independent\kernel\log\logfile.cpp"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="common"
 					>
+					<File
+						RelativePath="..\engine\independent\common\ilogfile.h"
+						>
+					</File>
 					<File
 						RelativePath="..\engine\independent\common\itime.h"
 						>
