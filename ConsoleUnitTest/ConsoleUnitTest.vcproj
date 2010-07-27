@@ -256,6 +256,18 @@
 							RelativePath="..\engine\independent\kernel\file\file.cpp"
 							>
 						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\file\file.h"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\file\filename.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\file\filename.h"
+							>
+						</File>
 					</Filter>
 				</Filter>
 				<Filter
@@ -294,6 +306,10 @@
 						>
 						<File
 							RelativePath="..\engine\windows\kernel\file\platform_file.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\windows\kernel\file\platform_filename.cpp"
 							>
 						</File>
 					</Filter>

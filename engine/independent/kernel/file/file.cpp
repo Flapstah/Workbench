@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "ifile.h"
+#include "file.h"
 
 //==============================================================================
 
@@ -8,28 +8,55 @@ namespace engine
 {
 	CFile::CFile(const TCHAR* name, const TCHAR* mode)
 	{
-		_tfopen_s();
-
+		if (_tfopen_s(&m_pFile, name, mode))
+		{
+			m_pFile = NULL;
+		}
 	}
 
 	CFile::~CFile(void)
 	{
-
+		if (m_pFile != NULL)
+		{
+			fclose(m_pFile);
+			m_pFile = NULL;
+		}
 	}
 
-	int32 CFile::Read(void* pBuffer, uint32 itemSize, uint32 itemCount)
+	size_t CFile::Read(void* pBuffer, size_t bufferSize, size_t itemSize, size_t itemCount)
 	{
+		size_t itemsRead = 0;
+		if (m_pFile != NULL)
+		{
+			itemsRead = fread_s(pBuffer, bufferSize, itemSize, itemCount, m_pFile);
+		}
 
+		return itemsRead;
 	}
 
-	int32 CFile::Write(const void* pBuffer, uint32 itemSize, uint32 itemCount)
+	size_t CFile::Write(const void* pBuffer, size_t itemSize, size_t itemCount)
 	{
+		size_t itemsWritten = 0;
+		if (m_pFile != NULL)
+		{
+			itemsWritten = fwrite(pBuffer, itemSize, itemCount, m_pFile);
+		}
 
+		return itemsWritten;
 	}
 
-	int32 CFile::Print(const TCHAR* format, ...)
+	size_t CFile::Print(const TCHAR* format, ...)
 	{
+		va_list arguments;
+		va_start(arguments, format);
 
+		size_t charactersWritten = 0;
+		if (m_pFile != NULL)
+		{
+			charactersWritten = vftprintf_s(m_pFile, format, arguments);
+		}
+
+		return charactersWritten;
 	}
 }
 

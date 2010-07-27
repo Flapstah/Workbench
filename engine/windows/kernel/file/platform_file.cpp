@@ -8,7 +8,8 @@ namespace engine
 {
 	TCHAR* CFile::Platform_GetPath(const TCHAR* name)
 	{
-		WCHAR buffer[MAX_PATH];
+		TCHAR buffer[MAX_PATH];
+
 
 		// Older than Vista
 //		if (SUCCEEDED(SHGetFolderPath(NULL, )))
