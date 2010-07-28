@@ -6,6 +6,8 @@
 
 namespace engine
 {
+	//============================================================================
+
 	CFile::CFile(const TCHAR* name, const TCHAR* mode)
 	{
 		if (_tfopen_s(&m_pFile, name, mode))
@@ -13,6 +15,8 @@ namespace engine
 			m_pFile = NULL;
 		}
 	}
+
+	//============================================================================
 
 	CFile::~CFile(void)
 	{
@@ -22,6 +26,8 @@ namespace engine
 			m_pFile = NULL;
 		}
 	}
+
+	//============================================================================
 
 	size_t CFile::Read(void* pBuffer, size_t bufferSize, size_t itemSize, size_t itemCount)
 	{
@@ -34,6 +40,8 @@ namespace engine
 		return itemsRead;
 	}
 
+	//============================================================================
+
 	size_t CFile::Write(const void* pBuffer, size_t itemSize, size_t itemCount)
 	{
 		size_t itemsWritten = 0;
@@ -45,6 +53,8 @@ namespace engine
 		return itemsWritten;
 	}
 
+	//============================================================================
+
 	size_t CFile::Print(const TCHAR* format, ...)
 	{
 		va_list arguments;
@@ -53,12 +63,15 @@ namespace engine
 		size_t charactersWritten = 0;
 		if (m_pFile != NULL)
 		{
-			charactersWritten = vftprintf_s(m_pFile, format, arguments);
+			charactersWritten = _vftprintf_s(m_pFile, format, arguments);
 		}
 
 		return charactersWritten;
 	}
-}
+
+	//============================================================================
+
+} // End [namespace engine]
 
 //==============================================================================
 // [EOF]

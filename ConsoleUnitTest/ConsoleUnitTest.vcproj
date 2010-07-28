@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)engine\windows\&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)engine\independent\&quot;;&quot;$(SolutionDir)engine\windows\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="shlwapi.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -257,10 +258,6 @@
 							>
 						</File>
 						<File
-							RelativePath="..\engine\independent\kernel\file\file.h"
-							>
-						</File>
-						<File
 							RelativePath="..\engine\independent\kernel\file\filename.cpp"
 							>
 						</File>
@@ -285,6 +282,14 @@
 						RelativePath="..\engine\independent\common\itime.h"
 						>
 					</File>
+					<File
+						RelativePath="..\engine\independent\common\kernel.h"
+						>
+					</File>
+					<File
+						RelativePath="..\engine\independent\common\macros.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -304,10 +309,6 @@
 					<Filter
 						Name="file"
 						>
-						<File
-							RelativePath="..\engine\windows\kernel\file\platform_file.cpp"
-							>
-						</File>
 						<File
 							RelativePath="..\engine\windows\kernel\file\platform_filename.cpp"
 							>

@@ -2,7 +2,9 @@
 //==============================================================================
 
 #include "stdafx.h"
-#include "filename.h"
+
+#include "common/ifile.h"
+#include "kernel/file/filename.h"
 
 #include <shlobj.h>
 #include <shlwapi.h>
@@ -18,24 +20,30 @@ namespace engine
 		TCHAR buffer[MAX_PATH];
 		TCHAR* pPath = NULL;
 
+#if defined(RELEASE)
 		if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL, SHGFP_TYPE_CURRENT, buffer)))
+#endif
 		{
 			TCHAR* pFolder = NULL;
 			TCHAR* pExtension = NULL;
 
-			BOOL appended = PathAppend(buffer, COMPANY_NAME);
+#if defined(RELEASE)
+			BOOL appended = PathAppend(buffer, WIDEN(COMPANY_NAME));
 			if (appended == TRUE)
 			{
-				appended = PathAppend(buffer, PROJECT_NAME);
+				appended = PathAppend(buffer, WIDEN(PROJECT_NAME));
 			}
 
 			if (appended = TRUE)
+#else
+			BOOL appended = TRUE;
+#endif
 			{
 				switch (fileType)
 				{
 				case eFT_LogFile:
-					pFolder = "Logs";
-					pExtension = ".log";
+					pFolder = WIDEN("Logs");
+					pExtension = WIDEN(".log");
 					break;
 				default:
 					break;
