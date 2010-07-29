@@ -220,6 +220,10 @@
 		<Filter
 			Name="engine"
 			>
+			<File
+				RelativePath="..\engine\todo.txt"
+				>
+			</File>
 			<Filter
 				Name="independent"
 				>

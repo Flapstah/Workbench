@@ -1,0 +1,11 @@
+need to clean up interface classes
+	- don't want implementation details in interface as this leads to common dependencies
+	- need to move as much stuff into engine layer as possible to minimise public exposure
+	
+kernel systems
+even though kernel will (ultimately) have memory management, it must not rely on any dynamic memory
+	- should be able to instantiate everything at the kernel level statically (I think... think more on this)
+	
+need unit tests for systems
+
+need another timer class for profiling
