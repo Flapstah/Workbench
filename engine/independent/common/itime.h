@@ -87,6 +87,11 @@ namespace engine
 		bool					m_paused;
 	}; // End [struct CTimer : public ITimeSource]
 
+	//----------------------------------------------------------------------------
+	// Returns the game clock
+	//----------------------------------------------------------------------------
+	const CTimer* GetGameClock(void);
+
 	//============================================================================
 } // End [namespace engine]
 

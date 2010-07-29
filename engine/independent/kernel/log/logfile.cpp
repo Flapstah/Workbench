@@ -3,6 +3,9 @@
 #include "common/ilogfile.h"
 #include "kernel/file/filename.h"
 
+#include "common/itime.h"
+#include "kernel/debug/debug.h"
+
 //==============================================================================
 
 namespace engine
@@ -18,16 +21,38 @@ namespace engine
 
 	CLogFile::~CLogFile(void)
 	{
-		Write(WIDEN("[EOF]\n"));
+		Write(eCF_ALL, WIDEN("[EOF]\n"));
 	}
 
-	void CLogFile::Write(const TCHAR* format, ...)
+	void CLogFile::Write(eChannelFlag channel, const TCHAR* format, ...)
 	{
-		va_list arguments;
-		va_start(arguments, format);
+		// Only process if active and the channel(s) requested are on
+		if (IsActive() && ((m_channels & channel) == channel))
+		{
+			int32 count = 0;
 
-		// TODO: Some sort of print here...
-		//m_file.Print()
+			if (m_behaviours & eBF_TimeStamp)
+			{
+				const CTimer* pGameClock = GetGameClock();
+				count += _stprintf_s(&m_buffer[count], sizeof(m_buffer) - count, WIDEN("[%i][%8.03f] "), pGameClock->GetFrameCount(), pGameClock->GetTime());
+			}
+
+			if (m_behaviours & eBF_Name)
+			{
+				count += _stprintf_s(&m_buffer[count], sizeof(m_buffer) - count, WIDEN("[%s] "), m_name);
+			}
+
+			va_list arguments;
+			va_start(arguments, format);
+
+			count += _stprintf_s(&m_buffer[count], sizeof(m_buffer) - count, format, arguments);
+			m_file.Write(m_buffer, count, 1);
+
+			if (m_behaviours & eBF_OutputToDebugger)
+			{
+				CDebug::OutputToDebugger(m_buffer);
+			}
+		}
 	}
 }
 

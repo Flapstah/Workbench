@@ -266,6 +266,14 @@
 							>
 						</File>
 					</Filter>
+					<Filter
+						Name="debug"
+						>
+						<File
+							RelativePath="..\engine\independent\kernel\debug\debug.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="common"
@@ -311,6 +319,14 @@
 						>
 						<File
 							RelativePath="..\engine\windows\kernel\file\platform_filename.cpp"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="debug"
+						>
+						<File
+							RelativePath="..\engine\windows\kernel\debug\platform_debug.cpp"
 							>
 						</File>
 					</Filter>

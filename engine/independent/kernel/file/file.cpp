@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "file.h"
+#include "common/ifile.h"
 
 //==============================================================================
 
@@ -60,7 +60,7 @@ namespace engine
 		va_list arguments;
 		va_start(arguments, format);
 
-		size_t charactersWritten = 0;
+		int32 charactersWritten = 0;
 		if (m_pFile != NULL)
 		{
 			charactersWritten = _vftprintf_s(m_pFile, format, arguments);
