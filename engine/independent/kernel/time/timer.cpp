@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "common/itime.h"
+#include "kernel/time/timer.h"
 #include "kernel/time/systemclock.h"
 
 //==============================================================================
@@ -43,7 +43,7 @@ namespace engine
 
 	//============================================================================
 
-	const CTimer* GetGameClock(void)
+	const ITimer* GetGameClock(void)
 	{
 		return &g_gameClock;
 	}

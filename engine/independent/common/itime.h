@@ -10,29 +10,18 @@ namespace engine
 	//============================================================================
 	struct ITimeSource
 	{
-	public:
-										ITimeSource(void)
-											: m_currentTime(0.0), m_frameTime(0.0), m_frameCount(0), m_referenceCount(0)
-																								{																						}
-		virtual					~ITimeSource(void)					{	assert(m_referenceCount == 0);						}
+		virtual	bool		Tick(void) = 0;
 
-		virtual	bool		Tick(void) = 0							{ ++m_frameCount; return true;							}
+		virtual	float		GetTime(void) const = 0;
+		virtual	double	GetTimePrecise(void) const = 0;
 
-						float		GetTime(void) const					{ return static_cast<float>(m_currentTime);	}
-						double	GetTimePrecise(void) const	{	return m_currentTime;											}
+		virtual	float		GetFrameTime(void) const = 0;
+		virtual	double	GetFrameTimePrecise(void) = 0;
 
-						float		GetFrameTime(void) const		{ return static_cast<float>(m_frameTime);		}
-						double	GetFrameTimePrecise(void) const	{	return m_frameTime;										}
-						uint32	GetFrameCount(void) const		{ return m_frameCount;											}
+		virtual	uint32	GetFrameCount(void) const = 0;
 
-						void		AddReference(void)					{ ++m_referenceCount;												}
-						uint32	Release(void)								{ return --m_referenceCount;								}
-
-	protected:
-		double m_currentTime;
-		double m_frameTime;
-		uint32 m_frameCount;
-		uint32 m_referenceCount;
+		virtual	void		AddReference(void) = 0;
+		virtual	uint32	Release(void) = 0;
 	}; // End [struct ITimeSource]
 
 	//============================================================================
@@ -40,11 +29,6 @@ namespace engine
 	//============================================================================
 	struct ISystemClock : public ITimeSource 
 	{
-	public:
-		// ITimeSource
-		virtual	bool		Tick(void) = 0;
-		// ~ITimeSource
-
 		virtual char*		GetLocalDateString(void) const = 0;
 		virtual char*		GetLocalTimeString(void) const = 0;
 	}; // End [struct ISystemClock : public ITimeSource ]
@@ -55,42 +39,23 @@ namespace engine
 	const ISystemClock* GetSystemClock(void);
 
 	//============================================================================
-	// CTimer
+	// ITimer
 	//============================================================================
-	class CTimer : public ITimeSource
+	struct ITimer : public ITimeSource
 	{
-	protected:
-		typedef ITimeSource PARENT;
+		virtual void		SetScale(double scale) = 0;
+		virtual double	GetScale(void) const = 0;
 
-	public:
-										CTimer(ITimeSource& source, double scale, double maxFrameTime)
-											: m_timeSource(source), m_scale(0.0), m_maxFrameTime(0.0)
-																								{	m_timeSource.AddReference();							}
-										~CTimer(void)								{ m_timeSource.Release();										}
+		virtual void		Pause(bool pause) = 0;
+		virtual bool		IsPaused(void) = 0;
 
-		// ITimeSource
-		virtual	bool		Tick(void);
-		// ~ITimeSource
-
-						void		SetScale(double scale)			{	m_scale = scale;													}
-						double	GetScale(void) const				{	return m_scale;														}
-
-						void		Pause(bool pause)						{ m_paused = true; m_frameTime = 0.0;				}
-						bool		IsPaused(void)							{	return m_paused;													}
-
-						void		Reset(void)									{ m_currentTime = m_frameTime = 0.0;				}
-
-	protected:
-		ITimeSource&	m_timeSource;
-		double				m_scale;
-		double				m_maxFrameTime;
-		bool					m_paused;
-	}; // End [struct CTimer : public ITimeSource]
+		virtual void		Reset(void) = 0;
+	}; // End [struct ITimer : public ITimeSource]
 
 	//----------------------------------------------------------------------------
 	// Returns the game clock
 	//----------------------------------------------------------------------------
-	const CTimer* GetGameClock(void);
+	const ITimer* GetGameClock(void);
 
 	//============================================================================
 } // End [namespace engine]

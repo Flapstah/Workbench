@@ -22,8 +22,8 @@ namespace engine
 
 	protected:
 		static const TCHAR* Platform_Create(const TCHAR* name, eFileType fileType);
-	};
-}
+	}; // End [class CFileName]
+} // End [namespace engine]
 
 //==============================================================================
 #endif // End [!defined(__FILENAME_H__)]

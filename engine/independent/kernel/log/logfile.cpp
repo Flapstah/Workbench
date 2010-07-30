@@ -33,7 +33,7 @@ namespace engine
 
 			if (m_behaviours & eBF_TimeStamp)
 			{
-				const CTimer* pGameClock = GetGameClock();
+				const ITimer* pGameClock = GetGameClock();
 				count += _stprintf_s(&m_buffer[count], sizeof(m_buffer) - count, WIDEN("[%i][%8.03f] "), pGameClock->GetFrameCount(), pGameClock->GetTime());
 			}
 
