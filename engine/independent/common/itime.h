@@ -27,7 +27,7 @@ namespace engine
 	//============================================================================
 	// ISystemClock
 	//============================================================================
-	struct ISystemClock : public ITimeSource 
+	struct ISystemClock : virtual public ITimeSource 
 	{
 		virtual char*		GetLocalDateString(void) const = 0;
 		virtual char*		GetLocalTimeString(void) const = 0;
@@ -41,7 +41,7 @@ namespace engine
 	//============================================================================
 	// ITimer
 	//============================================================================
-	struct ITimer : public ITimeSource
+	struct ITimer : virtual public ITimeSource
 	{
 		virtual void		SetScale(double scale) = 0;
 		virtual double	GetScale(void) const = 0;

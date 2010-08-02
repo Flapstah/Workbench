@@ -12,7 +12,7 @@ namespace engine
 	//============================================================================
 	// CTimeSource
 	//============================================================================
-	class CTimeSource : public ITimeSource
+	class CTimeSource : virtual public ITimeSource
 	{
 	public:
 		CTimeSource(void)

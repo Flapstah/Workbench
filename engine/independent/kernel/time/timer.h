@@ -12,7 +12,7 @@ namespace engine
 	//============================================================================
 	// CTimer
 	//============================================================================
-	class CTimer : public ITimer, public CTimeSource
+	class CTimer : virtual public ITimer, public CTimeSource
 	{
 	protected:
 		typedef ITimeSource PARENT;
@@ -21,7 +21,7 @@ namespace engine
 										CTimer(ITimeSource& source, double scale, double maxFrameTime)
 											: m_timeSource(source), m_scale(0.0), m_maxFrameTime(0.0)
 																								{	m_timeSource.AddReference();							}
-										~CTimer(void)								{ m_timeSource.Release();										}
+		virtual					~CTimer(void)								{ m_timeSource.Release();										}
 
 		// ITimeSource
 		virtual	bool		Tick(void);
