@@ -15,7 +15,7 @@ namespace engine
 	class CTimer : virtual public ITimer, public CTimeSource
 	{
 	protected:
-		typedef ITimeSource PARENT;
+		typedef CTimeSource PARENT;
 
 	public:
 										CTimer(ITimeSource& source, double scale, double maxFrameTime)
@@ -25,17 +25,6 @@ namespace engine
 
 		// ITimeSource
 		virtual	bool		Tick(void);
-
-		virtual	float		GetTime(void) const;
-		virtual	double	GetTimePrecise(void) const;
-
-		virtual	float		GetFrameTime(void) const;
-		virtual	double	GetFrameTimePrecise(void);
-
-		virtual	uint32	GetFrameCount(void) const;
-
-		virtual	void		AddReference(void);
-		virtual	uint32	Release(void);
 		// ~ITimeSource
 
 		// ITimer

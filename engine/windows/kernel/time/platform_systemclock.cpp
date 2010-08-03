@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 
-#include "kernel\time\systemclock.h"
+#include "kernel/time/systemclock.h"
 
 //==============================================================================
 

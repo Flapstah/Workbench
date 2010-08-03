@@ -16,7 +16,7 @@ namespace engine
 		virtual	double	GetTimePrecise(void) const = 0;
 
 		virtual	float		GetFrameTime(void) const = 0;
-		virtual	double	GetFrameTimePrecise(void) = 0;
+		virtual	double	GetFrameTimePrecise(void) const = 0;
 
 		virtual	uint32	GetFrameCount(void) const = 0;
 

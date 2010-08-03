@@ -17,9 +17,9 @@ namespace engine
 	//============================================================================
 	// CSystemClock
 	//============================================================================
-	class CSystemClock : public ISystemClock, public CTimeSource
+	class CSystemClock : public virtual ISystemClock, public CTimeSource
 	{
-		typedef ITimeSource PARENT;
+		typedef CTimeSource PARENT;
 
 	public:
 										CSystemClock(void)							{	Platform_Initialise();									}
@@ -27,17 +27,6 @@ namespace engine
 
 		// ITimeSource
 		virtual	bool		Tick(void)											{	PARENT::Tick(); return Platform_Tick();	}
-
-		virtual	float		GetTime(void) const;
-		virtual	double	GetTimePrecise(void) const;
-
-		virtual	float		GetFrameTime(void) const;
-		virtual	double	GetFrameTimePrecise(void);
-
-		virtual	uint32	GetFrameCount(void) const;
-
-		virtual	void		AddReference(void);
-		virtual	uint32	Release(void);
 		// ~ITimeSource
 
 		// ISystemClock
