@@ -7,10 +7,17 @@
 
 //==============================================================================
 
+#pragma warning(push)
+#pragma warning(disable:4250) // 'class1' : inherits 'class2::member' via dominance
+
+//==============================================================================
+
 #define SYSTEM_CLOCK_DATE_BUFFER_SIZE (12)
 #define SYSTEM_CLOCK_TIME_BUFFER_SIZE (9)
 #define SYSTEM_CLOCK_ALIGNMENT (4)
 #define SYSTEM_CLOCK_ALIGNED_BUFFER_SIZE ((SYSTEM_CLOCK_DATE_BUFFER_SIZE + SYSTEM_CLOCK_TIME_BUFFER_SIZE + SYSTEM_CLOCK_ALIGNMENT - 1) / SYSTEM_CLOCK_ALIGNMENT)
+
+//==============================================================================
 
 namespace engine
 {
@@ -52,6 +59,10 @@ namespace engine
 	extern CSystemClock g_systemClock;
 
 } // End [namespace engine]
+
+//==============================================================================
+
+#pragma warning(pop)
 
 //==============================================================================
 
