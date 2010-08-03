@@ -1,9 +1,7 @@
 need to clean up interface classes
 	- don't want implementation details in interface as this leads to common dependencies
 	- need to move as much stuff into engine layer as possible to minimise public exposure
-	- nearly done itime.h but needs a bit more work
-***		- ambiguous conversion from engine::CSystemClock to engine::ITimeSource& (think due to multiple inheritance)
-		
+	* itime.h done		
 	
 kernel systems
 even though kernel will (ultimately) have memory management, it must not rely on any dynamic memory
