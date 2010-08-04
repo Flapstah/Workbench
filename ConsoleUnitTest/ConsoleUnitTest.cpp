@@ -5,14 +5,14 @@
 
 #include <iostream>
 
-#include "common/itime.h"
+#include "common/ilogfile.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	const engine::ISystemClock* pSystemClock = engine::GetSystemClock();
+	engine::CLogFile logfile(L"debug", NULL);
 
-	std::cout << pSystemClock->GetLocalDateString() << std::endl;
-	std::cout << pSystemClock->GetLocalTimeString() << std::endl;
+	logfile.Write(engine::CLogFile::eCF_ALL, L"A new log");
+
 
 	return 0;
 }

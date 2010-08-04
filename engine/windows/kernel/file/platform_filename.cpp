@@ -17,7 +17,7 @@ namespace engine
 
 	const TCHAR* CFileName::Platform_Create(const TCHAR* name, eFileType fileType)
 	{
-		TCHAR buffer[MAX_PATH];
+		TCHAR buffer[MAX_PATH] = WIDEN("");
 		TCHAR* pPath = NULL;
 
 #if defined(RELEASE)
@@ -62,7 +62,7 @@ namespace engine
 
 			if ((appended == TRUE) && (pExtension != NULL))
 			{
-				appended = PathAppend(buffer, pExtension);
+				appended = (_tcscat_s(buffer, sizeof(buffer), pExtension) == 0);
 			}
 
 			if (appended == TRUE)
