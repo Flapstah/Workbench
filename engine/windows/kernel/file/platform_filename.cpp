@@ -15,10 +15,10 @@ namespace engine
 {
 	//============================================================================
 
-	const TCHAR* CFileName::Platform_Create(const TCHAR* name, eFileType fileType)
+	bool CFileName::Platform_Create(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType)
 	{
-		TCHAR buffer[MAX_PATH] = WIDEN("");
-		TCHAR* pPath = NULL;
+		pBuffer[0] = WIDEN('\0');
+		BOOL appended = FALSE;
 
 #if defined(RELEASE)
 		if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL, SHGFP_TYPE_CURRENT, buffer)))
@@ -28,15 +28,15 @@ namespace engine
 			TCHAR* pExtension = NULL;
 
 #if defined(RELEASE)
-			BOOL appended = PathAppend(buffer, WIDEN(COMPANY_NAME));
+			appended = PathAppend(pBuffer, WIDEN(COMPANY_NAME));
 			if (appended == TRUE)
 			{
-				appended = PathAppend(buffer, WIDEN(PROJECT_NAME));
+				appended = PathAppend(pBuffer, WIDEN(PROJECT_NAME));
 			}
 
 			if (appended = TRUE)
 #else
-			BOOL appended = TRUE;
+			appended = TRUE;
 #endif
 			{
 				switch (fileType)
@@ -52,26 +52,21 @@ namespace engine
 
 			if (pFolder != NULL)
 			{
-				appended = PathAppend(buffer, pFolder);
+				appended = PathAppend(pBuffer, pFolder);
 			}
 
 			if (appended == TRUE)
 			{
-				appended = PathAppend(buffer, name);
+				appended = PathAppend(pBuffer, name);
 			}
 
 			if ((appended == TRUE) && (pExtension != NULL))
 			{
-				appended = (_tcscat_s(buffer, sizeof(buffer), pExtension) == 0);
-			}
-
-			if (appended == TRUE)
-			{
-				pPath = buffer;
+				appended = (_tcscat_s(pBuffer, bufferSize, pExtension) == 0);
 			}
 		}
 
-		return pPath;
+		return (appended == TRUE);
 	}
 
 	//============================================================================

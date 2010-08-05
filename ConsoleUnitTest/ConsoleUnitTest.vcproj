@@ -330,6 +330,10 @@
 						Name="file"
 						>
 						<File
+							RelativePath="..\engine\windows\kernel\file\platform_file.cpp"
+							>
+						</File>
+						<File
 							RelativePath="..\engine\windows\kernel\file\platform_filename.cpp"
 							>
 						</File>

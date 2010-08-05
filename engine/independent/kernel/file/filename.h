@@ -18,10 +18,10 @@ namespace engine
 			eFT_Max
 		};
 
-		static const TCHAR* Create(const TCHAR* name, eFileType fileType);
+		static bool Create(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType);
 
 	protected:
-		static const TCHAR* Platform_Create(const TCHAR* name, eFileType fileType);
+		static bool Platform_Create(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType);
 	}; // End [class CFileName]
 } // End [namespace engine]
 

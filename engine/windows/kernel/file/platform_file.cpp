@@ -1,8 +1,6 @@
-
-//==============================================================================
-
 #include "stdafx.h"
-#include "kernel/file/filename.h"
+
+#include "common/ifile.h"
 
 //==============================================================================
 
@@ -10,13 +8,14 @@ namespace engine
 {
 	//============================================================================
 
-	bool CFileName::Create(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType)
+	bool CFile::Platform_EnsurePathExists(const TCHAR* name)
 	{
-		return Platform_Create(pBuffer, bufferSize, name, fileType);
+
+		return false;
 	}
 
 	//============================================================================
-
 } // End [namespace engine]
+
 //==============================================================================
 // [EOF]

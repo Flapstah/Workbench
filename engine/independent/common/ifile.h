@@ -16,12 +16,21 @@ namespace engine
 	class CFile
 	{
 	public:
+		CFile(void);
 		CFile(const TCHAR* name, const TCHAR* mode);
 		~CFile(void);
+
+		bool Open(const TCHAR* name, const TCHAR* mode);
+		void Close(void);
+
+		bool IsOpen(void) const { return (m_pFile != NULL); }
 
 		size_t Read(void* pBuffer, size_t bufferSize, size_t itemSize, size_t itemCount);
 		size_t Write(const void* pBuffer, size_t itemSize, size_t itemCount);
 		size_t Print(const TCHAR* format, ...);
+
+	protected:
+		bool Platform_EnsurePathExists(const TCHAR* name);
 
 	protected:
 		FILE* m_pFile;

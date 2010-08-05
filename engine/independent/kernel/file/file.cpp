@@ -8,17 +8,41 @@ namespace engine
 {
 	//============================================================================
 
+	CFile::CFile(void)
+		: m_pFile(NULL)
+	{
+	}
+
+	//============================================================================
+
 	CFile::CFile(const TCHAR* name, const TCHAR* mode)
 	{
-		if (_tfopen_s(&m_pFile, name, mode))
-		{
-			m_pFile = NULL;
-		}
+		Open(name, mode);
 	}
 
 	//============================================================================
 
 	CFile::~CFile(void)
+	{
+		Close();
+	}
+
+	//============================================================================
+
+	bool CFile::Open(const TCHAR* name, const TCHAR* mode)
+	{
+		if (_tfopen_s(&m_pFile, name, mode))
+		{
+			m_pFile = NULL;
+		}
+
+		return (m_pFile != NULL);
+
+	}
+
+	//============================================================================
+
+	void CFile::Close(void)
 	{
 		if (m_pFile != NULL)
 		{
