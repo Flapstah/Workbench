@@ -255,42 +255,42 @@
 						</File>
 					</Filter>
 					<Filter
-						Name="log"
-						>
-						<File
-							RelativePath="..\engine\independent\kernel\log\logfile.cpp"
-							>
-						</File>
-					</Filter>
-					<Filter
-						Name="file"
-						>
-						<File
-							RelativePath="..\engine\independent\kernel\file\file.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\engine\independent\kernel\file\filename.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\engine\independent\kernel\file\filename.h"
-							>
-						</File>
-						<File
-							RelativePath="..\engine\independent\kernel\file\filesystem.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\engine\independent\kernel\file\filesystem.h"
-							>
-						</File>
-					</Filter>
-					<Filter
 						Name="debug"
 						>
 						<File
 							RelativePath="..\engine\independent\kernel\debug\debug.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="filesystem"
+						>
+						<File
+							RelativePath="..\engine\independent\kernel\filesystem\file.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\filesystem\filename.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\filesystem\filename.h"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\filesystem\filesystem.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\filesystem\filesystem.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="log"
+						>
+						<File
+							RelativePath="..\engine\independent\kernel\log\logfile.cpp"
 							>
 						</File>
 					</Filter>
@@ -335,26 +335,26 @@
 						</File>
 					</Filter>
 					<Filter
-						Name="file"
-						>
-						<File
-							RelativePath="..\engine\windows\kernel\file\platform_file.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\engine\windows\kernel\file\platform_filename.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\engine\windows\kernel\file\platform_filesystem.cpp"
-							>
-						</File>
-					</Filter>
-					<Filter
 						Name="debug"
 						>
 						<File
 							RelativePath="..\engine\windows\kernel\debug\platform_debug.cpp"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="filesystem"
+						>
+						<File
+							RelativePath="..\engine\windows\kernel\filesystem\platform_file.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\windows\kernel\filesystem\platform_filename.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\windows\kernel\filesystem\platform_filesystem.cpp"
 							>
 						</File>
 					</Filter>

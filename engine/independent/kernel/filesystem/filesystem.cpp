@@ -1,11 +1,13 @@
 #include "stdafx.h"
 
-#include "kernel/file/filesystem.h"
+#include "kernel/filesystem/filesystem.h"
 
 //==============================================================================
 
 namespace engine
 {
+	//============================================================================
+
 	CFileSystem::CFileSystem(void)
 	{
 		for (uint32 index = 0; index < MAX_OPEN_FILES; ++index)
@@ -14,30 +16,42 @@ namespace engine
 		}
 	}
 
+	//============================================================================
+
 	CFileSystem::~CFileSystem(void)
 	{
 		CloseAllFiles();
 	}
+
+	//============================================================================
 
 	CFileSystem::eFileSystemError CFileSystem::DirectoryExists(TCHAR* path)
 	{
 		return eFSE_ERROR;
 	}
 
+	//============================================================================
+
 	CFileSystem::eFileSystemError CFileSystem::CreateDirectory(TCHAR* path)
 	{
 		return eFSE_ERROR;
 	}
+
+	//============================================================================
 
 	CFileSystem::eFileSystemError CFileSystem::DeleteDirectory(TCHAR* path, bool force)
 	{
 		return eFSE_ERROR;
 	}
 
+	//============================================================================
+
 	CFileSystem::eFileSystemError CFileSystem::FileExists(TCHAR* name)
 	{
 		return eFSE_ERROR;
 	}
+
+	//============================================================================
 
 	CFileSystem::eFileSystemHandle CFileSystem::OpenFile(TCHAR* name, TCHAR* mode)
 	{
@@ -62,20 +76,28 @@ namespace engine
 		return handle;
 	}
 
+	//============================================================================
+
 	size_t CFileSystem::Read(eFileSystemHandle handle, void* pBuffer, size_t bufferSize, size_t itemSize, size_t itemCount)
 	{
 		return 0;
 	}
+
+	//============================================================================
 
 	size_t CFileSystem::Write(eFileSystemHandle handle, const void* pBuffer, size_t itemSize, size_t itemCount)
 	{
 		return 0;
 	}
 
+	//============================================================================
+
 	size_t CFileSystem::Print(eFileSystemHandle handle, const TCHAR* format, ...)
 	{
 		return 0;
 	}
+
+	//============================================================================
 
 	CFileSystem::eFileSystemError CFileSystem::CloseFile(eFileSystemHandle handle)
 	{
@@ -87,6 +109,8 @@ namespace engine
 
 		return eFSE_SUCCESS;
 	}
+
+	//============================================================================
 
 	CFileSystem::eFileSystemError CFileSystem::CloseAllFiles(void)
 	{
@@ -107,12 +131,29 @@ namespace engine
 		return rc;
 	}
 
+	//============================================================================
+
 	CFileSystem::eFileSystemError CFileSystem::CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType)
 	{
 		return Platform_CreatePath(pBuffer, bufferSize, name, fileType);
 	}
 
-}
+	//============================================================================
+
+	//----------------------------------------------------------------------------
+	// The global instance of the file system
+	//----------------------------------------------------------------------------
+	CFileSystem g_fileSystem;
+
+	//============================================================================
+
+	IFileSystem* GetFileSystem(void)
+	{
+		return &g_fileSystem;
+	}
+
+	//============================================================================
+} // End [namespace engine]
 
 //==============================================================================
 // [EOF]

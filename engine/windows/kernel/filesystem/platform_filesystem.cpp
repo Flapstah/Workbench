@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "kernel/file/filesystem.h"
+#include "kernel/filesystem/filesystem.h"
 
 #include <shlobj.h>
 #include <shlwapi.h>
@@ -9,6 +9,8 @@
 
 namespace engine
 {
+	//============================================================================
+
 	CFileSystem::eFileSystemError CFileSystem::Platform_CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType)
 	{
 		pBuffer[0] = WIDEN('\0');
@@ -62,7 +64,10 @@ namespace engine
 
 		return (appended == TRUE) ? eFSE_SUCCESS : static_cast<eFileSystemError>(eFSE_PATH | eFSE_INVALID);
 	}
-}
+
+	//============================================================================
+
+} // End [namespace engine]
 
 //==============================================================================
 // [EOF]

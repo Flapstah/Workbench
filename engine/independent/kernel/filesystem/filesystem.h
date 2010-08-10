@@ -36,7 +36,7 @@ namespace engine
 		// ~IFileSystem
 
 	protected:
-		virtual eFileSystemError	Platform_CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType) = 0;
+		virtual eFileSystemError	Platform_CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType);
 
 	protected:
 		struct FileHandle

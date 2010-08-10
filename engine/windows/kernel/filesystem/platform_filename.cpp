@@ -4,7 +4,7 @@
 #include "stdafx.h"
 
 #include "common/ifile.h"
-#include "kernel/file/filename.h"
+#include "kernel/filesystem/filename.h"
 
 #include <shlobj.h>
 #include <shlwapi.h>
