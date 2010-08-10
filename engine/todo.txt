@@ -3,6 +3,9 @@ need to clean up interface classes
 	- need to move as much stuff into engine layer as possible to minimise public exposure
 	* itime.h done		
 	- move filename functionality into file class
+		- creating file system interface
+		- once done, rename 'file' folder to 'filesystem'
+	
 	
 kernel systems
 even though kernel will (ultimately) have memory management, it must not rely on any dynamic memory

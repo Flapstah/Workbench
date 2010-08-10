@@ -277,6 +277,14 @@
 							RelativePath="..\engine\independent\kernel\file\filename.h"
 							>
 						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\file\filesystem.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\file\filesystem.h"
+							>
+						</File>
 					</Filter>
 					<Filter
 						Name="debug"
@@ -335,6 +343,10 @@
 						</File>
 						<File
 							RelativePath="..\engine\windows\kernel\file\platform_filename.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\windows\kernel\file\platform_filesystem.cpp"
 							>
 						</File>
 					</Filter>
