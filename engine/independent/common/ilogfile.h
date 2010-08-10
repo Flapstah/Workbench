@@ -3,7 +3,7 @@
 
 //==============================================================================
 
-#include "common/ifile.h"
+#include "common/ifilesystem.h"
 
 //==============================================================================
 
@@ -60,7 +60,7 @@ namespace engine
 		void Write(eChannelFlag channel, const TCHAR* format, ...);
 
 	protected:
-		CFile m_file;
+		IFileSystem::eFileSystemHandle m_handle;
 		CLogFile* m_pParent;
 		TCHAR m_name[32];
 		uint32 m_channels;

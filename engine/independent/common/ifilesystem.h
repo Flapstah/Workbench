@@ -3,6 +3,11 @@
 
 //==============================================================================
 
+#define COMPANY_NAME "MyCompanyName"
+#define PROJECT_NAME "MyProjectName"
+
+//==============================================================================
+
 namespace engine
 {
 	struct IFileSystem

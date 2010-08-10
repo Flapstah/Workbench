@@ -4,8 +4,6 @@ need to clean up interface classes
 	* itime.h done		
 	- move filename functionality into file class
 		- creating file system interface
-		- once done, rename 'file' folder to 'filesystem'
-	
 	
 kernel systems
 even though kernel will (ultimately) have memory management, it must not rely on any dynamic memory

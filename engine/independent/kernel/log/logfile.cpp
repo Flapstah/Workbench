@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "common/ilogfile.h"
-#include "kernel/file/filename.h"
+#include "kernel/filesystem/filesystem.h"
 
 #include "common/itime.h"
 #include "kernel/debug/debug.h"
@@ -12,6 +12,7 @@ namespace engine
 {
 	CLogFile::CLogFile(TCHAR* name, CLogFile* pParent)
 		: m_pParent(pParent)
+		, m_handle(IFileSystem::eFSH_INVALID)
 		, m_channels(eCF_ALL)
 		, m_behaviours(eBF_ALL)
 	{
@@ -21,6 +22,8 @@ namespace engine
 	CLogFile::~CLogFile(void)
 	{
 		Write(eCF_ALL, WIDEN("[EOF]\n"));
+		GetFileSystem()->CloseFile(m_handle);
+		m_handle = IFileSystem::eFSH_INVALID;
 	}
 
 	void CLogFile::Write(eChannelFlag channel, const TCHAR* format, ...)
@@ -28,12 +31,14 @@ namespace engine
 		// Only process if active and the channel(s) requested are on
 		if (IsActive() && ((m_channels & channel) == channel))
 		{
-			if (!m_file.IsOpen())
+			IFileSystem* pFileSystem = GetFileSystem();
+
+			if (m_handle == IFileSystem::eFSH_INVALID)
 			{
 				TCHAR fileName[MAX_PATH];
-				if (CFileName::Create(fileName, sizeof(fileName) / sizeof(TCHAR), m_name, CFileName::eFT_LogFile))
+				if (pFileSystem->CreatePath(fileName, sizeof(fileName) / sizeof(TCHAR), m_name, IFileSystem::eFT_LogFile) == IFileSystem::eFSE_SUCCESS)
 				{
-					m_file.Open(fileName, WIDEN("w"));
+					m_handle = pFileSystem->OpenFile(fileName, WIDEN("w"));
 				}
 			}
 
@@ -54,9 +59,9 @@ namespace engine
 			va_start(arguments, format);
 
 			count += _stprintf_s(&m_buffer[count], sizeof(m_buffer) - count, format, arguments);
-			if (m_file.IsOpen())
+			if (m_handle != IFileSystem::eFSH_INVALID)
 			{
-				m_file.Write(m_buffer, count, 1);
+				pFileSystem->Write(m_handle, m_buffer, count, 1);
 			}
 
 			if (m_behaviours & eBF_OutputToDebugger)

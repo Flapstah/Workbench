@@ -266,18 +266,6 @@
 						Name="filesystem"
 						>
 						<File
-							RelativePath="..\engine\independent\kernel\filesystem\file.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\engine\independent\kernel\filesystem\filename.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\engine\independent\kernel\filesystem\filename.h"
-							>
-						</File>
-						<File
 							RelativePath="..\engine\independent\kernel\filesystem\filesystem.cpp"
 							>
 						</File>
@@ -299,7 +287,7 @@
 					Name="common"
 					>
 					<File
-						RelativePath="..\engine\independent\common\ifile.h"
+						RelativePath="..\engine\independent\common\ifilesystem.h"
 						>
 					</File>
 					<File
@@ -345,14 +333,6 @@
 					<Filter
 						Name="filesystem"
 						>
-						<File
-							RelativePath="..\engine\windows\kernel\filesystem\platform_file.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\engine\windows\kernel\filesystem\platform_filename.cpp"
-							>
-						</File>
 						<File
 							RelativePath="..\engine\windows\kernel\filesystem\platform_filesystem.cpp"
 							>
