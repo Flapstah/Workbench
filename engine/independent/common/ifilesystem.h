@@ -80,7 +80,7 @@ namespace engine
 
 		//==========================================================================
 
-		virtual eFileSystemError	CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType) = 0;
+		virtual eFileSystemError	CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType, bool createIfNecessary) = 0;
 
 		//==========================================================================
 	}; // End [struct IFileSystem]

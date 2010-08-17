@@ -41,11 +41,11 @@ namespace engine
 		virtual eFileSystemError	CloseFile(eFileSystemHandle handle);
 		virtual eFileSystemError	CloseAllFiles(void);
 
-		virtual eFileSystemError	CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType);
+		virtual eFileSystemError	CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType, bool createIfNecessary);
 		// ~IFileSystem
 
 	protected:
-		virtual eFileSystemError	Platform_CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType);
+		virtual eFileSystemError	Platform_CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType, bool createIfNecessary);
 
 	protected:
 		struct FileHandle

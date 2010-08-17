@@ -36,7 +36,7 @@ namespace engine
 			if (m_handle == IFileSystem::eFSH_INVALID)
 			{
 				TCHAR fileName[MAX_PATH];
-				if (pFileSystem->CreatePath(fileName, sizeof(fileName) / sizeof(TCHAR), m_name, IFileSystem::eFT_LogFile) == IFileSystem::eFSE_SUCCESS)
+				if (pFileSystem->CreatePath(fileName, sizeof(fileName) / sizeof(TCHAR), m_name, IFileSystem::eFT_LogFile, true) == IFileSystem::eFSE_SUCCESS)
 				{
 					m_handle = pFileSystem->OpenFile(fileName, WIDEN("w"));
 				}

@@ -2,6 +2,9 @@
 
 #include "kernel/filesystem/filesystem.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
 //==============================================================================
 
 namespace engine
@@ -27,7 +30,18 @@ namespace engine
 
 	CFileSystem::eFileSystemError CFileSystem::DirectoryExists(TCHAR* path)
 	{
-		return eFSE_ERROR;
+		struct _stat64 info;
+		eFileSystemError error = static_cast<eFileSystemError>(eFSE_DIRECTORY | eFSE_DOES_NOT_EXIST);
+
+		if (_tstat64(path, &info) == 0)
+		{
+			if (info.st_mode == _S_IFDIR)
+			{
+				error = static_cast<eFileSystemError>(eFSE_DIRECTORY | eFSE_SUCCESS);
+			}
+		}
+
+		return error;
 	}
 
 	//============================================================================
@@ -178,9 +192,9 @@ namespace engine
 
 	//============================================================================
 
-	CFileSystem::eFileSystemError CFileSystem::CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType)
+	CFileSystem::eFileSystemError CFileSystem::CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType, bool createIfNecessary)
 	{
-		return Platform_CreatePath(pBuffer, bufferSize, name, fileType);
+		return Platform_CreatePath(pBuffer, bufferSize, name, fileType, createIfNecessary);
 	}
 
 	//============================================================================

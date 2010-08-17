@@ -11,10 +11,11 @@ namespace engine
 {
 	//============================================================================
 
-	CFileSystem::eFileSystemError CFileSystem::Platform_CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType)
+	CFileSystem::eFileSystemError CFileSystem::Platform_CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType, bool createIfNecessary)
 	{
 		pBuffer[0] = WIDEN('\0');
 		BOOL appended = FALSE;
+		eFileSystemError error = eFSE_SUCCESS;
 
 #if defined(RELEASE)
 		if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL, SHGFP_TYPE_CURRENT, buffer)))
@@ -49,20 +50,33 @@ namespace engine
 			if (pFolder != NULL)
 			{
 				appended = PathAppend(pBuffer, pFolder);
+
+				if (DirectoryExists(pBuffer) & eFSE_DOES_NOT_EXIST)
+				{
+					error = CreateDirectory(pBuffer);
+				}
 			}
 
-			if (appended == TRUE)
+			if (error == eFSE_SUCCESS)
 			{
-				appended = PathAppend(pBuffer, name);
-			}
+				if (appended == TRUE)
+				{
+					appended = PathAppend(pBuffer, name);
+				}
 
-			if ((appended == TRUE) && (pExtension != NULL))
-			{
-				appended = (_tcscat_s(pBuffer, bufferSize, pExtension) == 0);
+				if ((appended == TRUE) && (pExtension != NULL))
+				{
+					appended = (_tcscat_s(pBuffer, bufferSize, pExtension) == 0);
+				}
+
+				if (appended == FALSE)
+				{
+					error = static_cast<eFileSystemError>(eFSE_PATH | eFSE_INVALID); 
+				}
 			}
 		}
 
-		return (appended == TRUE) ? eFSE_SUCCESS : static_cast<eFileSystemError>(eFSE_PATH | eFSE_INVALID);
+		return error;
 	}
 
 	//============================================================================
