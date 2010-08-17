@@ -39,10 +39,29 @@ namespace engine
 
 	//============================================================================
 
-	CFileSystem::eFileSystemError CFileSystem::DeleteDirectory(TCHAR* path, bool force)
+#if defined(FILE_SYSTEM_EXTENDED)
+	CFileSystem::eFileSystemError	CFileSystem::CopyDirectory(TCHAR* sourcePath, TCHAR* destinationPath)
 	{
+		// TODO:
 		return eFSE_ERROR;
 	}
+
+	//============================================================================
+
+	CFileSystem::eFileSystemError	CFileSystem::MoveDirectory(TCHAR* sourcePath, TCHAR* destinationPath)
+	{
+		// TODO:
+		return eFSE_ERROR;
+	}
+
+	//============================================================================
+
+	CFileSystem::eFileSystemError	CFileSystem::DeleteDirectory(TCHAR* path, bool force)
+	{
+		// TODO:
+		return eFSE_ERROR;
+	}
+#endif
 
 	//============================================================================
 
@@ -75,6 +94,32 @@ namespace engine
 
 		return handle;
 	}
+
+	//============================================================================
+
+#if defined(FILE_SYSTEM_EXTENDED)
+	CFileSystem::eFileSystemError	CFileSystem::CopyFile(TCHAR* sourceName, TCHAR* destinationName)
+	{
+		// TODO:
+		return eFSE_ERROR;
+	}
+
+	//============================================================================
+
+	CFileSystem::eFileSystemError	CFileSystem::MoveFile(TCHAR* sourceName, TCHAR* destinationName)
+	{
+		// TODO:
+		return eFSE_ERROR;
+	}
+
+	//============================================================================
+
+	CFileSystem::eFileSystemError	CFileSystem::DeleteFile(TCHAR* name, bool force)
+	{
+		// TODO:
+		return eFSE_ERROR;
+	}
+#endif
 
 	//============================================================================
 
