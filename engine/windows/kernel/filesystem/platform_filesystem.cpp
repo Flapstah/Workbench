@@ -51,7 +51,7 @@ namespace engine
 			{
 				appended = PathAppend(pBuffer, pFolder);
 
-				if (DirectoryExists(pBuffer) & eFSE_DOES_NOT_EXIST)
+				if (DirectoryExists(pBuffer) == eFSE_DOES_NOT_EXIST)
 				{
 					error = CreateDirectory(pBuffer);
 				}
@@ -71,7 +71,7 @@ namespace engine
 
 				if (appended == FALSE)
 				{
-					error = static_cast<eFileSystemError>(eFSE_PATH | eFSE_INVALID); 
+					error = eFSE_INVALID; 
 				}
 			}
 		}

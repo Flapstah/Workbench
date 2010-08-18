@@ -33,61 +33,53 @@ namespace engine
 	CFileSystem::eFileSystemError CFileSystem::DirectoryExists(TCHAR* path)
 	{
 		struct _stat64 info;
-		uint32 error = eFSE_DIRECTORY;
+		eFileSystemError error = eFSE_ERROR;
 
 		if (_tstat64(path, &info) == 0)
 		{
 			if (info.st_mode & _S_IFDIR)
 			{
-				error |= eFSE_SUCCESS;
+				error = eFSE_SUCCESS;
 			}
-			else
+		}
+		else
+		{
+			switch (errno)
 			{
-				switch (errno)
-				{
-				case ENOENT:
-					error |= eFSE_PATH_NOT_FOUND;
-					break;
-
-				default:
-					error |= eFSE_ERROR;
-					break;
-				}
+			case ENOENT:
+				error = eFSE_DOES_NOT_EXIST;
+				break;
 			}
 		}
 
-		return static_cast<eFileSystemError>(error);
+		return error;
 	}
 
 	//============================================================================
 
 	CFileSystem::eFileSystemError CFileSystem::CreateDirectory(TCHAR* path)
 	{
-		uint32 error = eFSE_DIRECTORY;
+		eFileSystemError error = eFSE_ERROR;
 
 		if (_tmkdir(path) == 0)
 		{
-			error |= eFSE_SUCCESS;
+			error = eFSE_SUCCESS;
 		}
 		else
 		{
 			switch (errno)
 			{
 			case EEXIST:
-				error |= eFSE_ALREADY_EXISTS;
+				error = eFSE_ALREADY_EXISTS;
 				break;
 
 			case ENOENT:
-				error |= eFSE_PATH_NOT_FOUND;
-				break;
-
-			default:
-				error |= eFSE_ERROR;
+				error = eFSE_PATH_NOT_FOUND;
 				break;
 			}
 		}
 
-		return static_cast<eFileSystemError>(error);
+		return error;
 	}
 
 	//============================================================================
@@ -178,7 +170,16 @@ namespace engine
 
 	size_t CFileSystem::Read(eFileSystemHandle handle, void* pBuffer, size_t bufferSize, size_t itemSize, size_t itemCount)
 	{
-		return 0;
+		int32 itemsRead = 0;
+
+		if (m_handle[handle].m_used)
+		{
+			itemsRead = fread_s(pBuffer, bufferSize, itemSize, itemCount, m_handle[handle].m_systemHandle);
+
+			assert(itemsRead == itemCount);
+		}
+
+		return itemsRead;
 	}
 
 	//============================================================================
@@ -189,7 +190,7 @@ namespace engine
 
 		if (m_handle[handle].m_used)
 		{
-			itemsWritten = fwrite(m_handle[handle].m_systemHandle, pBuffer, itemSize, itemCount);
+			itemsWritten = fwrite(pBuffer, itemSize, itemCount, m_handle[handle].m_systemHandle);
 
 			assert(itemsWritten == itemCount);
 		}
@@ -201,7 +202,14 @@ namespace engine
 
 	size_t CFileSystem::Print(eFileSystemHandle handle, const TCHAR* format, ...)
 	{
-		size_t charsWritten = 0;
+		va_list arguments;
+		va_start(arguments, format);
+
+		int32 charsWritten = 0;
+		if (m_handle[handle].m_used)
+		{
+			charsWritten = _vftprintf_s(m_handle[handle].m_systemHandle, format, arguments);
+		}
 
 		return charsWritten;
 	}

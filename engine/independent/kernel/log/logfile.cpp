@@ -58,7 +58,7 @@ namespace engine
 			va_list arguments;
 			va_start(arguments, format);
 
-			count += _stprintf_s(&m_buffer[count], (sizeof(m_buffer) / sizeof(TCHAR)) - count, format, arguments);
+			count += _vstprintf_s(&m_buffer[count], (sizeof(m_buffer) / sizeof(TCHAR)) - count, format, arguments);
 			if (m_handle != IFileSystem::eFSH_INVALID)
 			{
 				pFileSystem->Write(m_handle, m_buffer, count, 1);

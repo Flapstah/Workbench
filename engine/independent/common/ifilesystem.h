@@ -36,14 +36,8 @@ namespace engine
 			eFSE_INVALID,
 			eFSE_INVALID_PRIVILEGES,
 			eFSE_READ_ONLY,
-			eFSE_LOCKED,
+			eFSE_LOCKED
 
-			eFSE_GENERAL_RESULT_MASK	= 0x0000ffff,
-
-			// Qualifier`
-			eFSE_DIRECTORY						= 0x00010000,
-			eFSE_FILE									= 0x00020000,
-			eFSE_PATH									= 0x00040000
 		}; // End [enum eFileSystemError]
 
 		//==========================================================================
