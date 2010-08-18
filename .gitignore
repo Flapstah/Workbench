@@ -3,6 +3,7 @@
 *.suo
 *.vcproj.*
 ConsoleUnitTest/Debug/
+ConsoleUnitTest/Logs/
 buildlog.txt
 *.orig
 Debug/
