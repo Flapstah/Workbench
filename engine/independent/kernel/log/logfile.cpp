@@ -47,18 +47,18 @@ namespace engine
 			if (m_behaviours & eBF_TimeStamp)
 			{
 				const ITimer* pGameClock = GetGameClock();
-				count += _stprintf_s(&m_buffer[count], sizeof(m_buffer) - count, WIDEN("[%i][%8.03f] "), pGameClock->GetFrameCount(), pGameClock->GetTime());
+				count += _stprintf_s(&m_buffer[count], (sizeof(m_buffer) / sizeof(TCHAR)) - count, WIDEN("[%i][%8.03f] "), pGameClock->GetFrameCount(), pGameClock->GetTime());
 			}
 
 			if (m_behaviours & eBF_Name)
 			{
-				count += _stprintf_s(&m_buffer[count], sizeof(m_buffer) - count, WIDEN("[%s] "), m_name);
+				count += _stprintf_s(&m_buffer[count], (sizeof(m_buffer) / sizeof(TCHAR)) - count, WIDEN("[%s] "), m_name);
 			}
 
 			va_list arguments;
 			va_start(arguments, format);
 
-			count += _stprintf_s(&m_buffer[count], sizeof(m_buffer) - count, format, arguments);
+			count += _stprintf_s(&m_buffer[count], (sizeof(m_buffer) / sizeof(TCHAR)) - count, format, arguments);
 			if (m_handle != IFileSystem::eFSH_INVALID)
 			{
 				pFileSystem->Write(m_handle, m_buffer, count, 1);

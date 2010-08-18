@@ -30,7 +30,9 @@ namespace engine
 			// General
 			eFSE_SUCCESS = 0,
 			eFSE_ERROR,
+			eFSE_ALREADY_EXISTS,
 			eFSE_DOES_NOT_EXIST,
+			eFSE_PATH_NOT_FOUND,
 			eFSE_INVALID,
 			eFSE_INVALID_PRIVILEGES,
 			eFSE_READ_ONLY,

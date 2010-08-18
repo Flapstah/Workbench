@@ -2,6 +2,8 @@
 
 #include "kernel/filesystem/filesystem.h"
 
+#include <direct.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -31,24 +33,61 @@ namespace engine
 	CFileSystem::eFileSystemError CFileSystem::DirectoryExists(TCHAR* path)
 	{
 		struct _stat64 info;
-		eFileSystemError error = static_cast<eFileSystemError>(eFSE_DIRECTORY | eFSE_DOES_NOT_EXIST);
+		uint32 error = eFSE_DIRECTORY;
 
 		if (_tstat64(path, &info) == 0)
 		{
-			if (info.st_mode == _S_IFDIR)
+			if (info.st_mode & _S_IFDIR)
 			{
-				error = static_cast<eFileSystemError>(eFSE_DIRECTORY | eFSE_SUCCESS);
+				error |= eFSE_SUCCESS;
+			}
+			else
+			{
+				switch (errno)
+				{
+				case ENOENT:
+					error |= eFSE_PATH_NOT_FOUND;
+					break;
+
+				default:
+					error |= eFSE_ERROR;
+					break;
+				}
 			}
 		}
 
-		return error;
+		return static_cast<eFileSystemError>(error);
 	}
 
 	//============================================================================
 
 	CFileSystem::eFileSystemError CFileSystem::CreateDirectory(TCHAR* path)
 	{
-		return eFSE_ERROR;
+		uint32 error = eFSE_DIRECTORY;
+
+		if (_tmkdir(path) == 0)
+		{
+			error |= eFSE_SUCCESS;
+		}
+		else
+		{
+			switch (errno)
+			{
+			case EEXIST:
+				error |= eFSE_ALREADY_EXISTS;
+				break;
+
+			case ENOENT:
+				error |= eFSE_PATH_NOT_FOUND;
+				break;
+
+			default:
+				error |= eFSE_ERROR;
+				break;
+			}
+		}
+
+		return static_cast<eFileSystemError>(error);
 	}
 
 	//============================================================================
@@ -90,7 +129,7 @@ namespace engine
 	{
 		eFileSystemHandle handle = eFSH_INVALID;
 
-		for (uint32 index = 0; index < MAX_OPEN_FILES; ++index)
+		for (uint32 index = 0; (index < MAX_OPEN_FILES) && (handle == eFSH_INVALID); ++index)
 		{
 			if (!m_handle[index].m_used)
 			{
@@ -146,14 +185,25 @@ namespace engine
 
 	size_t CFileSystem::Write(eFileSystemHandle handle, const void* pBuffer, size_t itemSize, size_t itemCount)
 	{
-		return 0;
+		size_t itemsWritten = 0;
+
+		if (m_handle[handle].m_used)
+		{
+			itemsWritten = fwrite(m_handle[handle].m_systemHandle, pBuffer, itemSize, itemCount);
+
+			assert(itemsWritten == itemCount);
+		}
+
+		return itemsWritten;
 	}
 
 	//============================================================================
 
 	size_t CFileSystem::Print(eFileSystemHandle handle, const TCHAR* format, ...)
 	{
-		return 0;
+		size_t charsWritten = 0;
+
+		return charsWritten;
 	}
 
 	//============================================================================
