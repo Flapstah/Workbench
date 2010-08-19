@@ -1,7 +1,8 @@
 #include "stdafx.h"
 
-#include "common/ilogfile.h"
 #include "common/itime.h"
+
+#include "kernel/log/logfile.h"
 #include "kernel/debug/debug.h"
 #include "kernel/filesystem/filesystem.h"
 
@@ -15,12 +16,17 @@ namespace engine
 {
 	//============================================================================
 
-	CLogFile::CLogFile(TCHAR* name, CLogFile* pParent)
+	CLogFile::CLogFile(const TCHAR* name, CLogFile* pParent)
 		: m_pParent(pParent)
 		, m_handle(IFileSystem::eFSH_INVALID)
 		, m_channels(eCF_ALL)
 		, m_behaviours(eBF_ALL)
 	{
+		if (m_pParent != NULL)
+		{
+			m_handle = pParent->m_handle;
+		}
+
 		_tcscpy_s(m_name, sizeof(m_name) / sizeof(TCHAR), name);
 	}
 
@@ -29,8 +35,11 @@ namespace engine
 	CLogFile::~CLogFile(void)
 	{
 		Write(eCF_ALL, _TEXT("[EOF]\r\n"));
-		GetFileSystem()->CloseFile(m_handle);
-		m_handle = IFileSystem::eFSH_INVALID;
+		if (m_pParent == NULL)
+		{
+			GetFileSystem()->CloseFile(m_handle);
+			m_handle = IFileSystem::eFSH_INVALID;
+		}
 	}
 
 	//============================================================================

@@ -3,25 +3,13 @@
 
 //==============================================================================
 
-#include "common/ifilesystem.h"
-
-//==============================================================================
-
-#define LOGFILE_BUFFER_SIZE (1024)
 
 //==============================================================================
 
 namespace engine
 {
-	//============================================================================
-	// CLogFile
-	//============================================================================
-	class CLogFile
+	struct ILogFile 
 	{
-	public:
-		CLogFile(TCHAR* name, CLogFile* pParent);
-		~CLogFile(void);
-
 		enum eBehaviourFlag
 		{
 			eBF_Active						= 1 << 0,
@@ -32,12 +20,12 @@ namespace engine
 			eBF_ALL								= eBF_Active | eBF_Name | eBF_TimeStamp | eBF_OutputToDebugger
 		};
 
-		void SetActive(bool active)													{ active ? TurnOnBehaviours(eBF_Active) : TurnOffBehaviours(eBF_Active);	}
-		bool IsActive(void) const														{ return IsBehaviourOn(eBF_Active);								}
+		virtual void SetActive(bool active) = 0;
+		virtual bool IsActive(void) const = 0;
 
-		void TurnOnBehaviours(eBehaviourFlag behaviours)		{ m_behaviours |= behaviours;											}
-		void TurnOffBehaviours(eBehaviourFlag behaviours)		{ m_behaviours &= ~behaviours;										}
-		bool IsBehaviourOn(eBehaviourFlag behaviour) const	{ return (m_behaviours & behaviour) == behaviour;	}
+		virtual void TurnOnBehaviours(eBehaviourFlag behaviours) = 0;
+		virtual void TurnOffBehaviours(eBehaviourFlag behaviours) = 0;
+		virtual bool IsBehaviourOn(eBehaviourFlag behaviour) const = 0;
 
 		enum eChannelFlag
 		{
@@ -53,23 +41,15 @@ namespace engine
 			eCF_ALL					= eCF_Error | eCF_Assert | eCF_Important | eCF_Warning | eCF_Information | eCF_Todo | eCF_Hack | eCF_User
 		};
 
-		void TurnOnChannels(eChannelFlag channels)					{ m_channels |= channels;													}
-		void TurnOffChannels(eChannelFlag channels)					{ m_channels &= ~channels;												}
-		bool IsChannelOn(eChannelFlag channel) const				{ return (m_channels & channel) == channel;				}
+		virtual void TurnOnChannels(eChannelFlag channels) = 0;
+		virtual void TurnOffChannels(eChannelFlag channels) = 0;
+		virtual bool IsChannelOn(eChannelFlag channel) const = 0;
 
-		void Write(eChannelFlag channel, const TCHAR* format, ...);
+		virtual void Write(eChannelFlag channel, const TCHAR* format, ...) = 0;
+	}; // End [struct ILogFile ]
 
-	protected:
-		IFileSystem::eFileSystemHandle m_handle;
-		CLogFile* m_pParent;
-		TCHAR m_name[32];
-		uint32 m_channels;
-		uint32 m_behaviours;
+	ILogFile* CreateLog(const TCHAR* name, ILogFile* pParent);
 
-		TCHAR m_buffer[LOGFILE_BUFFER_SIZE];
-
-	private:
-	}; // End [class CLogFile]
 } // End [namespace engine]
 
 //==============================================================================
