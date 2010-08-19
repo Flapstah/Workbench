@@ -24,16 +24,6 @@
 #define SIZE_IN_KB(_size_) ((_size_) * 1024)
 #define SIZE_IN_MB(_size_) ((_size_) * 1024 * 1024)
 
-//------------------------------------------------------------------------------
-// Widen a UTF-8 string literal to a Unicode string literal
-//------------------------------------------------------------------------------
-#if defined(UNICODE)
-#define _WIDEN(_string_literal_) L ## _string_literal_
-#define WIDEN(_string_literal_) _WIDEN(_string_literal_)
-#else
-#define WIDEN(_string_literal_) _string_literal_
-#endif
-
 //==============================================================================
 #endif // End [!defined(__MACROS_H__)]
 // [EOF]

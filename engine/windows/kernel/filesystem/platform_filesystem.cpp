@@ -13,7 +13,7 @@ namespace engine
 
 	CFileSystem::eFileSystemError CFileSystem::Platform_CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType, bool createIfNecessary)
 	{
-		pBuffer[0] = WIDEN('\0');
+		pBuffer[0] = _TEXT('\0');
 		BOOL appended = FALSE;
 		eFileSystemError error = eFSE_SUCCESS;
 
@@ -25,10 +25,10 @@ namespace engine
 			TCHAR* pExtension = NULL;
 
 #if defined(RELEASE)
-			appended = PathAppend(pBuffer, WIDEN(COMPANY_NAME));
+			appended = PathAppend(pBuffer, _TEXT(COMPANY_NAME));
 			if (appended == TRUE)
 			{
-				appended = PathAppend(pBuffer, WIDEN(PROJECT_NAME));
+				appended = PathAppend(pBuffer, _TEXT(PROJECT_NAME));
 			}
 
 			if (appended = TRUE)
@@ -39,8 +39,8 @@ namespace engine
 				switch (fileType)
 				{
 				case eFT_LogFile:
-					pFolder = WIDEN("Logs");
-					pExtension = WIDEN(".log");
+					pFolder = _TEXT("Logs");
+					pExtension = _TEXT(".log");
 					break;
 				default:
 					break;
