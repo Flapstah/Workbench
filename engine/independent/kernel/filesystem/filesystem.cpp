@@ -220,6 +220,7 @@ namespace engine
 	{
 		if (m_handle[handle].m_used)
 		{
+			fflush(m_handle[handle].m_systemHandle);
 			fclose(m_handle[handle].m_systemHandle);
 			m_handle[handle].m_used = 0;
 		}
