@@ -1,12 +1,12 @@
 need to clean up interface classes
 	- don't want implementation details in interface as this leads to common dependencies
 	- need to move as much stuff into engine layer as possible to minimise public exposure
-	* itime.h done		
+	* itime.h - DONE		
 	- move filename functionality into file class
-		- creating file system interface
-		- add newline to each logfile output
 		- maybe need a way of forcing output to be ascii even if unicode program; or unicode if ascii?
-		- need some macros to make logging easier
+		* creating file system interface - DONE
+		* add newline to each logfile output - DONE
+		* need some macros to make logging easier - DONE
 	
 kernel systems
 even though kernel will (ultimately) have memory management, it must not rely on any dynamic memory

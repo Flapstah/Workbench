@@ -14,6 +14,9 @@
 
 namespace engine
 {
+	//============================================================================
+	// IFileSystem
+	//============================================================================
 	struct IFileSystem
 	{
 		//==========================================================================
@@ -33,7 +36,8 @@ namespace engine
 			eFSE_ALREADY_EXISTS,
 			eFSE_DOES_NOT_EXIST,
 			eFSE_PATH_NOT_FOUND,
-			eFSE_INVALID,
+			eFSE_INVALID_FILENAME,
+			eFSE_INVALID_HANDLE,
 			eFSE_INVALID_PRIVILEGES,
 			eFSE_READ_ONLY,
 			eFSE_LOCKED
@@ -71,7 +75,8 @@ namespace engine
 		virtual size_t						Read(eFileSystemHandle handle, void* pBuffer, size_t bufferSize, size_t itemSize, size_t itemCount) = 0;
 		virtual size_t						Write(eFileSystemHandle handle, const void* pBuffer, size_t itemSize, size_t itemCount) = 0;
 		virtual size_t						Print(eFileSystemHandle handle, const TCHAR* format, ...) = 0;
-		virtual eFileSystemError	CloseFile(eFileSystemHandle handle) = 0;
+		virtual eFileSystemError	Flush(eFileSystemHandle handle) = 0;
+		virtual eFileSystemError	CloseFile(eFileSystemHandle& handle) = 0;
 		virtual eFileSystemError	CloseAllFiles(void) = 0;
 
 		//==========================================================================
@@ -81,7 +86,12 @@ namespace engine
 		//==========================================================================
 	}; // End [struct IFileSystem]
 
+	//----------------------------------------------------------------------------
+	// Returns the file system
+	//----------------------------------------------------------------------------
 	IFileSystem* GetFileSystem(void);
+
+	//============================================================================
 } // End [namespace engine]
 
 //==============================================================================

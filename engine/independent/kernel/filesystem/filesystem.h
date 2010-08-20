@@ -38,7 +38,8 @@ namespace engine
 		virtual size_t						Read(eFileSystemHandle handle, void* pBuffer, size_t bufferSize, size_t itemSize, size_t itemCount);
 		virtual size_t						Write(eFileSystemHandle handle, const void* pBuffer, size_t itemSize, size_t itemCount);
 		virtual size_t						Print(eFileSystemHandle handle, const TCHAR* format, ...);
-		virtual eFileSystemError	CloseFile(eFileSystemHandle handle);
+		virtual eFileSystemError	Flush(eFileSystemHandle handle);
+		virtual eFileSystemError	CloseFile(eFileSystemHandle& handle);
 		virtual eFileSystemError	CloseAllFiles(void);
 
 		virtual eFileSystemError	CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType, bool createIfNecessary);

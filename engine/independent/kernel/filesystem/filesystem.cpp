@@ -216,16 +216,37 @@ namespace engine
 
 	//============================================================================
 
-	CFileSystem::eFileSystemError CFileSystem::CloseFile(eFileSystemHandle handle)
+	CFileSystem::eFileSystemError CFileSystem::Flush(eFileSystemHandle handle)
 	{
+		eFileSystemError rc = eFSE_INVALID_HANDLE;
+
 		if (m_handle[handle].m_used)
 		{
 			fflush(m_handle[handle].m_systemHandle);
-			fclose(m_handle[handle].m_systemHandle);
-			m_handle[handle].m_used = 0;
+			rc = eFSE_SUCCESS;
 		}
 
-		return eFSE_SUCCESS;
+		return rc;
+	}
+
+	//============================================================================
+
+	CFileSystem::eFileSystemError CFileSystem::CloseFile(eFileSystemHandle& handle)
+	{
+		eFileSystemError rc = eFSE_INVALID_HANDLE;
+
+		if (m_handle[handle].m_used)
+		{
+			fclose(m_handle[handle].m_systemHandle);
+
+			m_handle[handle].m_systemHandle = NULL;
+			m_handle[handle].m_used = false;
+
+			handle = eFSH_INVALID;
+			rc = eFSE_SUCCESS;
+		}
+
+		return rc;
 	}
 
 	//============================================================================
@@ -238,7 +259,8 @@ namespace engine
 		{
 			if (m_handle[index].m_used)
 			{
-				eFileSystemError closed = CloseFile(static_cast<eFileSystemHandle>(index));
+				eFileSystemHandle handle = static_cast<eFileSystemHandle>(index);
+				eFileSystemError closed = CloseFile(handle);
 				if (closed != eFSE_SUCCESS)
 				{
 					rc = closed;

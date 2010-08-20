@@ -3,15 +3,18 @@
 
 //==============================================================================
 
-#define LOGS_ENABLED (1)									// Enable/disable logging
-#define LOGS_HAVE_SCOPED_CHANNELS (1)			// Channels are scoped, i.e. child log can have active warning channel even if parent warning channel is disabled
-#define LOGS_FORCE_INSERT_NEWLINE (1)			// Force a newline to be inserted at the end of every separate log output (if it doesn't already exist)
+#define LOGS_ENABLED								// Enable/disable logging
+#define LOGS_HAVE_SCOPED_CHANNELS		// Channels are scoped, i.e. child log can have active warning channel even if parent warning channel is disabled
+#define LOGS_FORCE_INSERT_NEWLINE		// Force a newline to be inserted at the end of every separate log output (if it doesn't already exist)
 
 //==============================================================================
 
 namespace engine
 {
-	struct ILogFile 
+	//============================================================================
+	// ILogFile
+	//============================================================================
+	struct ILogFile
 	{
 		enum eBehaviourFlag
 		{
@@ -22,7 +25,7 @@ namespace engine
 			eBF_OutputToDebugger	= 1 << 4,
 
 			eBF_ALL								= eBF_Active | eBF_Name | eBF_DateStamp | eBF_TimeStamp | eBF_OutputToDebugger
-		};
+		}; // End [enum eBehaviourFlag]
 
 		enum eChannelFlag
 		{
@@ -36,7 +39,7 @@ namespace engine
 			eCF_User				= 1 << 7,
 
 			eCF_ALL					= eCF_Error | eCF_Assert | eCF_Warning | eCF_Important | eCF_Information | eCF_ToDo | eCF_Hack | eCF_User
-		};
+		}; // End [enum eChannelFlag]
 
 		virtual void SetActive(bool active) = 0;
 		virtual bool IsActive(eChannelFlag channels) const = 0;
@@ -50,17 +53,33 @@ namespace engine
 		virtual bool IsChannelOn(eChannelFlag channel) const = 0;
 
 		virtual bool Write(const TCHAR* format, ...) = 0;
-	}; // End [struct ILogFile ]
+	}; // End [struct ILogFile]
 
+	//============================================================================
+
+	//----------------------------------------------------------------------------
+	// Returns the main log file
+	//----------------------------------------------------------------------------
 	ILogFile* GetMainLog(void);
 
+	//----------------------------------------------------------------------------
+	// Helper macros for log output
+	//----------------------------------------------------------------------------
 #if defined LOGS_ENABLED
 #define _WriteLog(_pILogFile_, _channels_, _output_) ((_pILogFile_->IsActive(_channels_)) && (_pILogFile_ _output_))
 #else
 #define _WriteLog(_pILogFile_, _channels_, _output_)
 #endif
 
+	//----------------------------------------------------------------------------
+	// Use WriteLog to write to multiple channels at the same time in the given
+	// logfile
+	//----------------------------------------------------------------------------
 #define WriteLog(_pILogFile_, _channels_, _output_) _WriteLog(_pILogFile_, _channels_, _output_)
+
+	//----------------------------------------------------------------------------
+	// Use WriteLogXXX to write to a specific channel in the given logfile
+	//----------------------------------------------------------------------------
 #define WriteLogAlways(_pILogFile_, _output_) (_pILogFile_->Write _output_)
 #define WriteLogError(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Error, _output_)
 #define WriteLogAssert(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Assert, _output_)
@@ -71,7 +90,14 @@ namespace engine
 #define WriteLogHack(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Hack, _output_)
 #define WriteLogUser(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_User, _output_)
 
+	//----------------------------------------------------------------------------
+	// Use Log to write to multiple channels at the same time in the main log
+	//----------------------------------------------------------------------------
 #define Log(_channels_, _output_) _WriteLog(engine::GetMainLog(), _channels_, _output_)
+
+	//----------------------------------------------------------------------------
+	// Use LogXXX to write to a specific channel in the main log
+	//----------------------------------------------------------------------------
 #define LogAlways(_output_) (engine::GetMainLog()->Write _output_)
 #define LogError(_output_) _WriteLog(engine::GetMainLog(), ILogFile::eCF_Error, _output_)
 #define LogAssert(_output_) _WriteLog(engine::GetMainLog(), ILogFile::eCF_Assert, _output_)

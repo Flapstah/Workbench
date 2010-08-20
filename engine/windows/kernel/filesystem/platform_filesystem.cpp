@@ -71,7 +71,7 @@ namespace engine
 
 				if (appended == FALSE)
 				{
-					error = eFSE_INVALID; 
+					error = eFSE_INVALID_FILENAME; 
 				}
 			}
 		}

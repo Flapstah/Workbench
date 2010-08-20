@@ -73,10 +73,11 @@ namespace engine
 			{
 				m_handle = pFileSystem->OpenFile(fileName, _TEXT("wb")); // N.B. opened as binary otherwise \n gets mangled in unicode output...
 
-				// HACK:
+#if defined(_UNICODE)
+				// Insert the Byte-Order-Mark for UTF-16
 				uint16 bom = 0xfeff;
 				pFileSystem->Write(m_handle, &bom, sizeof(uint16), 1);
-				// End HACK
+#endif
 
 				uint32 old = m_behaviours;
 				m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp;
