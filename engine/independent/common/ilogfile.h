@@ -5,6 +5,7 @@
 
 #define LOGS_ENABLED (1)									// Enable/disable logging
 #define LOGS_HAVE_SCOPED_CHANNELS (1)			// Channels are scoped, i.e. child log can have active warning channel even if parent warning channel is disabled
+#define LOGS_FORCE_INSERT_NEWLINE (1)			// Force a newline to be inserted at the end of every separate log output (if it doesn't already exist)
 
 //==============================================================================
 
@@ -51,7 +52,7 @@ namespace engine
 		virtual bool Write(const TCHAR* format, ...) = 0;
 	}; // End [struct ILogFile ]
 
-	ILogFile* CreateLog(const TCHAR* name, ILogFile* pParent);
+	ILogFile* GetMainLog(void);
 
 #if defined LOGS_ENABLED
 #define _WriteLog(_pILogFile_, _channels_, _output_) ((_pILogFile_->IsActive(_channels_)) && (_pILogFile_ _output_))
@@ -59,16 +60,27 @@ namespace engine
 #define _WriteLog(_pILogFile_, _channels_, _output_)
 #endif
 
-#define Log(_pILogFile_, _channels_, _output_) _WriteLog(_pILogFile_, _channels_, _output_)
-#define LogAlways(_pILogFile_, _output_) (_pILogFile_ _output_)
-#define LogError(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Error, _output_)
-#define LogAssert(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Assert, _output_)
-#define LogWarning(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Warning, _output_)
-#define LogImportant(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Important, _output_)
-#define LogInformation(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Information, _output_)
-#define LogToDo(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_ToDo, _output_)
-#define LogHack(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Hack, _output_)
-#define LogUser(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_User, _output_)
+#define WriteLog(_pILogFile_, _channels_, _output_) _WriteLog(_pILogFile_, _channels_, _output_)
+#define WriteLogAlways(_pILogFile_, _output_) (_pILogFile_->Write _output_)
+#define WriteLogError(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Error, _output_)
+#define WriteLogAssert(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Assert, _output_)
+#define WriteLogWarning(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Warning, _output_)
+#define WriteLogImportant(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Important, _output_)
+#define WriteLogInformation(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Information, _output_)
+#define WriteLogToDo(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_ToDo, _output_)
+#define WriteLogHack(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_Hack, _output_)
+#define WriteLogUser(_pILogFile_, _output_) _WriteLog(_pILogFile_, ILogFile::eCF_User, _output_)
+
+#define Log(_channels_, _output_) _WriteLog(engine::GetMainLog(), _channels_, _output_)
+#define LogAlways(_output_) (engine::GetMainLog()->Write _output_)
+#define LogError(_output_) _WriteLog(engine::GetMainLog(), ILogFile::eCF_Error, _output_)
+#define LogAssert(_output_) _WriteLog(engine::GetMainLog(), ILogFile::eCF_Assert, _output_)
+#define LogWarning(_output_) _WriteLog(engine::GetMainLog(), ILogFile::eCF_Warning, _output_)
+#define LogImportant(_output_) _WriteLog(engine::GetMainLog(), ILogFile::eCF_Important, _output_)
+#define LogInformation(_output_) _WriteLog(engine::GetMainLog(), ILogFile::eCF_Information, _output_)
+#define LogToDo(_output_) _WriteLog(engine::GetMainLog(), ILogFile::eCF_ToDo, _output_)
+#define LogHack(_output_) _WriteLog(engine::GetMainLog(), ILogFile::eCF_Hack, _output_)
+#define LogUser(_output_) _WriteLog(engine::GetMainLog(), ILogFile::eCF_User, _output_)
 } // End [namespace engine]
 
 //==============================================================================

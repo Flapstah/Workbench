@@ -9,10 +9,7 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	//engine::CLogFile logfile(L"debug", NULL);
-
-	//logfile.Write(engine::CLogFile::eCF_ALL, L"A new log");
-
+	LogAlways((_TEXT("Testing the log")));
 
 	return 0;
 }

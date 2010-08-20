@@ -26,7 +26,7 @@ namespace engine
 
 		// ILogFile
 		virtual void SetActive(bool active)													{ active ? TurnOnBehaviours(eBF_Active) : TurnOffBehaviours(eBF_Active);					}
-		virtual bool IsActive(eChannelFlag channels)
+		virtual bool IsActive(eChannelFlag channels) const
 		{
 #if defined LOGS_HAVE_SCOPED_CHANNELS
 			bool active = (m_pParent != NULL) ? m_pParent->IsBehaviourOn(eBF_Active) : IsBehaviourOn(eBF_Active);

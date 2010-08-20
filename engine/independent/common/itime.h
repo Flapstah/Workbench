@@ -29,8 +29,8 @@ namespace engine
 	//============================================================================
 	struct ISystemClock : virtual public ITimeSource 
 	{
-		virtual char*		GetLocalDateString(void) const = 0;
-		virtual char*		GetLocalTimeString(void) const = 0;
+		virtual TCHAR*	GetLocalDateString(void) const = 0;
+		virtual TCHAR*	GetLocalTimeString(void) const = 0;
 	}; // End [struct ISystemClock : public ITimeSource ]
 
 	//----------------------------------------------------------------------------

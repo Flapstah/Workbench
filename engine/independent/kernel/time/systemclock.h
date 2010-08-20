@@ -13,9 +13,7 @@
 //==============================================================================
 
 #define SYSTEM_CLOCK_DATE_BUFFER_SIZE (12)
-#define SYSTEM_CLOCK_TIME_BUFFER_SIZE (9)
-#define SYSTEM_CLOCK_ALIGNMENT (4)
-#define SYSTEM_CLOCK_ALIGNED_BUFFER_SIZE ((SYSTEM_CLOCK_DATE_BUFFER_SIZE + SYSTEM_CLOCK_TIME_BUFFER_SIZE + SYSTEM_CLOCK_ALIGNMENT - 1) / SYSTEM_CLOCK_ALIGNMENT)
+#define SYSTEM_CLOCK_TIME_BUFFER_SIZE (12)
 
 //==============================================================================
 
@@ -37,20 +35,21 @@ namespace engine
 		// ~ITimeSource
 
 		// ISystemClock
-		virtual char*		GetLocalDateString(void) const	{	return Platform_GetLocalDateString();		}
-		virtual char*		GetLocalTimeString(void) const	{	return Platform_GetLocalTimeString();		}
+		virtual TCHAR*	GetLocalDateString(void) const	{	return Platform_GetLocalDateString();		}
+		virtual TCHAR*	GetLocalTimeString(void) const	{	return Platform_GetLocalTimeString();		}
 		// ~ISystemClock
 
 	protected:
 						void		Platform_Initialise(void);
 						void		Platform_Uninitialise(void);
 						bool		Platform_Tick(void);
-						char*		Platform_GetLocalDateString(void) const;
-						char*		Platform_GetLocalTimeString(void) const;
+						TCHAR*	Platform_GetLocalDateString(void) const;
+						TCHAR*	Platform_GetLocalTimeString(void) const;
 
 	protected:
 						double	m_secondsPerTick;
-		mutable char		m_textBuffer[SYSTEM_CLOCK_ALIGNED_BUFFER_SIZE];
+		mutable TCHAR		m_localDate[SYSTEM_CLOCK_DATE_BUFFER_SIZE];
+		mutable TCHAR		m_localTime[SYSTEM_CLOCK_TIME_BUFFER_SIZE];
 	}; // End [class CSystemClock : public ISystemClock]
 
 	//----------------------------------------------------------------------------

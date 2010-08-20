@@ -16,6 +16,20 @@ namespace engine
 {
 	//============================================================================
 
+	//----------------------------------------------------------------------------
+	// The global instance of the main log
+	//----------------------------------------------------------------------------
+	CLogFile g_MainLog(_TEXT("Main"), NULL, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger));
+
+	//============================================================================
+
+	ILogFile* GetMainLog(void)
+	{
+		return &g_MainLog;
+	}
+
+	//============================================================================
+
 	CLogFile::CLogFile(const TCHAR* name, CLogFile* pParent, eBehaviourFlag initialBehaviour /* = eBF_ALL */, eChannelFlag initialChannels /* = eCF_ALL */)
 		: m_pParent(pParent)
 		, m_handle(IFileSystem::eFSH_INVALID)
@@ -34,11 +48,13 @@ namespace engine
 
 	CLogFile::~CLogFile(void)
 	{
-		m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp | eBF_TimeStamp;
-		Write(_TEXT("End Log\r\n[EOF]\r\n"));
+		m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp;
+		Write(_TEXT("End Log\r\n"));
 
 		if (m_pParent == NULL)
 		{
+			m_behaviours = eBF_Active;
+			Write(_TEXT("[EOF]\r\n"));
 			GetFileSystem()->CloseFile(m_handle);
 			m_handle = IFileSystem::eFSH_INVALID;
 		}
@@ -55,15 +71,17 @@ namespace engine
 			TCHAR fileName[MAX_PATH];
 			if (pFileSystem->CreatePath(fileName, sizeof(fileName) / sizeof(TCHAR), m_name, IFileSystem::eFT_LogFile, true) == IFileSystem::eFSE_SUCCESS)
 			{
-				m_handle = pFileSystem->OpenFile(fileName, _TEXT("w"));
+				m_handle = pFileSystem->OpenFile(fileName, _TEXT("wb")); // N.B. opened as binary otherwise \n gets mangled in unicode output...
 
-				uint32 old = m_behaviours;
-				m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp | eBF_TimeStamp;
-				Write(_TEXT("Start log\r\n"));
-				m_behaviours = old;
-
+				// HACK:
 				uint16 bom = 0xfeff;
 				pFileSystem->Write(m_handle, &bom, sizeof(uint16), 1);
+				// End HACK
+
+				uint32 old = m_behaviours;
+				m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp;
+				Write(_TEXT("Start log\r\n"));
+				m_behaviours = old;
 			}
 		}
 
@@ -90,13 +108,15 @@ namespace engine
 		va_start(arguments, format);
 		count += _vstprintf_s(&m_buffer[count], (sizeof(m_buffer) / sizeof(TCHAR)) - count, format, arguments);
 
-		if (_tcscmp(&m_buffer[count - 2], _TEXT("\r\n")))
+#if defined LOGS_FORCE_INSERT_NEWLINE
+		if (_tcscmp(&m_buffer[count - _tcslen(_TEXT("\r\n"))], _TEXT("\r\n")))
 		{
 			if (_tcscat_s(&m_buffer[count], (sizeof(m_buffer) / sizeof(TCHAR)) - count, _TEXT("\r\n")) == 0)
 			{
 				count += _tcslen(_TEXT("\r\n"));
 			}
 		}
+#endif
 
 		bool writtenToFile = false;
 		if (m_handle != IFileSystem::eFSH_INVALID)
