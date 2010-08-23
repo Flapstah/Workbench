@@ -3,6 +3,8 @@ need to clean up interface classes
 	- need to move as much stuff into engine layer as possible to minimise public exposure
 	* itime.h - DONE		
 	- move filename functionality into file class
+		- need better method of lazy file open (needs to be mindful of possible parent and parent's state)
+		- need a way to create a new log; need warning & error variants of main log (perhaps more?)
 		- maybe need a way of forcing output to be ascii even if unicode program; or unicode if ascii?
 		* creating file system interface - DONE
 		* add newline to each logfile output - DONE

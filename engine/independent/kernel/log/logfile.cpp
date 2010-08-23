@@ -30,11 +30,10 @@ namespace engine
 
 	//============================================================================
 
-	CLogFile::CLogFile(const TCHAR* name, CLogFile* pParent, eBehaviourFlag initialBehaviour /* = eBF_ALL */, eChannelFlag initialChannels /* = eCF_ALL */)
+	CLogFile::CLogFile(const TCHAR* name, CLogFile* pParent, eBehaviourFlag initialBehaviour /* = eBF_ALL */)
 		: m_pParent(pParent)
 		, m_handle(IFileSystem::eFSH_INVALID)
 		, m_behaviours(initialBehaviour)
-		, m_channels(initialChannels)
 	{
 		if (m_pParent != NULL)
 		{
@@ -56,7 +55,6 @@ namespace engine
 			m_behaviours = eBF_Active;
 			Write(_TEXT("[EOF]\r\n"));
 			GetFileSystem()->CloseFile(m_handle);
-			m_handle = IFileSystem::eFSH_INVALID;
 		}
 	}
 
