@@ -4,6 +4,7 @@
 //==============================================================================
 
 #define LOGS_ENABLED								// Enable/disable logging
+//#define LOGS_FORCE_SEPARATE_FILES		// Force logs into separate files
 #define LOGS_FORCE_INSERT_NEWLINE		// Force a newline to be inserted at the end of every separate log output (if it doesn't already exist)
 
 //==============================================================================
@@ -44,6 +45,16 @@ namespace engine
 	ILogFile* GetMainLog(void);
 
 	//----------------------------------------------------------------------------
+	// Returns the error log file
+	//----------------------------------------------------------------------------
+	ILogFile* GetErrorLog(void);
+
+	//----------------------------------------------------------------------------
+	// Returns the warning log file
+	//----------------------------------------------------------------------------
+	ILogFile* GetWarningLog(void);
+
+	//----------------------------------------------------------------------------
 	// Helper macros for log output
 	//----------------------------------------------------------------------------
 #if defined LOGS_ENABLED
@@ -53,9 +64,11 @@ namespace engine
 #endif
 
 	//----------------------------------------------------------------------------
-	// Use Log to write to the main log
+	// Use LogXXX to output to the logs
 	//----------------------------------------------------------------------------
 #define Log(_output_) _WriteLog(engine::GetMainLog(), _output_)
+#define LogError(_output_) _WriteLog(engine::GetErrorLog(), _output_)
+#define LogWarning(_output_) _WriteLog(engine::GetWarningLog(), _output_)
 
 } // End [namespace engine]
 

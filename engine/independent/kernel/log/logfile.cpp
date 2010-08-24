@@ -17,9 +17,11 @@ namespace engine
 	//============================================================================
 
 	//----------------------------------------------------------------------------
-	// The global instance of the main log
+	// The global instance of the main, error and warning logs
 	//----------------------------------------------------------------------------
 	CLogFile g_MainLog(_TEXT("Main"), NULL, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger));
+	CLogFile g_ErrorLog(_TEXT("Error"), &g_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger));
+	CLogFile g_WarningLog(_TEXT("Warning"), &g_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger));
 
 	//============================================================================
 
@@ -30,15 +32,33 @@ namespace engine
 
 	//============================================================================
 
+	ILogFile* GetErrorLog(void)
+	{
+		return &g_ErrorLog;
+	}
+
+	//============================================================================
+
+	ILogFile* GetWarningLog(void)
+	{
+		return &g_WarningLog;
+	}
+
+	//============================================================================
+
 	CLogFile::CLogFile(const TCHAR* name, CLogFile* pParent, eBehaviourFlag initialBehaviour /* = eBF_ALL */)
+#if defined(LOGS_FORCE_SEPARATE_FILES)
+		: m_pParent(NULL)
+#else
 		: m_pParent(pParent)
+#endif
 		, m_handle(IFileSystem::eFSH_INVALID)
 		, m_behaviours(initialBehaviour)
+		, m_referenceCount(0)
 	{
-		if (m_pParent != NULL)
-		{
-			m_handle = pParent->m_handle;
-		}
+#if !defined(LOGS_FORCE_SEPARATE_FILES)
+		IGNORE_PARAMETER(pParent);
+#endif
 
 		_tcscpy_s(m_name, sizeof(m_name) / sizeof(TCHAR), name);
 	}
@@ -56,6 +76,10 @@ namespace engine
 			Write(_TEXT("[EOF]\r\n"));
 			GetFileSystem()->CloseFile(m_handle);
 		}
+		else
+		{
+			--m_pParent->m_referenceCount;
+		}
 	}
 
 	//============================================================================
@@ -64,17 +88,17 @@ namespace engine
 	{
 		IFileSystem* pFileSystem = GetFileSystem();
 
-		if (m_handle == IFileSystem::eFSH_INVALID)
+		if (FileHandle() == IFileSystem::eFSH_INVALID)
 		{
 			TCHAR fileName[MAX_PATH];
 			if (pFileSystem->CreatePath(fileName, sizeof(fileName) / sizeof(TCHAR), m_name, IFileSystem::eFT_LogFile, true) == IFileSystem::eFSE_SUCCESS)
 			{
-				m_handle = pFileSystem->OpenFile(fileName, _TEXT("wb")); // N.B. opened as binary otherwise \n gets mangled in unicode output...
+				FileHandle() = pFileSystem->OpenFile(fileName, _TEXT("wb")); // N.B. opened as binary otherwise \n gets mangled in unicode output...
 
 #if defined(_UNICODE)
 				// Insert the Byte-Order-Mark for UTF-16
 				uint16 bom = 0xfeff;
-				pFileSystem->Write(m_handle, &bom, sizeof(uint16), 1);
+				pFileSystem->Write(FileHandle(), &bom, sizeof(uint16), 1);
 #endif
 
 				uint32 old = m_behaviours;
@@ -118,9 +142,9 @@ namespace engine
 #endif
 
 		bool writtenToFile = false;
-		if (m_handle != IFileSystem::eFSH_INVALID)
+		if (FileHandle() != IFileSystem::eFSH_INVALID)
 		{
-			writtenToFile = (pFileSystem->Write(m_handle, m_buffer, count * sizeof(TCHAR), 1) == 1);
+			writtenToFile = (pFileSystem->Write(FileHandle(), m_buffer, count * sizeof(TCHAR), 1) == 1);
 		}
 
 		if (m_behaviours & eBF_OutputToDebugger)

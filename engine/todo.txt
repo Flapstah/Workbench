@@ -3,7 +3,12 @@ need to clean up interface classes
 	- need to move as much stuff into engine layer as possible to minimise public exposure
 	* itime.h - DONE		
 	- move filename functionality into file class
-		- need better method of lazy file open (needs to be mindful of possible parent and parent's state)
+		- need better method of lazy file open (needs to be mindful of possible parent and parent's state) (ref count + accessor functions for parent handle?)
+			- needs to be sophisticated enough that if the parent log is destroyed, it doesn't shut down the file if other logs have references
+			- needs also to let sub-logs write "start log" so you can tell when sub logs became active
+				- pre-add to output buffer then first log output includes start
+				- would need to clear output buffer between writes
+				- would need to separate writing to internal buffer from writing to file to get all behaviours
 		- need a way to create a new log; need warning & error variants of main log (perhaps more?)
 		- maybe need a way of forcing output to be ascii even if unicode program; or unicode if ascii?
 		* creating file system interface - DONE
