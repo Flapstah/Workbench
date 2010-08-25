@@ -3,6 +3,7 @@ need to clean up interface classes
 	- need to move as much stuff into engine layer as possible to minimise public exposure
 	* itime.h - DONE		
 	- move filename functionality into file class
+		- *FIXME* closing log files will never work because ref count is dec'd twice... see CLogFile::Close() and CFileSystem::Close()
 		- need better method of lazy file open (needs to be mindful of possible parent and parent's state) (ref count + accessor functions for parent handle?)
 			- needs to be sophisticated enough that if the parent log is destroyed, it doesn't shut down the file if other logs have references
 			- needs also to let sub-logs write "start log" so you can tell when sub logs became active
