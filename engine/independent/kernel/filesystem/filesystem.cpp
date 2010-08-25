@@ -17,7 +17,7 @@ namespace engine
 	{
 		for (uint32 index = 0; index < MAX_OPEN_FILES; ++index)
 		{
-			m_handle->m_used = false;
+			m_handle->m_referenceCount = 0;
 		}
 	}
 
@@ -123,7 +123,7 @@ namespace engine
 
 		for (uint32 index = 0; (index < MAX_OPEN_FILES) && (handle == eFSH_INVALID); ++index)
 		{
-			if (!m_handle[index].m_used)
+			if (m_handle[index].m_referenceCount == 0)
 			{
 				if (_tfopen_s(&m_handle[index].m_systemHandle, name, mode))
 				{
@@ -131,7 +131,7 @@ namespace engine
 				}
 				else
 				{
-					m_handle[index].m_used = true;
+					++m_handle[index].m_referenceCount;
 					handle = static_cast<eFileSystemHandle>(index);
 				}
 			}
@@ -172,7 +172,7 @@ namespace engine
 	{
 		int32 itemsRead = 0;
 
-		if (m_handle[handle].m_used)
+		if (m_handle[handle].m_referenceCount != 0)
 		{
 			itemsRead = fread_s(pBuffer, bufferSize, itemSize, itemCount, m_handle[handle].m_systemHandle);
 
@@ -188,7 +188,7 @@ namespace engine
 	{
 		size_t itemsWritten = 0;
 
-		if (m_handle[handle].m_used)
+		if (m_handle[handle].m_referenceCount != 0)
 		{
 			itemsWritten = fwrite(pBuffer, itemSize, itemCount, m_handle[handle].m_systemHandle);
 
@@ -206,7 +206,7 @@ namespace engine
 		va_start(arguments, format);
 
 		int32 charsWritten = 0;
-		if (m_handle[handle].m_used)
+		if (m_handle[handle].m_referenceCount != 0)
 		{
 			charsWritten = _vftprintf_s(m_handle[handle].m_systemHandle, format, arguments);
 		}
@@ -220,7 +220,7 @@ namespace engine
 	{
 		eFileSystemError rc = eFSE_INVALID_HANDLE;
 
-		if (m_handle[handle].m_used)
+		if (m_handle[handle].m_referenceCount != 0)
 		{
 			fflush(m_handle[handle].m_systemHandle);
 			rc = eFSE_SUCCESS;
@@ -235,12 +235,13 @@ namespace engine
 	{
 		eFileSystemError rc = eFSE_INVALID_HANDLE;
 
-		if (m_handle[handle].m_used)
+		if (m_handle[handle].m_referenceCount > 0)
 		{
-			fclose(m_handle[handle].m_systemHandle);
-
-			m_handle[handle].m_systemHandle = NULL;
-			m_handle[handle].m_used = false;
+			if (--m_handle[handle].m_referenceCount == 0)
+			{
+				fclose(m_handle[handle].m_systemHandle);
+				m_handle[handle].m_systemHandle = NULL;
+			}
 
 			handle = eFSH_INVALID;
 			rc = eFSE_SUCCESS;
@@ -257,9 +258,11 @@ namespace engine
 
 		for (uint32 index = 0; index < MAX_OPEN_FILES; ++index)
 		{
-			if (m_handle[index].m_used)
+			if (m_handle[index].m_referenceCount > 0)
 			{
-				eFileSystemHandle handle = static_cast<eFileSystemHandle>(index);
+				assert(m_handle[index].m_referenceCount == 1);
+
+				eFileSystemHandle handle(static_cast<eFileSystemHandle>(index));
 				eFileSystemError closed = CloseFile(handle);
 				if (closed != eFSE_SUCCESS)
 				{
@@ -269,6 +272,19 @@ namespace engine
 		}
 
 		return rc;
+	}
+
+	//============================================================================
+
+	uint32 CFileSystem::AddFileReference(eFileSystemHandle& handle)
+	{
+		return ++m_handle[handle].m_referenceCount;
+	}
+
+	//============================================================================
+	uint32 CFileSystem::ReleaseFileReference(eFileSystemHandle& handle)
+	{
+		return --m_handle[handle].m_referenceCount;
 	}
 
 	//============================================================================

@@ -19,9 +19,9 @@ namespace engine
 	//----------------------------------------------------------------------------
 	// The global instance of the main, error and warning logs
 	//----------------------------------------------------------------------------
-	CLogFile g_MainLog(_TEXT("Main"), NULL, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger));
-	CLogFile g_ErrorLog(_TEXT("Error"), &g_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger));
-	CLogFile g_WarningLog(_TEXT("Warning"), &g_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger));
+	CLogFile g_MainLog(_TEXT("Main"), NULL, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
+	CLogFile g_ErrorLog(_TEXT("Error"), &g_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
+	CLogFile g_WarningLog(_TEXT("Warning"), &g_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
 
 	//============================================================================
 
@@ -53,10 +53,10 @@ namespace engine
 		: m_pParent(pParent)
 #endif
 		, m_handle(IFileSystem::eFSH_INVALID)
+		, m_size(0)
 		, m_behaviours(initialBehaviour)
-		, m_referenceCount(0)
 	{
-#if !defined(LOGS_FORCE_SEPARATE_FILES)
+#if defined(LOGS_FORCE_SEPARATE_FILES)
 		IGNORE_PARAMETER(pParent);
 #endif
 
@@ -67,84 +67,115 @@ namespace engine
 
 	CLogFile::~CLogFile(void)
 	{
-		m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp;
+		m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp | eBF_FlushEachWrite;
 		Write(_TEXT("End Log\r\n"));
-
-		if (m_pParent == NULL)
-		{
-			m_behaviours = eBF_Active;
-			Write(_TEXT("[EOF]\r\n"));
-			GetFileSystem()->CloseFile(m_handle);
-		}
-		else
-		{
-			--m_pParent->m_referenceCount;
-		}
+		Close();
 	}
 
 	//============================================================================
 
 	bool CLogFile::Write(const TCHAR* format, ...)
 	{
-		IFileSystem* pFileSystem = GetFileSystem();
-
-		if (FileHandle() == IFileSystem::eFSH_INVALID)
-		{
-			TCHAR fileName[MAX_PATH];
-			if (pFileSystem->CreatePath(fileName, sizeof(fileName) / sizeof(TCHAR), m_name, IFileSystem::eFT_LogFile, true) == IFileSystem::eFSE_SUCCESS)
-			{
-				FileHandle() = pFileSystem->OpenFile(fileName, _TEXT("wb")); // N.B. opened as binary otherwise \n gets mangled in unicode output...
-
-#if defined(_UNICODE)
-				// Insert the Byte-Order-Mark for UTF-16
-				uint16 bom = 0xfeff;
-				pFileSystem->Write(FileHandle(), &bom, sizeof(uint16), 1);
-#endif
-
-				uint32 old = m_behaviours;
-				m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp;
-				Write(_TEXT("Start log\r\n"));
-				m_behaviours = old;
-			}
-		}
-
-		int32 count = 0;
-
 		if (m_behaviours & eBF_DateStamp)
 		{
 			const ISystemClock* pSystemClock = GetSystemClock();
-			count += _stprintf_s(&m_buffer[count], (sizeof(m_buffer) / sizeof(TCHAR)) - count, _TEXT("[%s %s] "), pSystemClock->GetLocalDateString(), pSystemClock->GetLocalTimeString());
+			m_size += _stprintf_s(&m_buffer[m_size], (sizeof(m_buffer) / sizeof(TCHAR)) - m_size, _TEXT("[%s %s] "), pSystemClock->GetLocalDateString(), pSystemClock->GetLocalTimeString());
 		}
 
 		if (m_behaviours & eBF_TimeStamp)
 		{
 			const ITimer* pGameClock = GetGameClock();
-			count += _stprintf_s(&m_buffer[count], (sizeof(m_buffer) / sizeof(TCHAR)) - count, _TEXT("[%i][%8.03f] "), pGameClock->GetFrameCount(), pGameClock->GetTime());
+			m_size += _stprintf_s(&m_buffer[m_size], (sizeof(m_buffer) / sizeof(TCHAR)) - m_size, _TEXT("[%i][%8.03f] "), pGameClock->GetFrameCount(), pGameClock->GetTime());
 		}
 
 		if (m_behaviours & eBF_Name)
 		{
-			count += _stprintf_s(&m_buffer[count], (sizeof(m_buffer) / sizeof(TCHAR)) - count, _TEXT("[%s] "), m_name);
+			m_size += _stprintf_s(&m_buffer[m_size], (sizeof(m_buffer) / sizeof(TCHAR)) - m_size, _TEXT("[%s] "), m_name);
 		}
 
 		va_list arguments;
 		va_start(arguments, format);
-		count += _vstprintf_s(&m_buffer[count], (sizeof(m_buffer) / sizeof(TCHAR)) - count, format, arguments);
+		m_size += _vstprintf_s(&m_buffer[m_size], (sizeof(m_buffer) / sizeof(TCHAR)) - m_size, format, arguments);
 
 #if defined LOGS_FORCE_INSERT_NEWLINE
-		if (_tcscmp(&m_buffer[count - _tcslen(_TEXT("\r\n"))], _TEXT("\r\n")))
+		if (_tcscmp(&m_buffer[m_size - _tcslen(_TEXT("\r\n"))], _TEXT("\r\n")))
 		{
-			if (_tcscat_s(&m_buffer[count], (sizeof(m_buffer) / sizeof(TCHAR)) - count, _TEXT("\r\n")) == 0)
+			if (_tcscat_s(&m_buffer[m_size], (sizeof(m_buffer) / sizeof(TCHAR)) - m_size, _TEXT("\r\n")) == 0)
 			{
-				count += _tcslen(_TEXT("\r\n"));
+				m_size += _tcslen(_TEXT("\r\n"));
 			}
 		}
 #endif
 
 		bool writtenToFile = false;
-		if (FileHandle() != IFileSystem::eFSH_INVALID)
+		uint32 bufferUsedCapacity = (m_size << 4) / LOGFILE_BUFFER_SIZE;
+		if ((m_behaviours & eBF_FlushEachWrite) || (bufferUsedCapacity >= LOGS_FORCE_FLUSH_THRESHOLD))
 		{
-			writtenToFile = (pFileSystem->Write(FileHandle(), m_buffer, count * sizeof(TCHAR), 1) == 1);
+			writtenToFile = Flush();
+		}
+
+		return writtenToFile;
+	}
+
+	//============================================================================
+
+	IFileSystem::eFileSystemHandle CLogFile::Open(void)
+	{
+		if (GetFileHandle() == IFileSystem::eFSH_INVALID)
+		{
+			if (m_pParent != NULL)
+			{
+				m_handle = m_pParent->Open();
+			}
+		}
+
+		IFileSystem* pFileSystem = GetFileSystem();
+		if (m_handle == IFileSystem::eFSH_INVALID)
+		{
+			TCHAR fileName[MAX_PATH];
+
+			if (pFileSystem->CreatePath(fileName, sizeof(fileName) / sizeof(TCHAR), m_name, IFileSystem::eFT_LogFile, true) == IFileSystem::eFSE_SUCCESS)
+			{
+				if ((m_handle = pFileSystem->OpenFile(fileName, _TEXT("wb"))) != IFileSystem::eFSH_INVALID) // N.B. opened as binary otherwise \n gets mangled in unicode output...
+				{
+#if defined(_UNICODE)
+					// Insert the Byte-Order-Mark for UTF-16
+					uint16 bom = 0xfeff;
+					pFileSystem->Write(m_handle, &bom, sizeof(uint16), 1);
+#endif
+
+					m_buffer[0] = 0;
+					uint32 old = m_behaviours;
+					m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp;
+					Write(_TEXT("Start log\r\n"));
+					m_behaviours = old;
+				}
+			}
+		}
+		else
+		{
+			pFileSystem->AddFileReference(m_handle);
+		}
+
+		return m_handle;
+	}
+
+	//============================================================================
+
+	bool CLogFile::Flush(void)
+	{
+		bool writtenToFile = false;
+
+		if (m_handle == IFileSystem::eFSH_INVALID)
+		{
+			Open();
+		}
+
+		if (m_handle != IFileSystem::eFSH_INVALID)
+		{
+			writtenToFile = (GetFileSystem()->Write(m_handle, m_buffer, m_size * sizeof(TCHAR), 1) == 1);
+			m_buffer[0] = 0;
+			m_size = 0;
 		}
 
 		if (m_behaviours & eBF_OutputToDebugger)
@@ -153,6 +184,26 @@ namespace engine
 		}
 
 		return writtenToFile;
+	}
+
+	//============================================================================
+
+	void CLogFile::Close(void)
+	{
+		if (m_handle != IFileSystem::eFSH_INVALID)
+		{
+			IFileSystem* pFileSystem = GetFileSystem();
+			if (pFileSystem->ReleaseFileReference(m_handle) == 0)
+			{
+				m_behaviours = eBF_Active | eBF_FlushEachWrite;
+				Write(_TEXT("[EOF]\r\n"));
+				pFileSystem->CloseFile(m_handle);
+			}
+			else
+			{
+				m_handle = IFileSystem::eFSH_INVALID;
+			}
+		}
 	}
 
 	//============================================================================

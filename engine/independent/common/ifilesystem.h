@@ -79,6 +79,9 @@ namespace engine
 		virtual eFileSystemError	CloseFile(eFileSystemHandle& handle) = 0;
 		virtual eFileSystemError	CloseAllFiles(void) = 0;
 
+		virtual uint32						AddFileReference(eFileSystemHandle& handle) = 0;
+		virtual uint32						ReleaseFileReference(eFileSystemHandle& handle) = 0;
+
 		//==========================================================================
 
 		virtual eFileSystemError	CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType, bool createIfNecessary) = 0;

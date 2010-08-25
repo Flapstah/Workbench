@@ -42,6 +42,9 @@ namespace engine
 		virtual eFileSystemError	CloseFile(eFileSystemHandle& handle);
 		virtual eFileSystemError	CloseAllFiles(void);
 
+		virtual uint32						AddFileReference(eFileSystemHandle& handle);
+		virtual uint32						ReleaseFileReference(eFileSystemHandle& handle);
+
 		virtual eFileSystemError	CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType, bool createIfNecessary);
 		// ~IFileSystem
 
@@ -51,8 +54,8 @@ namespace engine
 	protected:
 		struct FileHandle
 		{
-			FILE* m_systemHandle;
-			bool	m_used;
+			FILE*		m_systemHandle;
+			uint32	m_referenceCount;
 		}	m_handle[MAX_OPEN_FILES];
 	};
 }

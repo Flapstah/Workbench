@@ -35,15 +35,19 @@ namespace engine
 		virtual bool Write(const TCHAR* format, ...);
 		// ~ILogFile
 
-		IFileSystem::eFileSystemHandle& FileHandle(void)						{ return (m_pParent != NULL) ? m_pParent->FileHandle() : m_handle;							}
+	protected:
+		IFileSystem::eFileSystemHandle GetFileHandle(void)					{ return (m_pParent != NULL) ? m_handle = m_pParent->GetFileHandle() : m_handle;	}
+		IFileSystem::eFileSystemHandle Open(void);
+		bool Flush(void);
+		void Close(void);
 
 	protected:
 		IFileSystem::eFileSystemHandle m_handle;
 		CLogFile* m_pParent;
 		TCHAR m_name[LOGFILE_NAME_SIZE];
 		TCHAR m_buffer[LOGFILE_BUFFER_SIZE];
+		uint32 m_size;
 		uint32 m_behaviours;
-		uint32 m_referenceCount;
 
 	private:
 	}; // End [class CLogFile : public ILogFile]

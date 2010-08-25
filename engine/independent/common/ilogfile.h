@@ -6,6 +6,7 @@
 #define LOGS_ENABLED								// Enable/disable logging
 //#define LOGS_FORCE_SEPARATE_FILES		// Force logs into separate files
 #define LOGS_FORCE_INSERT_NEWLINE		// Force a newline to be inserted at the end of every separate log output (if it doesn't already exist)
+#define LOGS_FORCE_FLUSH_THRESHOLD ((uint32)(0x000f * 0.8f)) // Force a flush when the internal log buffer is 80% or more full (approximate - measured in 15ths)
 
 //==============================================================================
 
@@ -23,8 +24,9 @@ namespace engine
 			eBF_DateStamp					= 1 << 2,
 			eBF_TimeStamp					= 1 << 3,
 			eBF_OutputToDebugger	= 1 << 4,
+			eBF_FlushEachWrite		= 1 << 5,
 
-			eBF_ALL								= eBF_Active | eBF_Name | eBF_DateStamp | eBF_TimeStamp | eBF_OutputToDebugger
+			eBF_ALL								= eBF_Active | eBF_Name | eBF_DateStamp | eBF_TimeStamp | eBF_OutputToDebugger | eBF_FlushEachWrite
 		}; // End [enum eBehaviourFlag]
 
 		virtual void SetActive(bool active) = 0;
