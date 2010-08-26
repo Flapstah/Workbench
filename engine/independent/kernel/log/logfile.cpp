@@ -17,32 +17,23 @@ namespace engine
 	//============================================================================
 
 	//----------------------------------------------------------------------------
-	// The global instance of the main, error and warning logs
+	// The global instances of logs
 	//----------------------------------------------------------------------------
-	CLogFile g_MainLog(_TEXT("Main"), NULL, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
-	CLogFile g_ErrorLog(_TEXT("Error"), &g_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
-	CLogFile g_WarningLog(_TEXT("Warning"), &g_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
+	static CLogFile gs_MainLog(_TEXT("Main"), NULL, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
+	static CLogFile gs_ErrorLog(_TEXT("Error"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
+	static CLogFile gs_WarningLog(_TEXT("Warning"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
+	static CLogFile gs_AssertLog(_TEXT("Assert"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
+	static CLogFile gs_ToDoLog(_TEXT("ToDo"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
+	static CLogFile gs_PerformanceLog(_TEXT("Performance"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
 
 	//============================================================================
 
-	ILogFile* GetMainLog(void)
-	{
-		return &g_MainLog;
-	}
-
-	//============================================================================
-
-	ILogFile* GetErrorLog(void)
-	{
-		return &g_ErrorLog;
-	}
-
-	//============================================================================
-
-	ILogFile* GetWarningLog(void)
-	{
-		return &g_WarningLog;
-	}
+	ILogFile* g_MainLog = &gs_MainLog;
+	ILogFile* g_ErrorLog = &gs_ErrorLog;
+	ILogFile* g_WarningLog = &gs_WarningLog;
+	ILogFile* g_AssertLog = &gs_AssertLog;
+	ILogFile* g_ToDoLog = &gs_ToDoLog;
+	ILogFile* g_PerformanceLog = &gs_PerformanceLog;
 
 	//============================================================================
 
@@ -54,6 +45,7 @@ namespace engine
 #endif
 		, m_handle(IFileSystem::eFSH_INVALID)
 		, m_size(0)
+		, m_previousSize(0)
 		, m_behaviours(initialBehaviour)
 	{
 #if defined(LOGS_FORCE_SEPARATE_FILES)
@@ -61,14 +53,26 @@ namespace engine
 #endif
 
 		_tcscpy_s(m_name, sizeof(m_name) / sizeof(TCHAR), name);
+
+		if (m_behaviours & eBF_WriteStartAndEnd)
+		{
+			uint32 old = m_behaviours;
+			m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp;
+			Write(_TEXT("Start log\r\n"));
+			m_behaviours = old;
+		}
 	}
 
 	//============================================================================
 
 	CLogFile::~CLogFile(void)
 	{
-		m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp | eBF_FlushEachWrite;
-		Write(_TEXT("End Log\r\n"));
+		if (m_behaviours & eBF_WriteStartAndEnd)
+		{
+			m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp | eBF_FlushEachWrite;
+			Write(_TEXT("End Log\r\n"));
+		}
+
 		Close();
 	}
 
@@ -76,6 +80,8 @@ namespace engine
 
 	bool CLogFile::Write(const TCHAR* format, ...)
 	{
+		m_previousSize = m_size;
+
 		if (m_behaviours & eBF_DateStamp)
 		{
 			const ISystemClock* pSystemClock = GetSystemClock();
@@ -106,6 +112,11 @@ namespace engine
 			}
 		}
 #endif
+
+		if (m_behaviours & eBF_OutputToDebugger)
+		{
+			CDebug::OutputToDebugger(&m_buffer[m_previousSize]);
+		}
 
 		bool writtenToFile = false;
 		uint32 bufferUsedCapacity = (m_size << 4) / LOGFILE_BUFFER_SIZE;
@@ -143,12 +154,6 @@ namespace engine
 					uint16 bom = 0xfeff;
 					pFileSystem->Write(m_handle, &bom, sizeof(uint16), 1);
 #endif
-
-					m_buffer[0] = 0;
-					uint32 old = m_behaviours;
-					m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp;
-					Write(_TEXT("Start log\r\n"));
-					m_behaviours = old;
 				}
 			}
 		}
@@ -169,11 +174,6 @@ namespace engine
 		if (m_handle == IFileSystem::eFSH_INVALID)
 		{
 			Open();
-		}
-
-		if (m_behaviours & eBF_OutputToDebugger)
-		{
-			CDebug::OutputToDebugger(m_buffer);
 		}
 
 		if (m_handle != IFileSystem::eFSH_INVALID)

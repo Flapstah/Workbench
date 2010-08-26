@@ -25,8 +25,9 @@ namespace engine
 			eBF_TimeStamp					= 1 << 3,
 			eBF_OutputToDebugger	= 1 << 4,
 			eBF_FlushEachWrite		= 1 << 5,
+			eBF_WriteStartAndEnd	= 1 << 6,
 
-			eBF_ALL								= eBF_Active | eBF_Name | eBF_DateStamp | eBF_TimeStamp | eBF_OutputToDebugger | eBF_FlushEachWrite
+			eBF_ALL								= eBF_Active | eBF_Name | eBF_DateStamp | eBF_TimeStamp | eBF_OutputToDebugger | eBF_FlushEachWrite | eBF_WriteStartAndEnd
 		}; // End [enum eBehaviourFlag]
 
 		virtual void SetActive(bool active) = 0;
@@ -41,20 +42,12 @@ namespace engine
 
 	//============================================================================
 
-	//----------------------------------------------------------------------------
-	// Returns the main log file
-	//----------------------------------------------------------------------------
-	ILogFile* GetMainLog(void);
-
-	//----------------------------------------------------------------------------
-	// Returns the error log file
-	//----------------------------------------------------------------------------
-	ILogFile* GetErrorLog(void);
-
-	//----------------------------------------------------------------------------
-	// Returns the warning log file
-	//----------------------------------------------------------------------------
-	ILogFile* GetWarningLog(void);
+	extern ILogFile* g_MainLog;
+	extern ILogFile* g_ErrorLog;
+	extern ILogFile* g_WarningLog;
+	extern ILogFile* g_AssertLog;
+	extern ILogFile* g_ToDoLog;
+	extern ILogFile* g_PerformanceLog;
 
 	//----------------------------------------------------------------------------
 	// Helper macros for log output
@@ -68,9 +61,12 @@ namespace engine
 	//----------------------------------------------------------------------------
 	// Use LogXXX to output to the logs
 	//----------------------------------------------------------------------------
-#define Log(_output_) _WriteLog(engine::GetMainLog(), _output_)
-#define LogError(_output_) _WriteLog(engine::GetErrorLog(), _output_)
-#define LogWarning(_output_) _WriteLog(engine::GetWarningLog(), _output_)
+#define Log(_output_) _WriteLog(engine::g_MainLog, _output_)
+#define LogError(_output_) _WriteLog(engine::g_ErrorLog, _output_)
+#define LogWarning(_output_) _WriteLog(engine::g_WarningLog, _output_)
+#define LogAssert(_output_) _WriteLog(engine::g_AssertLog, _output_)
+#define LogToDo(_output_) _WriteLog(engine::g_ToDoLog, _output_)
+#define LogPerformance(_output_) _WriteLog(engine::g_PerformanceLog, _output_)
 
 } // End [namespace engine]
 
