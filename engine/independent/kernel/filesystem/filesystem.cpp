@@ -282,9 +282,17 @@ namespace engine
 	}
 
 	//============================================================================
+
 	uint32 CFileSystem::ReleaseFileReference(eFileSystemHandle& handle)
 	{
 		return --m_handle[handle].m_referenceCount;
+	}
+
+	//============================================================================
+
+	uint32 CFileSystem::GetFileReference(eFileSystemHandle& handle)
+	{
+		return m_handle[handle].m_referenceCount;
 	}
 
 	//============================================================================

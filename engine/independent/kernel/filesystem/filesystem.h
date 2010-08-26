@@ -44,6 +44,7 @@ namespace engine
 
 		virtual uint32						AddFileReference(eFileSystemHandle& handle);
 		virtual uint32						ReleaseFileReference(eFileSystemHandle& handle);
+		virtual uint32						GetFileReference(eFileSystemHandle& handle);
 
 		virtual eFileSystemError	CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType, bool createIfNecessary);
 		// ~IFileSystem

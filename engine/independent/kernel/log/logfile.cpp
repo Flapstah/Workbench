@@ -171,16 +171,16 @@ namespace engine
 			Open();
 		}
 
+		if (m_behaviours & eBF_OutputToDebugger)
+		{
+			CDebug::OutputToDebugger(m_buffer);
+		}
+
 		if (m_handle != IFileSystem::eFSH_INVALID)
 		{
 			writtenToFile = (GetFileSystem()->Write(m_handle, m_buffer, m_size * sizeof(TCHAR), 1) == 1);
 			m_buffer[0] = 0;
 			m_size = 0;
-		}
-
-		if (m_behaviours & eBF_OutputToDebugger)
-		{
-			CDebug::OutputToDebugger(m_buffer);
 		}
 
 		return writtenToFile;
@@ -193,16 +193,13 @@ namespace engine
 		if (m_handle != IFileSystem::eFSH_INVALID)
 		{
 			IFileSystem* pFileSystem = GetFileSystem();
-			if (pFileSystem->ReleaseFileReference(m_handle) == 0)
+			if (pFileSystem->GetFileReference(m_handle) == 1)
 			{
 				m_behaviours = eBF_Active | eBF_FlushEachWrite;
 				Write(_TEXT("[EOF]\r\n"));
-				pFileSystem->CloseFile(m_handle);
 			}
-			else
-			{
-				m_handle = IFileSystem::eFSH_INVALID;
-			}
+
+			pFileSystem->CloseFile(m_handle);
 		}
 	}
 

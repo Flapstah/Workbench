@@ -81,6 +81,7 @@ namespace engine
 
 		virtual uint32						AddFileReference(eFileSystemHandle& handle) = 0;
 		virtual uint32						ReleaseFileReference(eFileSystemHandle& handle) = 0;
+		virtual uint32						GetFileReference(eFileSystemHandle& handle) = 0;
 
 		//==========================================================================
 
