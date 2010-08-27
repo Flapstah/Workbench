@@ -291,6 +291,10 @@
 					Name="common"
 					>
 					<File
+						RelativePath="..\engine\independent\common\assert.h"
+						>
+					</File>
+					<File
 						RelativePath="..\engine\independent\common\ifilesystem.h"
 						>
 					</File>

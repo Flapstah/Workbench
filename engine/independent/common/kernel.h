@@ -4,7 +4,7 @@
 //==============================================================================
 
 #include "common/itime.h"
-#include "common/ifile.h"
+#include "common/ifilesystem.h"
 #include "common/ilogfile.h"
 
 //==============================================================================

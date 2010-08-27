@@ -12,10 +12,11 @@
 
 
 // TODO: reference additional headers your program requires here
-#include <assert.h>
+//#include <assert.h>
 #include <time.h>
 
 #include "common/platform_stdafx.h"
 #include "common/platform_types.h"
 
+#include "common/assert.h"
 #include "common/macros.h"
