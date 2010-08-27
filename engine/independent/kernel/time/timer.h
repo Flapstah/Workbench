@@ -48,7 +48,6 @@ namespace engine
 		double				m_maxFrameTime;
 		bool					m_paused;
 	}; // End [struct CTimer : public ITimeSource]
-
 } // End [namespace engine]
 
 //==============================================================================

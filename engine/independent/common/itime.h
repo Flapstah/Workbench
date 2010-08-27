@@ -33,11 +33,6 @@ namespace engine
 		virtual TCHAR*	GetLocalTimeString(void) const = 0;
 	}; // End [struct ISystemClock : public ITimeSource ]
 
-	//----------------------------------------------------------------------------
-	// Returns the system clock
-	//----------------------------------------------------------------------------
-	const ISystemClock* GetSystemClock(void);
-
 	//============================================================================
 	// ITimer
 	//============================================================================
@@ -51,6 +46,11 @@ namespace engine
 
 		virtual void		Reset(void) = 0;
 	}; // End [struct ITimer : public ITimeSource]
+
+	//----------------------------------------------------------------------------
+	// Returns the system clock
+	//----------------------------------------------------------------------------
+	const ISystemClock* GetSystemClock(void);
 
 	//----------------------------------------------------------------------------
 	// Returns the game clock
