@@ -46,9 +46,9 @@ namespace engine
 		CLogFile* m_pParent;
 		TCHAR m_name[LOGFILE_NAME_SIZE];
 		TCHAR m_buffer[LOGFILE_BUFFER_SIZE];
-		uint32 m_size;
-		uint32 m_previousSize;
-		uint32 m_behaviours;
+		uint16 m_size;
+		uint16 m_previousSize;
+		uint16 m_behaviours;
 
 	private:
 	}; // End [class CLogFile : public ILogFile]

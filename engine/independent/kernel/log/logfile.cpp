@@ -53,26 +53,12 @@ namespace engine
 #endif
 
 		_tcscpy_s(m_name, sizeof(m_name) / sizeof(TCHAR), name);
-
-		if (m_behaviours & eBF_WriteStartAndEnd)
-		{
-			uint32 old = m_behaviours;
-			m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp;
-			Write(_TEXT("Start log\r\n"));
-			m_behaviours = old;
-		}
 	}
 
 	//============================================================================
 
 	CLogFile::~CLogFile(void)
 	{
-		if (m_behaviours & eBF_WriteStartAndEnd)
-		{
-			m_behaviours = eBF_Active | eBF_Name | eBF_DateStamp | eBF_FlushEachWrite;
-			Write(_TEXT("End Log\r\n"));
-		}
-
 		Close();
 	}
 
@@ -192,14 +178,7 @@ namespace engine
 	{
 		if (m_handle != IFileSystem::eFSH_INVALID)
 		{
-			IFileSystem* pFileSystem = GetFileSystem();
-			if (pFileSystem->GetFileReference(m_handle) == 1)
-			{
-				m_behaviours = eBF_Active | eBF_FlushEachWrite;
-				Write(_TEXT("[EOF]\r\n"));
-			}
-
-			pFileSystem->CloseFile(m_handle);
+			GetFileSystem()->CloseFile(m_handle);
 		}
 	}
 

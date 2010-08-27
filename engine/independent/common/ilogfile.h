@@ -25,9 +25,8 @@ namespace engine
 			eBF_TimeStamp					= 1 << 3,
 			eBF_OutputToDebugger	= 1 << 4,
 			eBF_FlushEachWrite		= 1 << 5,
-			eBF_WriteStartAndEnd	= 1 << 6,
 
-			eBF_ALL								= eBF_Active | eBF_Name | eBF_DateStamp | eBF_TimeStamp | eBF_OutputToDebugger | eBF_FlushEachWrite | eBF_WriteStartAndEnd
+			eBF_ALL								= eBF_Active | eBF_Name | eBF_DateStamp | eBF_TimeStamp | eBF_OutputToDebugger | eBF_FlushEachWrite
 		}; // End [enum eBehaviourFlag]
 
 		virtual void SetActive(bool active) = 0;
