@@ -286,6 +286,26 @@
 							>
 						</File>
 					</Filter>
+					<Filter
+						Name="memory"
+						>
+						<File
+							RelativePath="..\engine\independent\kernel\memory\memory.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\memory\memory.h"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\memory\osmemory.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\memory\osmemory.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="common"
@@ -300,6 +320,10 @@
 					</File>
 					<File
 						RelativePath="..\engine\independent\common\ilogfile.h"
+						>
+					</File>
+					<File
+						RelativePath="..\engine\independent\common\imemory.h"
 						>
 					</File>
 					<File
