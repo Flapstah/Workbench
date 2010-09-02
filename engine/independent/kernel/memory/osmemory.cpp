@@ -3,20 +3,34 @@
 #include "kernel/memory/osmemory.h"
 #include "kernel/log/logfile.h"
 
+#include <new>
 #include <stdlib.h>
 
 //==============================================================================
 
 namespace engine
 {
-	static CLogFile gs_MemoryLog(_TEXT("Memory"), g_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
-	static CLogFile gs_MemoryErrorLog(_TEXT("Memory Error"), &gs_MemoryLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
-#define MemoryLog(_output_) _WriteLog(&engine::gs_MemoryLog, _output_)
-#define MemoryErrorLog(_output_) _WriteLog(&engine::gs_MemoryErrorLog, _output_)
+	//============================================================================
 
-	static COSMemory::GUARD guard = 0xDEADC0DE;
+	static CLogFile gs_MemoryLog(_TEXT("Memory"), reinterpret_cast<CLogFile*>(g_MainLog), static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
+	static CLogFile gs_MemoryErrorLog(_TEXT("Memory Error"), &gs_MemoryLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
+
+	//============================================================================
+
+	ILogFile* g_MemoryLog = &gs_MemoryLog;
+	ILogFile* g_MemoryErrorLog = &gs_MemoryErrorLog;
+
+	//============================================================================
+
+#define MemoryLog(_output_) _WriteLog(engine::g_MemoryLog, _output_)
+#define MemoryErrorLog(_output_) _WriteLog(engine::g_MemoryErrorLog, _output_)
+
+	//============================================================================static COSMemory::GUARD guard = 0xDEADC0DE;
 
 	uint32 COSMemory::Node::s_id = 0;
+	static COSMemory::GUARD guard = 0xDEADC0DE;
+
+	//============================================================================
 
 	COSMemory::Node::Node(size_t size, TCHAR* file, uint32 line)
 		: m_pNext(NULL)
@@ -29,6 +43,8 @@ namespace engine
 
 	}
 
+	//============================================================================
+
 	void* COSMemory::malloc(size_t size, TCHAR* file, uint32 line)
 	{
 		size_t totalSize = size + sizeof(Node) + (sizeof(GUARD) * 2);
@@ -36,7 +52,7 @@ namespace engine
 		uint8* pMemory = static_cast<uint8*>(::malloc(totalSize));
 		if (pMemory != NULL)
 		{
-			new(pMemory) Node(totalSize, file, line);
+			Node* pNode = new(pMemory) Node(totalSize, file, line);
 			*(reinterpret_cast<GUARD*>(&pMemory[sizeof(Node)])) = guard;
 			*(reinterpret_cast<GUARD*>(&pMemory[sizeof(Node) + sizeof(GUARD) + size])) = guard;
 
@@ -45,28 +61,30 @@ namespace engine
 
 			if (m_pAllocatedList != NULL)
 			{
-				pMemory->m_pNext = m_pAllocatedList;
-				m_pAllocatedList = m_pAllocatedList->m_pPrevious = pMemory;
+				pNode->m_pNext = m_pAllocatedList;
+				m_pAllocatedList = m_pAllocatedList->m_pPrevious = pNode;
 			}
 			else
 			{
-				m_pAllocatedList = pMemory;
+				m_pAllocatedList = pNode;
 			}
 
-			MemoryLog(("%s(%i): allocated %i(%i) bytes", file, line, size, totalSize));
+			MemoryLog((_TEXT("%s(%i): allocated %i(%i) bytes"), file, line, size, totalSize));
 			pMemory = &pMemory[sizeof(Node) + sizeof(GUARD)];
 		}
 		else
 		{
-			MemoryErrorLog(("%s(%i): failed to allocate %i bytes", file, line, size));
+			MemoryErrorLog((_TEXT("%s(%i): failed to allocate %i bytes"), file, line, size));
 		}
 
 		return pMemory;
 	}
 
+	//============================================================================
+
 	void* COSMemory::calloc(size_t size, TCHAR* file, uint32 line)
 	{
-		uint8* pMemory = malloc(size, file, line);
+		uint8* pMemory = static_cast<uint8*>(malloc(size, file, line));
 		if (pMemory != NULL)
 		{
 			memset(&pMemory[sizeof(Node) + sizeof(GUARD)], 0, size);
@@ -75,9 +93,11 @@ namespace engine
 		return pMemory;
 	}
 
+	//============================================================================
+
 	void* COSMemory::realloc(void* pMemory, size_t size, TCHAR* file, uint32 line)
 	{
-		uint8* pNewMemory = malloc(size, file, line);
+		uint8* pNewMemory = static_cast<uint8*>(malloc(size, file, line));
 		if (pNewMemory != NULL)
 		{
 			memcpy(&pNewMemory[sizeof(Node) + sizeof(GUARD)], pMemory, size);
@@ -87,11 +107,13 @@ namespace engine
 		return pNewMemory;
 	}
 
+	//============================================================================
+
 	void COSMemory::free(void* pMemory, TCHAR* file, uint32 line)
 	{
 		if ((pMemory != NULL) && (m_pAllocatedList != NULL))
 		{
-			Node* pAllocatedNode = static_cast<uint8*>(pMemory) - sizeof(Node) - sizeof(GUARD);
+			Node* pAllocatedNode = reinterpret_cast<Node*>(static_cast<uint8*>(pMemory) - sizeof(Node) - sizeof(GUARD));
 			Node* pNode = m_pAllocatedList;
 			while ((pNode != NULL) && (pNode != pAllocatedNode))
 			{
@@ -113,16 +135,17 @@ namespace engine
 				--m_allocatedNodes;
 				m_allocatedBytes -= pNode->m_size;
 
-				MemoryLog(("%s(%i): freed %i(%i) bytes", file, line, pNode->m_size - sizeof(Node) - (sizeof(GUARD) * 2), pNode->m_size));
+				MemoryLog((_TEXT("%s(%i): freed %i(%i) bytes"), file, line, pNode->m_size - sizeof(Node) - (sizeof(GUARD) * 2), pNode->m_size));
 			}
 			else
 			{
-				MemoryErrorLog(("%s(%i): Memory [%p] not allocated by this allocator", file, line, pMemory));
+				MemoryErrorLog((_TEXT("%s(%i): Memory [%p] not allocated by this allocator"), file, line, pMemory));
 			}
 		}
 	}
 
-}
+	//============================================================================
+} // End [namespace engine]
 
 //==============================================================================
 // [EOF]

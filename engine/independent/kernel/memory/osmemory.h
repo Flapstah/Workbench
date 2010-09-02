@@ -9,6 +9,9 @@
 
 namespace engine
 {
+	//============================================================================
+	// COSMemory
+	//============================================================================
 	class COSMemory : public IMemory
 	{
 	public:
@@ -36,7 +39,7 @@ namespace engine
 			uint32 m_id;
 
 			static uint32 s_id;
-		};
+		}; // End [struct Node ]
 
 		Node* m_pAllocatedList;
 
@@ -44,7 +47,7 @@ namespace engine
 		size_t	m_allocatedNodes;
 
 	private:
-	};
+	}; // End [class COSMemory : public IMemory]
 
 }
 
