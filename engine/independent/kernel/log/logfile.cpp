@@ -19,12 +19,13 @@ namespace engine
 	//----------------------------------------------------------------------------
 	// The global instances of logs
 	//----------------------------------------------------------------------------
-	static CLogFile gs_MainLog(_TEXT("Main"), NULL, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
-	static CLogFile gs_ErrorLog(_TEXT("Error"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
-	static CLogFile gs_WarningLog(_TEXT("Warning"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
-	static CLogFile gs_AssertLog(_TEXT("Assert"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
-	static CLogFile gs_ToDoLog(_TEXT("ToDo"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
-	static CLogFile gs_PerformanceLog(_TEXT("Performance"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite));
+	static SLogFileBuffer gs_MainLogBuffer;
+	static CLogFile gs_MainLog(_TEXT("Main"), NULL, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), &gs_MainLogBuffer);
+	static CLogFile gs_ErrorLog(_TEXT("Error"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
+	static CLogFile gs_WarningLog(_TEXT("Warning"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
+	static CLogFile gs_AssertLog(_TEXT("Assert"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
+	static CLogFile gs_ToDoLog(_TEXT("ToDo"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
+	static CLogFile gs_PerformanceLog(_TEXT("Performance"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
 
 	//============================================================================
 
@@ -37,20 +38,27 @@ namespace engine
 
 	//============================================================================
 
-	CLogFile::CLogFile(const TCHAR* name, CLogFile* pParent, eBehaviourFlag initialBehaviour /* = eBF_ALL */)
-#if defined(LOGS_FORCE_SEPARATE_FILES)
-		: m_pParent(NULL)
-#else
+	CLogFile::CLogFile(const TCHAR* name, CLogFile* pParent, eBehaviourFlag initialBehaviour, SLogFileBuffer* pBuffer)
 		: m_pParent(pParent)
-#endif
-		, m_handle(IFileSystem::eFSH_INVALID)
-		, m_size(0)
-		, m_previousSize(0)
+		, m_pBuffer(pBuffer)
 		, m_behaviours(initialBehaviour)
 	{
-#if defined(LOGS_FORCE_SEPARATE_FILES)
-		IGNORE_PARAMETER(pParent);
-#endif
+		if (m_pBuffer == NULL)
+		{
+			if (m_pParent != NULL)
+			{
+				m_pBuffer = m_pParent->m_pBuffer;
+			}
+			else
+			{
+				m_behaviours |= eIBF_AllocatedBuffer | eBF_SeparateFile;
+				m_pBuffer = new SLogFileBuffer();
+			}
+		}
+		else
+		{
+			m_behaviours |= eBF_SeparateFile;
+		}
 
 		_tcscpy_s(m_name, sizeof(m_name) / sizeof(TCHAR), name);
 	}
@@ -66,49 +74,52 @@ namespace engine
 
 	bool CLogFile::Write(const TCHAR* format, ...)
 	{
-		m_previousSize = m_size;
-
-		if (m_behaviours & eBF_DateStamp)
+		bool writtenToFile = false;
+		if (m_pBuffer != NULL)
 		{
-			const ISystemClock* pSystemClock = GetSystemClock();
-			m_size += _stprintf_s(&m_buffer[m_size], (sizeof(m_buffer) / sizeof(TCHAR)) - m_size, _TEXT("[%s %s] "), pSystemClock->GetLocalDateString(), pSystemClock->GetLocalTimeString());
-		}
+			m_pBuffer->m_previousSize = m_pBuffer->m_size;
 
-		if (m_behaviours & eBF_TimeStamp)
-		{
-			const ITimer* pGameClock = GetGameClock();
-			m_size += _stprintf_s(&m_buffer[m_size], (sizeof(m_buffer) / sizeof(TCHAR)) - m_size, _TEXT("[%i][%8.03f] "), pGameClock->GetFrameCount(), pGameClock->GetTime());
-		}
+			if (m_behaviours & eBF_DateStamp)
+			{
+				const ISystemClock* pSystemClock = GetSystemClock();
+				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%s %s] "), pSystemClock->GetLocalDateString(), pSystemClock->GetLocalTimeString());
+			}
 
-		if (m_behaviours & eBF_Name)
-		{
-			m_size += _stprintf_s(&m_buffer[m_size], (sizeof(m_buffer) / sizeof(TCHAR)) - m_size, _TEXT("[%s] "), m_name);
-		}
+			if (m_behaviours & eBF_TimeStamp)
+			{
+				const ITimer* pGameClock = GetGameClock();
+				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%i][%8.03f] "), pGameClock->GetFrameCount(), pGameClock->GetTime());
+			}
 
-		va_list arguments;
-		va_start(arguments, format);
-		m_size += _vstprintf_s(&m_buffer[m_size], (sizeof(m_buffer) / sizeof(TCHAR)) - m_size, format, arguments);
+			if (m_behaviours & eBF_Name)
+			{
+				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%s] "), m_name);
+			}
+
+			va_list arguments;
+			va_start(arguments, format);
+			m_pBuffer->m_size += _vstprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, format, arguments);
 
 #if defined LOGS_FORCE_INSERT_NEWLINE
-		if (_tcscmp(&m_buffer[m_size - _tcslen(_TEXT("\r\n"))], _TEXT("\r\n")))
-		{
-			if (_tcscat_s(&m_buffer[m_size], (sizeof(m_buffer) / sizeof(TCHAR)) - m_size, _TEXT("\r\n")) == 0)
+			if (_tcscmp(&m_pBuffer->m_buffer[m_pBuffer->m_size - _tcslen(_TEXT("\r\n"))], _TEXT("\r\n")))
 			{
-				m_size += _tcslen(_TEXT("\r\n"));
+				if (_tcscat_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("\r\n")) == 0)
+				{
+					m_pBuffer->m_size += _tcslen(_TEXT("\r\n"));
+				}
 			}
-		}
 #endif
 
-		if (m_behaviours & eBF_OutputToDebugger)
-		{
-			CDebug::OutputToDebugger(&m_buffer[m_previousSize]);
-		}
+			if (m_behaviours & eBF_OutputToDebugger)
+			{
+				CDebug::OutputToDebugger(&m_pBuffer->m_buffer[m_pBuffer->m_previousSize]);
+			}
 
-		bool writtenToFile = false;
-		uint32 bufferUsedCapacity = (m_size << 4) / LOGFILE_BUFFER_SIZE;
-		if ((m_behaviours & eBF_FlushEachWrite) || (bufferUsedCapacity >= LOGS_FORCE_FLUSH_THRESHOLD))
-		{
-			writtenToFile = Flush();
+			uint32 bufferUsedCapacity = (m_pBuffer->m_size << 4) / LOGFILE_BUFFER_SIZE;
+			if ((m_behaviours & eBF_FlushEachWrite) || (bufferUsedCapacity >= LOGS_FORCE_FLUSH_THRESHOLD))
+			{
+				writtenToFile = Flush();
+			}
 		}
 
 		return writtenToFile;
@@ -118,37 +129,30 @@ namespace engine
 
 	IFileSystem::eFileSystemHandle CLogFile::Open(void)
 	{
-		if (GetFileHandle() == IFileSystem::eFSH_INVALID)
-		{
-			if (m_pParent != NULL)
-			{
-				m_handle = m_pParent->Open();
-			}
-		}
+		IFileSystem::eFileSystemHandle handle = (m_pBuffer != NULL) ? m_pBuffer->m_handle : IFileSystem::eFSH_INVALID;;
 
-		IFileSystem* pFileSystem = GetFileSystem();
-		if (m_handle == IFileSystem::eFSH_INVALID)
+		if (handle == IFileSystem::eFSH_INVALID)
 		{
-			TCHAR fileName[MAX_PATH];
-
-			if (pFileSystem->CreatePath(fileName, sizeof(fileName) / sizeof(TCHAR), m_name, IFileSystem::eFT_LogFile, true) == IFileSystem::eFSE_SUCCESS)
+			if (m_pBuffer != NULL)
 			{
-				if ((m_handle = pFileSystem->OpenFile(fileName, _TEXT("wb"))) != IFileSystem::eFSH_INVALID) // N.B. opened as binary otherwise \n gets mangled in unicode output...
+				IFileSystem* pFileSystem = GetFileSystem();
+				TCHAR fileName[MAX_PATH];
+
+				if (pFileSystem->CreatePath(fileName, sizeof(fileName) / sizeof(TCHAR), m_name, IFileSystem::eFT_LogFile, true) == IFileSystem::eFSE_SUCCESS)
 				{
+					if ((m_pBuffer->m_handle = handle = pFileSystem->OpenFile(fileName, _TEXT("wb"))) != IFileSystem::eFSH_INVALID) // N.B. opened as binary otherwise \n gets mangled in unicode output...
+					{
 #if defined(_UNICODE)
-					// Insert the Byte-Order-Mark for UTF-16
-					uint16 bom = 0xfeff;
-					pFileSystem->Write(m_handle, &bom, sizeof(uint16), 1);
+						// Insert the Byte-Order-Mark for UTF-16
+						uint16 bom = 0xfeff;
+						pFileSystem->Write(handle, &bom, sizeof(uint16), 1);
 #endif
+					}
 				}
 			}
 		}
-		else
-		{
-			pFileSystem->AddFileReference(m_handle);
-		}
 
-		return m_handle;
+		return handle;
 	}
 
 	//============================================================================
@@ -157,16 +161,22 @@ namespace engine
 	{
 		bool writtenToFile = false;
 
-		if (m_handle == IFileSystem::eFSH_INVALID)
+		if (m_pBuffer != NULL)
 		{
-			Open();
-		}
+			if (m_pBuffer->m_size > 0)
+			{
+				if (m_pBuffer->m_handle == IFileSystem::eFSH_INVALID)
+				{
+					Open();
+				}
 
-		if (m_handle != IFileSystem::eFSH_INVALID)
-		{
-			writtenToFile = (GetFileSystem()->Write(m_handle, m_buffer, m_size * sizeof(TCHAR), 1) == 1);
-			m_buffer[0] = 0;
-			m_size = 0;
+				if (m_pBuffer->m_handle != IFileSystem::eFSH_INVALID)
+				{
+					writtenToFile = (GetFileSystem()->Write(m_pBuffer->m_handle, m_pBuffer->m_buffer, m_pBuffer->m_size * sizeof(TCHAR), 1) == 1);
+					m_pBuffer->m_buffer[0] = 0;
+					m_pBuffer->m_size = 0;
+				}
+			}
 		}
 
 		return writtenToFile;
@@ -176,9 +186,20 @@ namespace engine
 
 	void CLogFile::Close(void)
 	{
-		if (m_handle != IFileSystem::eFSH_INVALID)
+		if (m_pBuffer != NULL)
 		{
-			GetFileSystem()->CloseFile(m_handle);
+			Flush();
+
+			if (m_behaviours & eBF_SeparateFile)
+			{
+				GetFileSystem()->CloseFile(m_pBuffer->m_handle);
+			}
+
+			if (m_behaviours & eIBF_AllocatedBuffer)
+			{
+				delete m_pBuffer;
+				m_pBuffer = NULL;
+			}
 		}
 	}
 

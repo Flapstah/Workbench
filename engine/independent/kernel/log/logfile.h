@@ -16,12 +16,25 @@
 namespace engine
 {
 	//============================================================================
+	// SLogFileBuffer
+	//============================================================================
+	struct SLogFileBuffer 
+	{
+		SLogFileBuffer(void) : m_handle(IFileSystem::eFSH_INVALID), m_size(0), m_previousSize(0) { m_buffer[0] = 0; }
+
+		IFileSystem::eFileSystemHandle m_handle;
+		TCHAR m_buffer[LOGFILE_BUFFER_SIZE];
+		uint16 m_size;
+		uint16 m_previousSize;
+	}; // End [struct SLogFileBuffer ]
+
+	//============================================================================
 	// CLogFile
 	//============================================================================
 	class CLogFile : public ILogFile
 	{
 	public:
-		CLogFile(const TCHAR* name, CLogFile* pParent, eBehaviourFlag initialBehaviour = eBF_ALL);
+		CLogFile(const TCHAR* name, CLogFile* pParent, eBehaviourFlag initialBehaviour, SLogFileBuffer* pBuffer);
 		~CLogFile(void);
 
 		// ILogFile
@@ -36,23 +49,25 @@ namespace engine
 		// ~ILogFile
 
 	protected:
-		IFileSystem::eFileSystemHandle GetFileHandle(void)					{ return (m_pParent != NULL) ? m_handle = m_pParent->GetFileHandle() : m_handle;	}
+		enum eInternalBehaviourFlag
+		{
+			eBF_SeparateFile			= 1 << 14,
+			eIBF_AllocatedBuffer	= 1 << 15
+		}; // End [enum eInternalBehaviourFlag]
+
 		IFileSystem::eFileSystemHandle Open(void);
 		bool Flush(void);
 		void Close(void);
 
 	protected:
-		IFileSystem::eFileSystemHandle m_handle;
-		CLogFile* m_pParent;
 		TCHAR m_name[LOGFILE_NAME_SIZE];
-		TCHAR m_buffer[LOGFILE_BUFFER_SIZE];
-		uint16 m_size;
-		uint16 m_previousSize;
+		CLogFile* m_pParent;
+		SLogFileBuffer* m_pBuffer;
 		uint16 m_behaviours;
 
 	private:
 	}; // End [class CLogFile : public ILogFile]
-}
+} // End [namespace engine]
 //==============================================================================
 #endif // End [!defined(__LOGFILE_H__)]
 // [EOF]

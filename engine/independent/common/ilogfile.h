@@ -4,7 +4,6 @@
 //==============================================================================
 
 #define LOGS_ENABLED								// Enable/disable logging
-//#define LOGS_FORCE_SEPARATE_FILES		// Force logs into separate files
 #define LOGS_FORCE_INSERT_NEWLINE		// Force a newline to be inserted at the end of every separate log output (if it doesn't already exist)
 #define LOGS_FORCE_FLUSH_THRESHOLD ((uint32)(0x000f * 0.8f)) // Force a flush when the internal log buffer is 80% or more full (approximate - measured in 15ths)
 
