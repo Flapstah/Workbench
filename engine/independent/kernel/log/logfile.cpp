@@ -77,6 +77,8 @@ namespace engine
 		bool writtenToFile = false;
 		if (m_pBuffer != NULL)
 		{
+			CAutoMutexLock(m_pBuffer->m_mutex);
+
 			m_pBuffer->m_previousSize = m_pBuffer->m_size;
 
 			if (m_behaviours & eBF_DateStamp)
@@ -135,6 +137,8 @@ namespace engine
 		{
 			if (m_pBuffer != NULL)
 			{
+				CAutoMutexLock(m_pBuffer->m_mutex);
+
 				IFileSystem* pFileSystem = GetFileSystem();
 				TCHAR fileName[MAX_PATH];
 
@@ -165,6 +169,8 @@ namespace engine
 		{
 			if (m_pBuffer->m_size > 0)
 			{
+				CAutoMutexLock(m_pBuffer->m_mutex);
+
 				if (m_pBuffer->m_handle == IFileSystem::eFSH_INVALID)
 				{
 					Open();
@@ -188,6 +194,8 @@ namespace engine
 	{
 		if (m_pBuffer != NULL)
 		{
+			CAutoMutexLock(m_pBuffer->m_mutex);
+
 			Flush();
 
 			if (m_behaviours & eBF_SeparateFile)
@@ -204,7 +212,6 @@ namespace engine
 	}
 
 	//============================================================================
-
 } // End [namespace engine]
 
 //==============================================================================

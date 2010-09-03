@@ -5,6 +5,7 @@
 
 #include "common/ilogfile.h"
 #include "common/ifilesystem.h"
+#include "common/ithread.h"
 
 //==============================================================================
 
@@ -24,6 +25,7 @@ namespace engine
 
 		IFileSystem::eFileSystemHandle m_handle;
 		TCHAR m_buffer[LOGFILE_BUFFER_SIZE];
+		mutex m_mutex;
 		uint16 m_size;
 		uint16 m_previousSize;
 	}; // End [struct SLogFileBuffer ]
