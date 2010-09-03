@@ -306,6 +306,10 @@
 							>
 						</File>
 					</Filter>
+					<Filter
+						Name="thread"
+						>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="common"
@@ -324,6 +328,10 @@
 					</File>
 					<File
 						RelativePath="..\engine\independent\common\imemory.h"
+						>
+					</File>
+					<File
+						RelativePath="..\engine\independent\common\ithread.h"
 						>
 					</File>
 					<File
@@ -367,6 +375,14 @@
 						>
 						<File
 							RelativePath="..\engine\windows\kernel\filesystem\platform_filesystem.cpp"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="thread"
+						>
+						<File
+							RelativePath="..\engine\windows\kernel\thread\platform_thread.cpp"
 							>
 						</File>
 					</Filter>
