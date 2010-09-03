@@ -5,9 +5,9 @@ need to clean up interface classes
 	- move filename functionality into file class
 		- need a way to create a new log; need warning & error variants of main log (perhaps more?)
 		- maybe need a way of forcing output to be ascii even if unicode program; or unicode if ascii?
-	- filesystem doesn't need reference counting any more
-	- need mutex
-		- mutex needed to guard log writes
+	* ==done== filesystem doesn't need reference counting any more
+	* ==done== need mutex
+		* ==done== mutex needed to guard log writes
 	
 kernel systems
 even though kernel will (ultimately) have memory management, it must not rely on any dynamic memory
