@@ -67,6 +67,8 @@ namespace engine
 		SLogFileBuffer* m_pBuffer;
 		uint16 m_behaviours;
 
+		static uint32 s_lineCount;
+
 	private:
 	}; // End [class CLogFile : public ILogFile]
 } // End [namespace engine]

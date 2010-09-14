@@ -21,11 +21,11 @@ namespace engine
 			eBF_Active						= 1 << 0,
 			eBF_Name							= 1 << 1,
 			eBF_DateStamp					= 1 << 2,
-			eBF_TimeStamp					= 1 << 3,
-			eBF_OutputToDebugger	= 1 << 4,
-			eBF_FlushEachWrite		= 1 << 5,
-
-			eBF_ALL								= eBF_Active | eBF_Name | eBF_DateStamp | eBF_TimeStamp | eBF_OutputToDebugger | eBF_FlushEachWrite
+			eBF_LineCount					= 1 << 3,
+			eBF_FrameCount				= 1 << 4,
+			eBF_TimeStamp					= 1 << 5,
+			eBF_OutputToDebugger	= 1 << 6,
+			eBF_FlushEachWrite		= 1 << 7
 		}; // End [enum eBehaviourFlag]
 
 		virtual void SetActive(bool active) = 0;
@@ -37,6 +37,12 @@ namespace engine
 
 		virtual bool Write(const TCHAR* format, ...) = 0;
 	}; // End [struct ILogFile]
+
+	//============================================================================
+
+#if !defined(DEFAULT_LOG_BEHAVIOUR)
+#define DEFAULT_LOG_BEHAVIOUR (ILogFile::eBF_Active | ILogFile::eBF_LineCount | ILogFile::eBF_FrameCount | ILogFile::eBF_TimeStamp | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite)
+#endif
 
 	//============================================================================
 

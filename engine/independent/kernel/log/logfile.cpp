@@ -16,16 +16,20 @@ namespace engine
 {
 	//============================================================================
 
+	uint32 CLogFile::s_lineCount = 0;
+
+	//============================================================================
+
 	//----------------------------------------------------------------------------
 	// The global instances of logs
 	//----------------------------------------------------------------------------
 	static SLogFileBuffer gs_MainLogBuffer;
-	static CLogFile gs_MainLog(_TEXT("Main"), NULL, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), &gs_MainLogBuffer);
-	static CLogFile gs_ErrorLog(_TEXT("Error"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
-	static CLogFile gs_WarningLog(_TEXT("Warning"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
-	static CLogFile gs_AssertLog(_TEXT("Assert"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
-	static CLogFile gs_ToDoLog(_TEXT("ToDo"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
-	static CLogFile gs_PerformanceLog(_TEXT("Performance"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
+	static CLogFile gs_MainLog(_TEXT("Main"), NULL, static_cast<ILogFile::eBehaviourFlag>(DEFAULT_LOG_BEHAVIOUR), &gs_MainLogBuffer);
+	static CLogFile gs_ErrorLog(_TEXT("Error"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(DEFAULT_LOG_BEHAVIOUR), NULL);
+	static CLogFile gs_WarningLog(_TEXT("Warning"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(DEFAULT_LOG_BEHAVIOUR), NULL);
+	static CLogFile gs_AssertLog(_TEXT("Assert"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(DEFAULT_LOG_BEHAVIOUR), NULL);
+	static CLogFile gs_ToDoLog(_TEXT("ToDo"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(DEFAULT_LOG_BEHAVIOUR), NULL);
+	static CLogFile gs_PerformanceLog(_TEXT("Performance"), &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(DEFAULT_LOG_BEHAVIOUR), NULL);
 
 	//============================================================================
 
@@ -84,18 +88,36 @@ namespace engine
 			if (m_behaviours & eBF_DateStamp)
 			{
 				const ISystemClock* pSystemClock = GetSystemClock();
-				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%s %s] "), pSystemClock->GetLocalDateString(), pSystemClock->GetLocalTimeString());
+				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%s %s]"), pSystemClock->GetLocalDateString(), pSystemClock->GetLocalTimeString());
+			}
+
+			if (m_behaviours & eBF_LineCount)
+			{
+				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%i]"), ++s_lineCount);
+			}
+
+			const ITimer* pGameClock = GetGameClock();
+			if (m_behaviours & eBF_FrameCount)
+			{
+				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%i]"), pGameClock->GetFrameCount());
 			}
 
 			if (m_behaviours & eBF_TimeStamp)
 			{
-				const ITimer* pGameClock = GetGameClock();
-				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%i][%8.03f] "), pGameClock->GetFrameCount(), pGameClock->GetTime());
+				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%8.03f]"), pGameClock->GetTime());
 			}
 
 			if (m_behaviours & eBF_Name)
 			{
-				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%s] "), m_name);
+				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%s]"), m_name);
+			}
+
+			if (m_pBuffer->m_previousSize != m_pBuffer->m_size)
+			{
+				if (_tcscat_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT(" ")) == 0)
+				{
+					++m_pBuffer->m_size;
+				}
 			}
 
 			va_list arguments;
