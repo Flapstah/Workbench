@@ -22,8 +22,8 @@ namespace engine
 
 	//============================================================================
 
-#define MemoryLog(_output_) _WriteLog(engine::g_MemoryLog, _output_)
-#define MemoryErrorLog(_output_) _WriteLog(engine::g_MemoryErrorLog, _output_)
+#define MemoryLog(...) _WriteLog(engine::g_MemoryLog, __VA_ARGS__)
+#define MemoryErrorLog(...) _WriteLog(engine::g_MemoryErrorLog, __VA_ARGS__)
 
 	//============================================================================static COSMemory::GUARD guard = 0xDEADC0DE;
 
@@ -69,12 +69,12 @@ namespace engine
 				m_pAllocatedList = pNode;
 			}
 
-			MemoryLog((_TEXT("%s(%i): allocated %i(%i) bytes"), file, line, size, totalSize));
+			MemoryLog(_TEXT("%s(%i): allocated %i(%i) bytes"), file, line, size, totalSize);
 			pMemory = &pMemory[sizeof(Node) + sizeof(GUARD)];
 		}
 		else
 		{
-			MemoryErrorLog((_TEXT("%s(%i): failed to allocate %i bytes"), file, line, size));
+			MemoryErrorLog(_TEXT("%s(%i): failed to allocate %i bytes"), file, line, size);
 		}
 
 		return pMemory;
@@ -135,11 +135,11 @@ namespace engine
 				--m_allocatedNodes;
 				m_allocatedBytes -= pNode->m_size;
 
-				MemoryLog((_TEXT("%s(%i): freed %i(%i) bytes"), file, line, pNode->m_size - sizeof(Node) - (sizeof(GUARD) * 2), pNode->m_size));
+				MemoryLog(_TEXT("%s(%i): freed %i(%i) bytes"), file, line, pNode->m_size - sizeof(Node) - (sizeof(GUARD) * 2), pNode->m_size);
 			}
 			else
 			{
-				MemoryErrorLog((_TEXT("%s(%i): Memory [%p] not allocated by this allocator"), file, line, pMemory));
+				MemoryErrorLog(_TEXT("%s(%i): Memory [%p] not allocated by this allocator"), file, line, pMemory);
 			}
 		}
 	}

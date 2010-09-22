@@ -22,11 +22,11 @@ namespace engine
 		DebugBreak(); \
 	}
 
-#define assertf(_condition_, _reason_) \
+#define assertf(_condition_, ...) \
 	if (!(_condition_)) \
 	{ \
 		LogAssert((_TEXT("%s(%i): [Assert] condition (%s)"), _TEXT(__FILE__), __LINE__, _TEXT(#_condition_))); \
-		LogAssert(_reason_); \
+		LogAssert(__VA_ARGS__); \
 		DebugBreak(); \
 	}
 #endif

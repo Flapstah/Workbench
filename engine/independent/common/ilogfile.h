@@ -57,7 +57,7 @@ namespace engine
 	// Helper macros for log output
 	//----------------------------------------------------------------------------
 #if defined LOGS_ENABLED
-#define _WriteLog(_pILogFile_, _output_) ((_pILogFile_->IsActive()) && (_pILogFile_->Write _output_))
+#define _WriteLog(_pILogFile_, ...) ((_pILogFile_->IsActive()) && (_pILogFile_->Write(__VA_ARGS__)))
 #else
 #define _WriteLog(_pILogFile_, _channels_, _output_)
 #endif
@@ -65,12 +65,12 @@ namespace engine
 	//----------------------------------------------------------------------------
 	// Use LogXXX to output to the logs
 	//----------------------------------------------------------------------------
-#define Log(_output_) _WriteLog(engine::g_MainLog, _output_)
-#define LogError(_output_) _WriteLog(engine::g_ErrorLog, _output_)
-#define LogWarning(_output_) _WriteLog(engine::g_WarningLog, _output_)
-#define LogAssert(_output_) _WriteLog(engine::g_AssertLog, _output_)
-#define LogToDo(_output_) _WriteLog(engine::g_ToDoLog, _output_)
-#define LogPerformance(_output_) _WriteLog(engine::g_PerformanceLog, _output_)
+#define Log(...) _WriteLog(engine::g_MainLog, __VA_ARGS__)
+#define LogError(...) _WriteLog(engine::g_ErrorLog, __VA_ARGS__)
+#define LogWarning(...) _WriteLog(engine::g_WarningLog, __VA_ARGS__)
+#define LogAssert(...) _WriteLog(engine::g_AssertLog, __VA_ARGS__)
+#define LogToDo(...) _WriteLog(engine::g_ToDoLog, __VA_ARGS__)
+#define LogPerformance(...) _WriteLog(engine::g_PerformanceLog, __VA_ARGS__)
 
 } // End [namespace engine]
 
