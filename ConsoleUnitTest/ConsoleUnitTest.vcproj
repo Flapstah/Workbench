@@ -319,6 +319,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\engine\independent\common\iapplication.h"
+						>
+					</File>
+					<File
 						RelativePath="..\engine\independent\common\ifilesystem.h"
 						>
 					</File>
@@ -344,6 +348,18 @@
 					</File>
 					<File
 						RelativePath="..\engine\independent\common\macros.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="application"
+					>
+					<File
+						RelativePath="..\engine\independent\application\application.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\engine\independent\application\application.h"
 						>
 					</File>
 				</Filter>
@@ -398,6 +414,10 @@
 						RelativePath="..\engine\windows\common\platform_types.h"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="application"
+					>
 				</Filter>
 			</Filter>
 		</Filter>
