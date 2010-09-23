@@ -31,7 +31,7 @@ namespace engine
 	{
 		virtual TCHAR*	GetLocalDateString(void) const = 0;
 		virtual TCHAR*	GetLocalTimeString(void) const = 0;
-	}; // End [struct ISystemClock : public ITimeSource ]
+	}; // End [struct ISystemClock : public ITimeSource]
 
 	//============================================================================
 	// ITimer

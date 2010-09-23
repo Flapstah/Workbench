@@ -19,7 +19,7 @@ namespace engine
 	//============================================================================
 	// SLogFileBuffer
 	//============================================================================
-	struct SLogFileBuffer 
+	struct SLogFileBuffer
 	{
 		SLogFileBuffer(void) : m_handle(IFileSystem::eFSH_INVALID), m_size(0), m_previousSize(0) { m_buffer[0] = 0; }
 
@@ -28,7 +28,7 @@ namespace engine
 		mutex m_mutex;
 		uint16 m_size;
 		uint16 m_previousSize;
-	}; // End [struct SLogFileBuffer ]
+	}; // End [struct SLogFileBuffer]
 
 	//============================================================================
 	// CLogFile
@@ -71,7 +71,11 @@ namespace engine
 
 	private:
 	}; // End [class CLogFile : public ILogFile]
+
+	//============================================================================
 } // End [namespace engine]
+
 //==============================================================================
+
 #endif // End [!defined(__LOGFILE_H__)]
 // [EOF]

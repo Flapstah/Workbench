@@ -35,5 +35,6 @@ namespace engine
 } // End [namespace engine]
 
 //==============================================================================
+
 #endif // End [!defined(__ASSERT_H__)]
 // [EOF]

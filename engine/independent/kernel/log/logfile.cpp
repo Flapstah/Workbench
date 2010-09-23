@@ -7,7 +7,7 @@
 #include "kernel/filesystem/filesystem.h"
 
 //------------------------------------------------------------------------------
-// Good unicode resource page: http://www.i18nguy.com/unicode/c-unicode.html
+// Good Unicode resource page: http://www.i18nguy.com/unicode/c-unicode.html
 //------------------------------------------------------------------------------
 
 //==============================================================================

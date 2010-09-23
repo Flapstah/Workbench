@@ -41,6 +41,8 @@ namespace engine
 		uint32 m_frameCount;
 		uint32 m_referenceCount;
 	}; // End [class CTimeSource : public ITimeSource]
+
+	//============================================================================
 } // End [namespace engine]
 
 //==============================================================================

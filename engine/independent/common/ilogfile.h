@@ -72,8 +72,10 @@ namespace engine
 #define LogToDo(...) _WriteLog(engine::g_ToDoLog, __VA_ARGS__)
 #define LogPerformance(...) _WriteLog(engine::g_PerformanceLog, __VA_ARGS__)
 
+	//============================================================================
 } // End [namespace engine]
 
 //==============================================================================
+
 #endif // End [!defined(__ILOGFILE_H__)]
 // [EOF]

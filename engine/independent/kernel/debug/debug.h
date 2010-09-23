@@ -23,5 +23,6 @@ namespace engine
 } // End [namespace engine]
 
 //==============================================================================
+
 #endif // End [!defined(__DEBUG_H__)]
 // [EOF]

@@ -39,7 +39,7 @@ namespace engine
 			uint32 m_id;
 
 			static uint32 s_id;
-		}; // End [struct Node ]
+		}; // End [struct Node]
 
 		Node* m_pAllocatedList;
 
@@ -49,8 +49,10 @@ namespace engine
 	private:
 	}; // End [class COSMemory : public IMemory]
 
-}
+	//============================================================================
+} // End [namespace engine]
 
 //==============================================================================
+
 #endif // End [!defined(__OSMEMORY_H__)]
 // [EOF]

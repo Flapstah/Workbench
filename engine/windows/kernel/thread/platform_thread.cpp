@@ -9,10 +9,10 @@ namespace engine
 	//============================================================================
 
 	//----------------------------------------------------------------------------
-	// There needs to be an explicit instantiation of this typed mutex in order
-	// that the platform function definitions can be separated from the
-	// declarations in the header.  Implicit instantiation would require the
-	// function definitions to be with the declaration. 
+	// There needs to be an explicit declaration of this typed mutex in order that
+	// the platform function definitions can be separated from the declarations in
+	// the header.  Implicit instantiation would require the function definitions
+	// to be with the declaration. 
 	//----------------------------------------------------------------------------
 	template class CMutex<HANDLE>;
 

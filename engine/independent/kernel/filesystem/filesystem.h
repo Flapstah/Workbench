@@ -13,6 +13,9 @@
 
 namespace engine
 {
+	//============================================================================
+	// CFileSystem
+	//============================================================================
 	class CFileSystem : public IFileSystem
 	{
 	public:
@@ -53,8 +56,10 @@ namespace engine
 		{
 			FILE*		m_systemHandle;
 		}	m_handle[MAX_OPEN_FILES];
-	};
-}
+	}; // End [class CFileSystem : public IFileSystem]
+
+	//============================================================================
+} // End [namespace engine]
 
 //==============================================================================
 
