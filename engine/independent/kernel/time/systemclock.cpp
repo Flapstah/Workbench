@@ -15,7 +15,7 @@ namespace engine
 
 	//============================================================================
 
-	const ISystemClock* GetSystemClock(void)
+	ISystemClock* GetSystemClock(void)
 	{
 		return &g_systemClock;
 	}

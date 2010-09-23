@@ -53,7 +53,7 @@ namespace engine
 	protected:
 		enum eInternalBehaviourFlag
 		{
-			eBF_SeparateFile			= 1 << 14,
+			eIBF_SeparateFile			= 1 << 14,
 			eIBF_AllocatedBuffer	= 1 << 15
 		}; // End [enum eInternalBehaviourFlag]
 

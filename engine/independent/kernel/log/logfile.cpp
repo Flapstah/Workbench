@@ -55,13 +55,13 @@ namespace engine
 			}
 			else
 			{
-				m_behaviours |= eIBF_AllocatedBuffer | eBF_SeparateFile;
+				m_behaviours |= eIBF_AllocatedBuffer | eIBF_SeparateFile;
 				m_pBuffer = new SLogFileBuffer();
 			}
 		}
 		else
 		{
-			m_behaviours |= eBF_SeparateFile;
+			m_behaviours |= eIBF_SeparateFile;
 		}
 
 		_tcscpy_s(m_name, sizeof(m_name) / sizeof(TCHAR), name);
@@ -220,7 +220,7 @@ namespace engine
 
 			Flush();
 
-			if (m_behaviours & eBF_SeparateFile)
+			if (m_behaviours & eIBF_SeparateFile)
 			{
 				GetFileSystem()->CloseFile(m_pBuffer->m_handle);
 			}

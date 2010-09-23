@@ -43,9 +43,16 @@ namespace engine
 
 	//============================================================================
 
-	const ITimer* GetGameClock(void)
+	ITimer* GetGameClock(void)
 	{
 		return &g_gameClock;
+	}
+
+	//============================================================================
+
+	ITimer* CreateTimer(ITimeSource& source, double scale, double maxFrameTime)
+	{
+		return new CTimer(source, scale, maxFrameTime);
 	}
 
 	//============================================================================

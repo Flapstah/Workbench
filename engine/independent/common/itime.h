@@ -50,12 +50,17 @@ namespace engine
 	//----------------------------------------------------------------------------
 	// Returns the system clock
 	//----------------------------------------------------------------------------
-	const ISystemClock* GetSystemClock(void);
+	ISystemClock* GetSystemClock(void);
 
 	//----------------------------------------------------------------------------
 	// Returns the game clock
 	//----------------------------------------------------------------------------
-	const ITimer* GetGameClock(void);
+	ITimer* GetGameClock(void);
+
+	//----------------------------------------------------------------------------
+	// Creates a general purpose timer
+	//----------------------------------------------------------------------------
+	ITimer* CreateTimer(ITimeSource& source, double scale, double maxFrameTime);
 
 	//============================================================================
 } // End [namespace engine]
