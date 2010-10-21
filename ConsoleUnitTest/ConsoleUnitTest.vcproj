@@ -310,6 +310,18 @@
 						Name="thread"
 						>
 					</Filter>
+					<Filter
+						Name="console"
+						>
+						<File
+							RelativePath="..\engine\independent\kernel\console\console.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\engine\independent\kernel\console\console.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="common"
@@ -320,6 +332,10 @@
 					</File>
 					<File
 						RelativePath="..\engine\independent\common\iapplication.h"
+						>
+					</File>
+					<File
+						RelativePath="..\engine\independent\common\iconsole.h"
 						>
 					</File>
 					<File
