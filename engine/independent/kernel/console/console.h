@@ -12,22 +12,88 @@ namespace engine
 	class CConsole : public IConsole
 	{
 	public:
-		template<typename _type> class CVariable : public IVariable<_type>
+		class CVariant : public IVariant
 		{
 		public:
-			virtual const _type Get(void);
-			virtual void Set(const _type);
+			CVariant(const char* name, uint32 flags, const char* help, OnChangedCallback pOnChangedCallback);
+			~CVariant(void);
 
-			CVariable(const char* name, _type& variable, const _type default, const _type minimum, const _type maximum, const char* help, OnChangedCallback pOnChangedCallback);
-			~CVariable();
+			// IVariant
+			virtual void				Set(int32 value) {};
+			virtual void				Set(float value) {};
+			virtual void				Set(const char* value) {};
+
+			virtual const char*	Name(void);
+			virtual const char*	Help(void);
+			virtual uint32			GetFlags(void);
+			virtual void				SetFlags(uint32 flags, uint32 mask);
+			// ~IVariant
 
 		protected:
-			OnChangedCallback m_pCallback;
+			OnChangedCallback m_pOnChangedCallback;
 			const char* m_name;
 			const char* m_help;
-			_type& m_variable;
-			_type m_minimum;
-			_type m_maximum;
+			uint32 m_flags;
+
+		private:
+		};
+
+		class CVariantInt32 : public CVariant
+		{
+		public:
+			CVariantInt32(const char* name, int32& variable, int32 initial, uint32 flags, const char* help, OnChangedCallback pOnChangedCallback);
+			~CVariantInt32(void);
+
+			// IVariant
+			virtual void				Set(int32 value);
+
+			virtual int32				GetAsInt32(void);
+			virtual float				GetAsFloat(void);
+			virtual const char*	GetAsString(void);
+			// ~IVariant
+
+		protected:
+			int32& m_variable;
+
+		private:
+		};
+
+		class CVariantFloat : public CVariant
+		{
+		public:
+			CVariantFloat(const char* name, float& variable, float initial, uint32 flags, const char* help, OnChangedCallback pOnChangedCallback);
+			~CVariantFloat(void);
+
+			// IVariant
+			virtual void				Set(float value);
+
+			virtual int32				GetAsInt32(void);
+			virtual float				GetAsFloat(void);
+			virtual const char*	GetAsString(void);
+			// ~IVariant
+
+		protected:
+			float& m_variable;
+
+		private:
+		};
+
+		class CVariantString : public CVariant
+		{
+		public:
+			CVariantString(const char* name, char*& variable, const char* initial, uint32 flags, const char* help, OnChangedCallback pOnChangedCallback);
+			~CVariantString(void);
+
+			// IVariant
+			virtual void				Set(const char* value) {};
+
+			virtual int32				GetAsInt32(void);
+			virtual float				GetAsFloat(void);
+			virtual const char*	GetAsString(void);
+			// ~IVariant
+
+		protected:
+			char* m_value;
 
 		private:
 		};

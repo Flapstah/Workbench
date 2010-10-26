@@ -7,26 +7,42 @@ namespace engine
 {
 	struct IConsole
 	{
-		template<typename _type> struct IVariable
+		struct IVariant
 		{
-			virtual const _type Get(void) = 0;
-			virtual void Set(const _type value) = 0;
-		}; // End [struct IVariable]
+			virtual int32				GetAsInt32(void) = 0;
+			virtual float				GetAsFloat(void) = 0;
+			virtual const char*	GetAsString(void) = 0;
+
+			virtual void				Set(int32 value) = 0;
+			virtual void				Set(float value) = 0;
+			virtual void				Set(const char* value) = 0;
+
+			virtual const char*	Name(void) = 0;
+			virtual const char*	Help(void) = 0;
+			virtual uint32			GetFlags(void) = 0;
+			virtual void				SetFlags(uint32 flags, uint32 mask) = 0;
+		}; // End [struct IVariant]
+
+		enum eVariantFlags
+		{
+			VF_WRITE_TO_CONFIG,
+			VF_SERVER_CONTROLLED
+		};
 
 		// Variables
-		typedef void (*OnChangedCallback)(IConsole::IVariable& variable);
-		virtual IVariable* RegisterVariable(const char* name, int32& variable, int32 default, int32 minimum, int32 maximum, const char* help, OnChangedCallback pOnChangedCallback) = 0;
-		virtual IVariable* RegisterVariable(const char* name, float& variable, float default, float minimum, float maximum, const char* help, OnChangedCallback pOnChangedCallback) = 0;
-		virtual IVariable* RegisterVariable(const char* name, char*& variable, const char* default, const char* help, OnChangedCallback pOnChangedCallback) = 0;
+		typedef void (*OnChangedCallback)(IConsole::IVariant& variant);
+		virtual IVariant* RegisterVariable(const char* name, int32& variable, int32 initial, uint32 flags, const char* help, OnChangedCallback pOnChangedCallback) = 0;
+		virtual IVariant* RegisterVariable(const char* name, float& variable, float initial, uint32 flags, const char* help, OnChangedCallback pOnChangedCallback) = 0;
+		virtual IVariant* RegisterVariable(const char* name, char*& variable, const char* initial, uint32 flags, const char* help, OnChangedCallback pOnChangedCallback) = 0;
 
-		virtual IVariable* RegisterVariable(const char* name, int32 default, int32 minimum, int32 maximum, const char* help, OnChangedCallback pOnChangedCallback) = 0;
-		virtual IVariable* RegisterVariable(const char* name, float default, float minimum, float maximum, const char* help, OnChangedCallback pOnChangedCallback) = 0;
-		virtual IVariable* RegisterVariable(const char* name, const char* default, const char* help, OnChangedCallback pOnChangedCallback) = 0;
+		virtual IVariant* RegisterVariable(const char* name, int32 initial, uint32 flags, const char* help, OnChangedCallback pOnChangedCallback) = 0;
+		virtual IVariant* RegisterVariable(const char* name, float initial, uint32 flags, const char* help, OnChangedCallback pOnChangedCallback) = 0;
+		virtual IVariant* RegisterVariable(const char* name, const char* initial, uint32 flags, const char* help, OnChangedCallback pOnChangedCallback) = 0;
 
 		virtual bool UnregisterVariable(const char* name) = 0;
-		virtual bool UnregisterVariable(IVariable* pVariable) = 0;
+		virtual bool UnregisterVariable(IVariant* pVariant) = 0;
 
-		virtual IVariable* Find(const char* name);
+		virtual IVariant* Find(const char* name) = 0;
 
 		// Commands
 		struct IArguments
