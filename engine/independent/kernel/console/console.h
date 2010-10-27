@@ -129,7 +129,7 @@ namespace engine
 
 	protected:
 	private:
-	};
+	}; // End [class CConsole : public IConsole]
 
 	//============================================================================
 

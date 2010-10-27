@@ -51,7 +51,7 @@ namespace engine
 			VF_SERVER_CONTROLLED
 		};
 
-		// Variables
+		// Variants
 		typedef void (*OnChangedCallback)(IConsole::IVariant& variant);
 		virtual IVariant* RegisterVariable(const char* name, int32& variable, int32 initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback) = 0;
 		virtual IVariant* RegisterVariable(const char* name, float& variable, float initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback) = 0;
