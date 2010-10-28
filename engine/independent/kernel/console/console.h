@@ -127,35 +127,35 @@ namespace engine
 		private:
 		}; // End [class CVariantString : public CVariant]
 
+		//==========================================================================
+
+		// IConsole
+		virtual IVariant* RegisterVariable(const char* name, int32& variable, int32 initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
+		virtual IVariant* RegisterVariable(const char* name, float& variable, float initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
+		virtual IVariant* RegisterVariable(const char* name, char*& variable, const char* initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
+
+		virtual IVariant* RegisterVariable(const char* name, int32 initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
+		virtual IVariant* RegisterVariable(const char* name, float initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
+		virtual IVariant* RegisterVariable(const char* name, const char* initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
+
+		virtual bool UnregisterVariable(const char* name);
+		virtual bool UnregisterVariable(IConsole::IVariant* pVariant);
+
+		virtual IVariant* Find(const char* name);
+
+		virtual bool RegisterCommand(const char* name, const char* help, IConsole::OnCommandCallback pOnCommandCallback);
+
+		virtual bool UnregisterCommand(const char* name);
+		// ~IConsole
+
 	protected:
 	private:
 	}; // End [class CConsole : public IConsole]
 
-	//============================================================================
-
-	// IConsole
-	virtual IVariant* RegisterVariable(const char* name, int32& variable, int32 initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
-	virtual IVariant* RegisterVariable(const char* name, float& variable, float initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
-	virtual IVariant* RegisterVariable(const char* name, char*& variable, const char* initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
-
-	virtual IVariant* RegisterVariable(const char* name, int32 initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
-	virtual IVariant* RegisterVariable(const char* name, float initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
-	virtual IVariant* RegisterVariable(const char* name, const char* initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
-
-	virtual bool UnregisterVariable(const char* name);
-	virtual bool UnregisterVariable(IConsole::IVariant* pVariant);
-
-	virtual IVariant* Find(const char* name);
-
-	virtual bool RegisterCommand(const char* name, const char* help, IConsole::OnCommandCallback pOnCommandCallback);
-
-	virtual bool UnregisterCommand(const char* name);
-	// ~IConsole
-
 	//----------------------------------------------------------------------------
 	// The global instance of the console
 	//----------------------------------------------------------------------------
-	extern CConsole* g_console;
+	extern CConsole g_console;
 
 	//============================================================================
 } // End [namespace engine]
