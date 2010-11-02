@@ -379,6 +379,14 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="templates"
+					>
+					<File
+						RelativePath="..\engine\independent\templates\in_situ_list.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="windows"
