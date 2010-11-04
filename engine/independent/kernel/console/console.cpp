@@ -24,6 +24,10 @@ namespace engine
 
 	//============================================================================
 
+	IConsole::IVariant* CConsole::RegisterVariable(const char* name, int32& variable, int32 initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback)
+	{
+
+	}
 	//----------------------------------------------------------------------------
 	// The global instance of the console
 	//----------------------------------------------------------------------------

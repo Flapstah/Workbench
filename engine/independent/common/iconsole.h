@@ -78,6 +78,11 @@ namespace engine
 	//----------------------------------------------------------------------------
 	IConsole* GetConsole(void);
 
+#define REGISTER_CVAR(_name_, _variable_, _initial_, _flags_, _help_, _onchangedcallback_)
+	{
+
+
+	}
 	//============================================================================
 } // End [namespace engine]
 

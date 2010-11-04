@@ -4,6 +4,7 @@
 //==============================================================================
 
 #include "common/iconsole.h"
+#include "templates/stack_list.h"
 
 //==============================================================================
 
@@ -149,6 +150,10 @@ namespace engine
 		// ~IConsole
 
 	protected:
+		typedef TStackList<IVariant*> variable_list;
+		variable_list m_variableList;
+		typedef TStackList<const char*> command_list;
+		command_list m_commandList;
 	private:
 	}; // End [class CConsole : public IConsole]
 
