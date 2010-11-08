@@ -139,6 +139,20 @@ namespace engine
 			}
 		}
 
+		void Remove(TNode& node)
+		{
+			TNode* pHere = m_head.m_pNext;
+
+			while (pHere != NULL)
+			{
+				if (pHere == &node)
+				{
+					node.Unlink();
+					pHere = NULL;
+				}
+			}
+		}
+
 	protected:
 		_element m_dummy;
 		TNode m_head;

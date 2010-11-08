@@ -3,7 +3,8 @@
 
 //==============================================================================
 
-#define REGISTER_CVAR(_name_, _variable_, _initial_, _flags_, _help_, _pOnChangedCallback_) 
+#include "common/macros.h"
+
 //==============================================================================
 
 namespace engine
@@ -13,8 +14,13 @@ namespace engine
 	//============================================================================
 	struct IConsole
 	{
+		struct IVariant;
+		struct IArguments;
+		typedef void (*OnChangedCallback)(IConsole::IVariant& variant);
+		typedef void (*OnCommandCallback)(const IConsole::IArguments* pArguments);
+
 		//==========================================================================
-		// IVaraint
+		// IVariant
 		//==========================================================================
 		struct IVariant
 		{
@@ -29,7 +35,9 @@ namespace engine
 			virtual const char*	Name(void) = 0;
 			virtual const char*	Help(void) = 0;
 			virtual uint32			GetFlags(void) = 0;
-			virtual void				SetFlags(uint32 flags, uint32 mask) = 0;
+
+			virtual IConsole::OnChangedCallback GetOnChangedCallback(void) = 0;
+			virtual void				SetOnChangedCallback(IConsole::OnChangedCallback pOnChangedCallback) = 0;
 		}; // End [struct IVariant]
 
 		//==========================================================================
@@ -45,32 +53,29 @@ namespace engine
 
 		//==========================================================================
 
-		enum eVariantFlags
+		enum eConsoleFlags
 		{
-			VF_WRITE_TO_CONFIG,
-			VF_SERVER_CONTROLLED
+			CF_WRITE_TO_CONFIG		=	BIT(0),	// Write this variant to the config file
+			CF_SERVER_CONTROLLED	= BIT(1),	// Server controlled variant - clients cannot modify
+			CF_CHEAT							= BIT(2),	// Modification of this variant is deemed cheating
+			CF_DEBUG							= BIT(3),	// This variant can only be modified in non-release builds
+			CF_READ_ONLY					= BIT(4),	// This variant can only be set when initialised
+
+			CF_EXTERNAL_BITS			= 0x0000ffff
 		};
 
 		// Variants
-		typedef void (*OnChangedCallback)(IConsole::IVariant& variant);
 		virtual IVariant* RegisterVariable(const char* name, int32& variable, int32 initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback) = 0;
 		virtual IVariant* RegisterVariable(const char* name, float& variable, float initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback) = 0;
 		virtual IVariant* RegisterVariable(const char* name, char*& variable, const char* initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback) = 0;
-
-		virtual IVariant* RegisterVariable(const char* name, int32 initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback) = 0;
-		virtual IVariant* RegisterVariable(const char* name, float initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback) = 0;
-		virtual IVariant* RegisterVariable(const char* name, const char* initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback) = 0;
-
 		virtual bool UnregisterVariable(const char* name) = 0;
-		virtual bool UnregisterVariable(IConsole::IVariant* pVariant) = 0;
-
-		virtual IVariant* Find(const char* name) = 0;
 
 		// Commands
-		typedef void (*OnCommandCallback)(const IConsole::IArguments* pArguments);
-		virtual bool RegisterCommand(const char* name, const char* help, IConsole::OnCommandCallback pOnCommandCallback) = 0;
-
+		virtual bool RegisterCommand(const char* name, uint32 flags, const char* help, IConsole::OnCommandCallback pOnCommandCallback) = 0;
 		virtual bool UnregisterCommand(const char* name) = 0;
+
+		// Common
+		virtual IVariant* Find(const char* name) = 0;
 	}; // End [struct IConsole]
 
 	//----------------------------------------------------------------------------
@@ -78,11 +83,6 @@ namespace engine
 	//----------------------------------------------------------------------------
 	IConsole* GetConsole(void);
 
-#define REGISTER_CVAR(_name_, _variable_, _initial_, _flags_, _help_, _onchangedcallback_)
-	{
-
-
-	}
 	//============================================================================
 } // End [namespace engine]
 
