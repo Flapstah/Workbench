@@ -4,7 +4,6 @@
 //==============================================================================
 
 #include "common/iconsole.h"
-#include "templates/stack_list.h"
 
 //==============================================================================
 
@@ -29,21 +28,30 @@ namespace engine
 		{
 		public:
 			CToken(const char* name, const char* help, uint32 flags)
-				: m_name(name), m_help(help), m_flags(flags)					{																								}
-			virtual ~CToken(void)																		{																								}
+				: m_name(name), m_help(help), m_flags(flags), m_pNext(NULL), m_pPrevious(NULL)	{											}
+			virtual ~CToken(void)																		{	Unlink();																			}
 
-			// IVariant (partial)
 			virtual const char*	Name(void)													{	return m_name;																}
 			virtual const char*	Help(void)													{	return m_help;																}
 			virtual uint32			GetFlags(void)											{	return m_flags;																}
-			// ~IVariant
 
-			virtual void				SetFlags(uint32 flags, uint32 mask)	{	m_flags = (m_flags & ~mask) | (flags & mask);	}
+			void								SetFlags(uint32 flags, uint32 mask)	{	m_flags = (m_flags & ~mask) | (flags & mask);	}
+
+			CToken*							Next(void)													{ return m_pNext;																}
+			CToken*							Previous(void)											{ return m_pPrevious;														}
+
+			void								Append(CToken& token);
+			void								Prepend(CToken& token);
+			void								Unlink(void);
 
 		protected:
+
 			const char* m_name;
 			const char* m_help;
 			uint32 m_flags;
+
+			CToken* m_pNext;
+			CToken* m_pPrevious;
 
 		private:
 		}; // End [class CToken]
@@ -53,17 +61,21 @@ namespace engine
 		//==========================================================================
 		// class CVariant
 		//==========================================================================
-		class CVariant : public CToken, IConsole::IVariant
+		class CVariant : public CToken, public IConsole::IVariant
 		{
 		public:
 			CVariant(const char* name, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback)
 				: CToken(name, help, flags | ICF_VARIANT), m_pOnChangedCallback(pOnChangedCallback)	{									}
 			virtual ~CVariant(void)																									{																}
 
-			// IVariant (partial - other half in CToken)
+			// IVariant
 			virtual void				Set(int32 value)																		{																}
 			virtual void				Set(float value)																		{																}
 			virtual void				Set(const char* value)															{																}
+
+			virtual const char*	Name(void)																					{	return CToken::Name();				}
+			virtual const char*	Help(void)																					{	return CToken::Help();				}
+			virtual uint32			GetFlags(void)																			{	return CToken::GetFlags();		}
 
 			virtual IConsole::OnChangedCallback GetOnChangedCallback(void)					{	return m_pOnChangedCallback;	}
 			virtual void				SetOnChangedCallback(IConsole::OnChangedCallback pOnChangedCallback)
@@ -136,7 +148,7 @@ namespace engine
 		class CVariantString : public CVariant
 		{
 		public:
-			CVariantString(const char* name, const char*& variable, const char* initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback)
+			CVariantString(const char* name, char*& variable, const char* initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback)
 				: CVariant(name, flags, help, pOnChangedCallback), m_variable(variable)	{															}
 			virtual ~CVariantString(void)														{																								}
 
@@ -175,6 +187,9 @@ namespace engine
 
 		//==========================================================================
 
+		CConsole(void) : m_pHead(NULL)	{}
+		virtual ~CConsole(void) {}
+
 		// IConsole
 		virtual IVariant* RegisterVariable(const char* name, int32& variable, int32 initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
 		virtual IVariant* RegisterVariable(const char* name, float& variable, float initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback);
@@ -189,12 +204,13 @@ namespace engine
 
 		//==========================================================================
 
-		CToken* FindToken(const char* name);
+		void Add(CToken& token);
+		void Remove(CToken& token);
 
 	protected:
-		typedef TStackList<CToken*> token_list;
-		typedef TStackList<CToken*>::TIterator token_list_iterator;
-		token_list m_tokenList;
+		CToken* FindToken(const char* name);
+
+		CToken* m_pHead;
 
 	private:
 	}; // End [class CConsole : public IConsole]

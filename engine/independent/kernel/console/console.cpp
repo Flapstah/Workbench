@@ -10,9 +10,56 @@ namespace engine
 {
 	//============================================================================
 
+	void CConsole::CToken::Append(CToken& token)
+	{
+		token.Unlink();
+		token.m_pPrevious = this;
+
+		if (m_pNext != NULL)
+		{
+			m_pNext->m_pPrevious = &token;
+			token.m_pNext = m_pNext;
+		}
+
+		m_pNext = &token;
+	}
+
+	//============================================================================
+
+	void CConsole::CToken::Prepend(CToken& token)
+	{
+		token.Unlink();
+		token.m_pNext = this;
+
+		if (m_pPrevious != NULL)
+		{
+			m_pPrevious->m_pNext = &token;
+			token.m_pPrevious = m_pPrevious;
+		}
+
+		m_pPrevious = &token;
+	}
+
+	//============================================================================
+
+	void CConsole::CToken::Unlink(void)
+	{
+		if (m_pNext != NULL)
+		{
+			m_pNext->m_pPrevious = m_pPrevious;
+		}
+
+		if (m_pPrevious != NULL)
+		{
+			m_pPrevious->m_pNext = m_pNext;
+		}
+	}
+
+	//============================================================================
+
 	const char* CConsole::CVariantInt32::GetAsString(void)
 	{
-		char buffer[64];
+		static char buffer[64];
 		sprintf_s(buffer, sizeof(buffer), "%i", m_variable);
 		return buffer;
 	}
@@ -21,7 +68,7 @@ namespace engine
 
 	const char* CConsole::CVariantFloat::GetAsString(void)
 	{
-		char buffer[64];
+		static char buffer[64];
 		sprintf_s(buffer, sizeof(buffer), "%f", m_variable);
 		return buffer;
 	}
@@ -38,7 +85,7 @@ namespace engine
 			pVariant = new CVariantInt32(name, variable, initial, flags | ICF_CREATED_ON_HEAP, help, pOnChangedCallback);
 			if (pVariant != NULL)
 			{
-				m_tokenList.Add(pVariant);
+				Add(*pVariant);
 			}
 
 			Log(_TEXT("[Console]: '%s' registered as CVariantInt32"), name);
@@ -63,7 +110,7 @@ namespace engine
 			pVariant = new CVariantFloat(name, variable, initial, flags | ICF_CREATED_ON_HEAP, help, pOnChangedCallback);
 			if (pVariant != NULL)
 			{
-				m_tokenList.Add(pVariant);
+				Add(*pVariant);
 			}
 
 			Log(_TEXT("[Console]: '%s' registered as CVariantFloat"), name);
@@ -88,7 +135,7 @@ namespace engine
 			pVariant = new CVariantString(name, variable, initial, flags | ICF_CREATED_ON_HEAP, help, pOnChangedCallback);
 			if (pVariant != NULL)
 			{
-				m_tokenList.Add(pVariant);
+				Add(*pVariant);
 			}
 
 			Log(_TEXT("[Console]: '%s' registered as CVariantString"), name);
@@ -112,7 +159,7 @@ namespace engine
 		{
 			if (pToken->GetFlags() & ICF_VARIANT)
 			{
-				m_tokenList.Remove(*pToken);
+				Remove(*pToken);
 				if (pToken->GetFlags() & ICF_CREATED_ON_HEAP)
 				{
 					delete pToken;
@@ -147,7 +194,7 @@ namespace engine
 			pCommand = new CCommand(name, flags | ICF_CREATED_ON_HEAP, help, pOnCommandCallback);
 			if (pCommand != NULL)
 			{
-				m_tokenList.Add(pCommand);
+				Add(*pCommand);
 			}
 
 			registered = true;
@@ -172,7 +219,7 @@ namespace engine
 		{
 			if (!(pToken->GetFlags() & ICF_VARIANT))
 			{
-				m_tokenList.Remove(*pToken);
+				Remove(*pToken);
 				if (pToken->GetFlags() & ICF_CREATED_ON_HEAP)
 				{
 					delete pToken;
@@ -202,7 +249,7 @@ namespace engine
 		CToken* pToken = FindToken(name);
 		if (pToken->GetFlags() & ICF_VARIANT)
 		{
-			pVariant = pToken;
+			pVariant = reinterpret_cast<IVariant*>(pToken);
 		}
 
 		return pVariant;
@@ -210,15 +257,77 @@ namespace engine
 
 	//============================================================================
 
-	CToken* CConsole::FindToken(const char* name)
+	void CConsole::Add(CToken& token)
+	{
+		if (m_pHead != NULL)
+		{
+			CToken* pHere = m_pHead;
+			bool added = false;
+			while (!added)
+			{
+				if (_stricmp(pHere->Name(), token.Name()) < 0)
+				{
+					pHere->Prepend(token);
+					added = true;
+
+					if (pHere == m_pHead)
+					{
+						m_pHead = &token;
+					}
+				}
+				else
+				{
+					if (pHere->Next() != NULL)
+					{
+						pHere = pHere->Next();
+					}
+					else
+					{
+						pHere->Append(token);
+						added = true;
+					}
+				}
+			}
+		}
+		else
+		{
+			m_pHead = &token;
+		}
+	}
+
+	//============================================================================
+
+	void CConsole::Remove(CToken& token)
+	{
+		if (m_pHead != NULL)
+		{
+			CToken* pToken = FindToken(token.Name());
+
+			if (pToken == m_pHead)
+			{
+				m_pHead = m_pHead->Next();
+			}
+
+			pToken->Unlink();
+		}
+	}
+
+	//============================================================================
+
+	CConsole::CToken* CConsole::FindToken(const char* name)
 	{
 		CToken* pToken = NULL;
-		for (token_list_iterator iterator(m_tokenList); (pToken == NULL) && (iterator != m_tokenList.Tail()); ++iterator)
+		CToken* pHere = m_pHead;
+
+		while (pHere != NULL)
 		{
-			if (strcmp(iterator.m_name, name) == 0)
+			if (_stricmp(pHere->Name(), name) == 0)
 			{
-				pToken = iterator;
+				pToken = pHere;
+				pHere = NULL;
 			}
+
+			pHere = pHere->Next();
 		}
 
 		return pToken;

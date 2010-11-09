@@ -379,14 +379,6 @@
 						>
 					</File>
 				</Filter>
-				<Filter
-					Name="templates"
-					>
-					<File
-						RelativePath="..\engine\independent\templates\stack_list.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="windows"

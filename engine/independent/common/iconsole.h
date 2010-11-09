@@ -60,6 +60,7 @@ namespace engine
 			CF_CHEAT							= BIT(2),	// Modification of this variant is deemed cheating
 			CF_DEBUG							= BIT(3),	// This variant can only be modified in non-release builds
 			CF_READ_ONLY					= BIT(4),	// This variant can only be set when initialised
+			CF_HIDDEN							= BIT(5),	// This variant doesn't show up in any tab-completion lists
 
 			CF_EXTERNAL_BITS			= 0x0000ffff
 		};
