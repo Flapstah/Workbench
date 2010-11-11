@@ -30,9 +30,10 @@ namespace engine
 			eBF_OutputToDebugger		= BIT(6),
 			eBF_ForceInsertNewline	= BIT(7),
 			eBF_FlushEachWrite			= BIT(8),
+			eBF_SuspendOutputHeader	= BIT(9),
 
 			eBF_Default							= eBF_Active | eBF_Name | eBF_LineCount | eBF_FrameCount | eBF_TimeStamp | eBF_OutputToDebugger | eBF_ForceInsertNewline | eBF_FlushEachWrite,
-			eBF_Mask								= eBF_Active | eBF_Name | eBF_DateStamp | eBF_LineCount | eBF_FrameCount | eBF_TimeStamp | eBF_OutputToDebugger | eBF_ForceInsertNewline | eBF_FlushEachWrite
+			eBF_Mask								= eBF_Active | eBF_Name | eBF_DateStamp | eBF_LineCount | eBF_FrameCount | eBF_TimeStamp | eBF_OutputToDebugger | eBF_ForceInsertNewline | eBF_FlushEachWrite | eBF_SuspendOutputHeader
 		}; // End [enum eBehaviourFlag]
 
 		virtual void						SetActive(bool active) = 0;

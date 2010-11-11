@@ -82,55 +82,14 @@ namespace engine
 		if (m_pBuffer != NULL)
 		{
 			CAutoMutexLock(m_pBuffer->m_mutex);
-
 			m_pBuffer->m_previousSize = m_pBuffer->m_size;
-
-			if (m_behaviours & eBF_DateStamp)
-			{
-				const ISystemClock* pSystemClock = GetSystemClock();
-				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%s %s]"), pSystemClock->GetLocalDateString(), pSystemClock->GetLocalTimeString());
-			}
-
-			if (m_behaviours & eBF_LineCount)
-			{
-				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%i]"), ++s_lineCount);
-			}
-
-			const ITimer* pGameClock = GetGameClock();
-			if (m_behaviours & eBF_FrameCount)
-			{
-				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%i]"), pGameClock->GetFrameCount());
-			}
-
-			if (m_behaviours & eBF_TimeStamp)
-			{
-				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%8.03f]"), pGameClock->GetTime());
-			}
-
-			if (m_behaviours & eBF_Name)
-			{
-				m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%s]"), m_name);
-			}
-
-			if (m_pBuffer->m_previousSize != m_pBuffer->m_size)
-			{
-				if (_tcscat_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT(" ")) == 0)
-				{
-					++m_pBuffer->m_size;
-				}
-			}
+			WriteBufferPreamble();
 
 			va_list arguments;
 			va_start(arguments, format);
 			m_pBuffer->m_size += _vstprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, format, arguments);
 
-			if ((m_behaviours & eBF_ForceInsertNewline) && _tcscmp(&m_pBuffer->m_buffer[m_pBuffer->m_size - _tcslen(_TEXT("\r\n"))], _TEXT("\r\n")))
-			{
-				if (_tcscat_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("\r\n")) == 0)
-				{
-					m_pBuffer->m_size += _tcslen(_TEXT("\r\n"));
-				}
-			}
+			WriteBufferPostamble();
 
 			if (m_behaviours & eBF_OutputToDebugger)
 			{
@@ -177,6 +136,59 @@ namespace engine
 		}
 
 		return handle;
+	}
+
+	//============================================================================
+
+	void CLogFile::WriteBufferPreamble(void)
+	{
+		if (m_behaviours & eBF_DateStamp)
+		{
+			const ISystemClock* pSystemClock = GetSystemClock();
+			m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%s %s]"), pSystemClock->GetLocalDateString(), pSystemClock->GetLocalTimeString());
+		}
+
+		if (m_behaviours & eBF_LineCount)
+		{
+			m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%i]"), ++s_lineCount);
+		}
+
+		const ITimer* pGameClock = GetGameClock();
+		if (m_behaviours & eBF_FrameCount)
+		{
+			m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%i]"), pGameClock->GetFrameCount());
+		}
+
+		if (m_behaviours & eBF_TimeStamp)
+		{
+			m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%8.03f]"), pGameClock->GetTime());
+		}
+
+		if (m_behaviours & eBF_Name)
+		{
+			m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%s]"), m_name);
+		}
+
+		if (m_pBuffer->m_previousSize != m_pBuffer->m_size)
+		{
+			if (_tcscat_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT(" ")) == 0)
+			{
+				++m_pBuffer->m_size;
+			}
+		}
+	}
+
+	//============================================================================
+
+	void CLogFile::WriteBufferPostamble(void)
+	{
+		if ((m_behaviours & eBF_ForceInsertNewline) && _tcscmp(&m_pBuffer->m_buffer[m_pBuffer->m_size - _tcslen(_TEXT("\r\n"))], _TEXT("\r\n")))
+		{
+			if (_tcscat_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("\r\n")) == 0)
+			{
+				m_pBuffer->m_size += _tcslen(_TEXT("\r\n"));
+			}
+		}
 	}
 
 	//============================================================================
