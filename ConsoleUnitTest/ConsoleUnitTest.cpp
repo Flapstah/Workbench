@@ -18,6 +18,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	assert(1 == 0);
 	assertf(1 == 0, _TEXT("Hopefully, we're asserting that 1 does not equal 0..."));
 
+	Log(_TEXT("Last entry"));
 	return 0;
 }
 
