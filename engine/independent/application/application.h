@@ -45,11 +45,11 @@ namespace engine
 	protected:
 		enum eFlags
 		{
-			eF_Quit						= 1 << 0,
-			eF_QuitImmediate	= 1 << 1,
-			eF_Initialised		= 1 << 2,
-			eF_StartedUp			= 1 << 3,
-			eF_Running				= 1 << 4
+			eF_Quit						= BIT(0),
+			eF_QuitImmediate	= BIT(1),
+			eF_Initialised		= BIT(2),
+			eF_StartedUp			= BIT(3),
+			eF_Running				= BIT(4)
 		};
 
 		float		m_fpsBuffer[APPLICATION_FPS_BUFFER_SIZE];
