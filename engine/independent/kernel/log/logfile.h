@@ -40,16 +40,14 @@ namespace engine
 		~CLogFile(void);
 
 		// ILogFile
-		virtual void						SetActive(bool active)												{ (active) ? TurnOnBehaviours(eBF_Active) : TurnOffBehaviours(eBF_Active);				}
-		virtual bool						IsActive(void) const													{ return (m_pParent != NULL) ? m_pParent->IsActive() : IsBehaviourOn(eBF_Active);	}
+		virtual void	SetActive(bool active)												{ (active) ? TurnOnBehaviours(eBF_Active) : TurnOffBehaviours(eBF_Active);				}
+		virtual bool	IsActive(void) const													{ return (m_pParent != NULL) ? m_pParent->IsActive() : IsBehaviourOn(eBF_Active);	}
 
-		virtual void						TurnOnBehaviours(eBehaviourFlag behaviours)		{ m_behaviours |= (behaviours & eBF_Mask);											}
-		virtual void						TurnOffBehaviours(eBehaviourFlag behaviours)	{ m_behaviours &= ~(behaviours & eBF_Mask);											}
-		virtual bool						IsBehaviourOn(eBehaviourFlag behaviour) const	{ return ((m_behaviours & eBF_Mask) & behaviour) == behaviour;	}
-		virtual eBehaviourFlag	GetBehaviours(void) const											{ return static_cast<eBehaviourFlag>(m_behaviours & eBF_Mask);	}
-		virtual void						SetBehaviours(eBehaviourFlag behaviours)			{ m_behaviours = (behaviours & eBF_Mask);												}
+		virtual void	TurnOnBehaviours(eBehaviourFlag behaviours)		{ m_behaviours |= (behaviours & eBF_Mask);											}
+		virtual void	TurnOffBehaviours(eBehaviourFlag behaviours)	{ m_behaviours &= ~(behaviours & eBF_Mask);											}
+		virtual bool	IsBehaviourOn(eBehaviourFlag behaviour) const	{ return ((m_behaviours & eBF_Mask) & behaviour) == behaviour;	}
 
-		virtual bool						Write(const TCHAR* format, ...);
+		virtual bool	Write(const TCHAR* format, ...);
 		// ~ILogFile
 
 	protected:
@@ -61,11 +59,11 @@ namespace engine
 			eIBF_Mask							= eIBF_SeparateFile | eIBF_AllocatedBuffer
 		}; // End [enum eInternalBehaviourFlag]
 
-		IFileSystem::eFileSystemHandle Open(void);
-		void WriteBufferOutputHeader(void);
-		void WriteBufferOutputFooter(void);
-		bool Flush(void);
-		void Close(void);
+		IFileSystem::eFileSystemHandle	Open(void);
+		void														WriteBufferOutputHeader(void);
+		void														WriteBufferOutputFooter(void);
+		bool														Flush(void);
+		void														Close(void);
 
 	protected:
 		TCHAR m_name[LOGFILE_NAME_SIZE];

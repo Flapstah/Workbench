@@ -37,16 +37,14 @@ namespace engine
 			eBF_Mask								= eBF_Active | eBF_Name | eBF_DateStamp | eBF_LineCount | eBF_FrameCount | eBF_TimeStamp | eBF_OutputToDebugger | eBF_ForceInsertNewline | eBF_FlushEachWrite | eBF_SuspendOutputHeader | eBF_SuspendOutputFooter
 		}; // End [enum eBehaviourFlag]
 
-		virtual void						SetActive(bool active) = 0;
-		virtual bool						IsActive(void) const = 0;
+		virtual void	SetActive(bool active) = 0;
+		virtual bool	IsActive(void) const = 0;
 
-		virtual void						TurnOnBehaviours(eBehaviourFlag behaviours) = 0;
-		virtual void						TurnOffBehaviours(eBehaviourFlag behaviours) = 0;
-		virtual bool						IsBehaviourOn(eBehaviourFlag behaviour) const = 0;
-		virtual eBehaviourFlag	GetBehaviours(void) const = 0;
-		virtual void						SetBehaviours(eBehaviourFlag behaviours) = 0;
+		virtual void	TurnOnBehaviours(eBehaviourFlag behaviours) = 0;
+		virtual void	TurnOffBehaviours(eBehaviourFlag behaviours) = 0;
+		virtual bool	IsBehaviourOn(eBehaviourFlag behaviour) const = 0;
 
-		virtual bool						Write(const TCHAR* format, ...) = 0;
+		virtual bool	Write(const TCHAR* format, ...) = 0;
 	}; // End [struct ILogFile]
 
 	//============================================================================
