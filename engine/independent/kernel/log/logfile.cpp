@@ -83,13 +83,20 @@ namespace engine
 		{
 			CAutoMutexLock(m_pBuffer->m_mutex);
 			m_pBuffer->m_previousSize = m_pBuffer->m_size;
-			WriteBufferPreamble();
+
+			if (!(m_behaviours & eBF_SuspendOutputHeader))
+			{
+				WriteBufferOutputHeader();
+			}
 
 			va_list arguments;
 			va_start(arguments, format);
 			m_pBuffer->m_size += _vstprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, format, arguments);
 
-			WriteBufferPostamble();
+			if (!(m_behaviours & eBF_SuspendOutputFooter))
+			{
+				WriteBufferOutputFooter();
+			}
 
 			if (m_behaviours & eBF_OutputToDebugger)
 			{
@@ -140,7 +147,7 @@ namespace engine
 
 	//============================================================================
 
-	void CLogFile::WriteBufferPreamble(void)
+	void CLogFile::WriteBufferOutputHeader(void)
 	{
 		if (m_behaviours & eBF_DateStamp)
 		{
@@ -180,7 +187,7 @@ namespace engine
 
 	//============================================================================
 
-	void CLogFile::WriteBufferPostamble(void)
+	void CLogFile::WriteBufferOutputFooter(void)
 	{
 		if ((m_behaviours & eBF_ForceInsertNewline) && _tcscmp(&m_pBuffer->m_buffer[m_pBuffer->m_size - _tcslen(_TEXT("\r\n"))], _TEXT("\r\n")))
 		{

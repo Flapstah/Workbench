@@ -62,8 +62,8 @@ namespace engine
 		}; // End [enum eInternalBehaviourFlag]
 
 		IFileSystem::eFileSystemHandle Open(void);
-		void WriteBufferPreamble(void);
-		void WriteBufferPostamble(void);
+		void WriteBufferOutputHeader(void);
+		void WriteBufferOutputFooter(void);
 		bool Flush(void);
 		void Close(void);
 
