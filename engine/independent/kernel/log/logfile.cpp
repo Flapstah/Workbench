@@ -124,15 +124,13 @@ namespace engine
 			va_start(arguments, format);
 			m_pBuffer->m_size += _vstprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, format, arguments);
 
-#if defined LOGS_FORCE_INSERT_NEWLINE
-			if (_tcscmp(&m_pBuffer->m_buffer[m_pBuffer->m_size - _tcslen(_TEXT("\r\n"))], _TEXT("\r\n")))
+			if ((m_behaviours & eBF_ForceInsertNewline) && _tcscmp(&m_pBuffer->m_buffer[m_pBuffer->m_size - _tcslen(_TEXT("\r\n"))], _TEXT("\r\n")))
 			{
 				if (_tcscat_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("\r\n")) == 0)
 				{
 					m_pBuffer->m_size += _tcslen(_TEXT("\r\n"));
 				}
 			}
-#endif
 
 			if (m_behaviours & eBF_OutputToDebugger)
 			{

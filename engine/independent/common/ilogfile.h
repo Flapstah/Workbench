@@ -3,8 +3,11 @@
 
 //==============================================================================
 
+#include "common/macros.h"
+
+//==============================================================================
+
 #define LOGS_ENABLED								// Enable/disable logging
-#define LOGS_FORCE_INSERT_NEWLINE		// Force a newline to be inserted at the end of every separate log output (if it doesn't already exist)
 #define LOGS_FORCE_FLUSH_THRESHOLD ((uint32)(0x000f * 0.8f)) // Force a flush when the internal log buffer is 80% or more full (approximate - measured in 15ths)
 
 //==============================================================================
@@ -18,30 +21,36 @@ namespace engine
 	{
 		enum eBehaviourFlag
 		{
-			eBF_Active						= 1 << 0,
-			eBF_Name							= 1 << 1,
-			eBF_DateStamp					= 1 << 2,
-			eBF_LineCount					= 1 << 3,
-			eBF_FrameCount				= 1 << 4,
-			eBF_TimeStamp					= 1 << 5,
-			eBF_OutputToDebugger	= 1 << 6,
-			eBF_FlushEachWrite		= 1 << 7
+			eBF_Active							= BIT(0),
+			eBF_Name								= BIT(1),
+			eBF_DateStamp						= BIT(2),
+			eBF_LineCount						= BIT(3),
+			eBF_FrameCount					= BIT(4),
+			eBF_TimeStamp						= BIT(5),
+			eBF_OutputToDebugger		= BIT(6),
+			eBF_ForceInsertNewline	= BIT(7),
+			eBF_FlushEachWrite			= BIT(8),
+
+			eBF_Default							= eBF_Active | eBF_Name | eBF_LineCount | eBF_FrameCount | eBF_TimeStamp | eBF_OutputToDebugger | eBF_ForceInsertNewline | eBF_FlushEachWrite,
+			eBF_Mask								= eBF_Active | eBF_Name | eBF_DateStamp | eBF_LineCount | eBF_FrameCount | eBF_TimeStamp | eBF_OutputToDebugger | eBF_ForceInsertNewline | eBF_FlushEachWrite
 		}; // End [enum eBehaviourFlag]
 
-		virtual void SetActive(bool active) = 0;
-		virtual bool IsActive(void) const = 0;
+		virtual void						SetActive(bool active) = 0;
+		virtual bool						IsActive(void) const = 0;
 
-		virtual void TurnOnBehaviours(eBehaviourFlag behaviours) = 0;
-		virtual void TurnOffBehaviours(eBehaviourFlag behaviours) = 0;
-		virtual bool IsBehaviourOn(eBehaviourFlag behaviour) const = 0;
+		virtual void						TurnOnBehaviours(eBehaviourFlag behaviours) = 0;
+		virtual void						TurnOffBehaviours(eBehaviourFlag behaviours) = 0;
+		virtual bool						IsBehaviourOn(eBehaviourFlag behaviour) const = 0;
+		virtual eBehaviourFlag	GetBehaviours(void) const = 0;
+		virtual void						SetBehaviours(eBehaviourFlag behaviours) = 0;
 
-		virtual bool Write(const TCHAR* format, ...) = 0;
+		virtual bool						Write(const TCHAR* format, ...) = 0;
 	}; // End [struct ILogFile]
 
 	//============================================================================
 
 #if !defined(DEFAULT_LOG_BEHAVIOUR)
-#define DEFAULT_LOG_BEHAVIOUR (ILogFile::eBF_Active | ILogFile::eBF_LineCount | ILogFile::eBF_FrameCount | ILogFile::eBF_TimeStamp | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite)
+#define DEFAULT_LOG_BEHAVIOUR (ILogFile::eBF_Default)
 #endif
 
 	//============================================================================

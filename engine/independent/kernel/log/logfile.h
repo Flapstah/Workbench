@@ -40,21 +40,25 @@ namespace engine
 		~CLogFile(void);
 
 		// ILogFile
-		virtual void SetActive(bool active)													{ (active) ? TurnOnBehaviours(eBF_Active) : TurnOffBehaviours(eBF_Active);				}
-		virtual bool IsActive(void) const														{ return (m_pParent != NULL) ? m_pParent->IsActive() : IsBehaviourOn(eBF_Active);	}
+		virtual void						SetActive(bool active)												{ (active) ? TurnOnBehaviours(eBF_Active) : TurnOffBehaviours(eBF_Active);				}
+		virtual bool						IsActive(void) const													{ return (m_pParent != NULL) ? m_pParent->IsActive() : IsBehaviourOn(eBF_Active);	}
 
-		virtual void TurnOnBehaviours(eBehaviourFlag behaviours)		{ m_behaviours |= behaviours;											}
-		virtual void TurnOffBehaviours(eBehaviourFlag behaviours)		{ m_behaviours &= ~behaviours;										}
-		virtual bool IsBehaviourOn(eBehaviourFlag behaviour) const	{ return (m_behaviours & behaviour) == behaviour;	}
+		virtual void						TurnOnBehaviours(eBehaviourFlag behaviours)		{ m_behaviours |= (behaviours & eBF_Mask);											}
+		virtual void						TurnOffBehaviours(eBehaviourFlag behaviours)	{ m_behaviours &= ~(behaviours & eBF_Mask);											}
+		virtual bool						IsBehaviourOn(eBehaviourFlag behaviour) const	{ return ((m_behaviours & eBF_Mask) & behaviour) == behaviour;	}
+		virtual eBehaviourFlag	GetBehaviours(void) const											{ return static_cast<eBehaviourFlag>(m_behaviours & eBF_Mask);	}
+		virtual void						SetBehaviours(eBehaviourFlag behaviours)			{ m_behaviours = (behaviours & eBF_Mask);												}
 
-		virtual bool Write(const TCHAR* format, ...);
+		virtual bool						Write(const TCHAR* format, ...);
 		// ~ILogFile
 
 	protected:
 		enum eInternalBehaviourFlag
 		{
-			eIBF_SeparateFile			= 1 << 14,
-			eIBF_AllocatedBuffer	= 1 << 15
+			eIBF_SeparateFile			= BIT(14),
+			eIBF_AllocatedBuffer	= BIT(15),
+
+			eIBF_Mask							= eIBF_SeparateFile | eIBF_AllocatedBuffer
 		}; // End [enum eInternalBehaviourFlag]
 
 		IFileSystem::eFileSystemHandle Open(void);
