@@ -5,6 +5,8 @@ need to clean up interface classes
 	- need a way to create a new log; need warning & error variants of main log (perhaps more?)
 	- maybe need a way of forcing output to be ascii even if unicode program; or unicode if ascii?
 	- need some way of not having to wrap all log format strings in _TEXT()
+		- make two log classes, one UTF8, the other Unicode
+		- better to have 2 classes than one class that branches for every write - this class is used a lot
 	
 kernel systems
 even though kernel will (ultimately) have memory management, it must not rely on any dynamic memory
