@@ -13,6 +13,13 @@ typedef unsigned short		uint16;
 typedef unsigned int			uint32;
 typedef unsigned __int64	uint64;
 
+template <size_t _size>
+union mchar_t
+{
+	wchar_t	m_UTF16[_size];
+	char		m_UTF8[_size * sizeof(wchar_t)];
+};
+
 //==============================================================================
 
 #endif // End [!defined(__PLATFORM_TYPES_H__)]

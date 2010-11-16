@@ -42,31 +42,27 @@ namespace engine
 
 	//============================================================================
 
-	CLogFile::CLogFile(const TCHAR* name, CLogFile* pParent, eBehaviourFlag initialBehaviour, SLogFileBuffer* pBuffer)
+	CLogFile::CLogFile(const wchar_t* name, CLogFile* pParent, eBehaviourFlag initialBehaviour, SLogFileBuffer* pBuffer)
+		: m_pParent(pParent)
+		, m_pBuffer(pBuffer)
+		, m_behaviours(initialBehaviour | eIBF_Unicode)
+	{
+		Initialise();
+
+		wcscpy_s(m_name.m_UTF16, LOGFILE_NAME_SIZE, name);
+	}
+
+	//============================================================================
+
+	CLogFile::CLogFile(const char* name, CLogFile* pParent, eBehaviourFlag initialBehaviour, SLogFileBuffer* pBuffer)
 		: m_pParent(pParent)
 		, m_pBuffer(pBuffer)
 		, m_behaviours(initialBehaviour)
 	{
-		if (m_pBuffer == NULL)
-		{
-			if (m_pParent != NULL)
-			{
-				m_pBuffer = m_pParent->m_pBuffer;
-			}
-			else
-			{
-				m_behaviours |= eIBF_AllocatedBuffer | eIBF_SeparateFile;
-				m_pBuffer = new SLogFileBuffer();
-			}
-		}
-		else
-		{
-			m_behaviours |= eIBF_SeparateFile;
-		}
+		Initialise();
 
-		_tcscpy_s(m_name, sizeof(m_name) / sizeof(TCHAR), name);
+		strcpy_s(m_name.m_UTF8, LOGFILE_NAME_SIZE, name);
 	}
-
 	//============================================================================
 
 	CLogFile::~CLogFile(void)
@@ -76,7 +72,7 @@ namespace engine
 
 	//============================================================================
 
-	bool CLogFile::Write(const TCHAR* format, ...)
+	bool CLogFile::Write(const wchar_t* format, ...)
 	{
 		bool writtenToFile = false;
 		if (m_pBuffer != NULL)
@@ -86,16 +82,51 @@ namespace engine
 
 			if (!(m_behaviours & eBF_SuspendOutputHeader))
 			{
-				WriteBufferOutputHeader();
+				if (m_behaviours & eBF_DateStamp)
+				{
+					InsertDateStampUTF16();
+				}
+
+				if (m_behaviours & eBF_LineCount)
+				{
+					InsertLineCountUTF16();
+				}
+
+				const ITimer* pGameClock = GetGameClock();
+				if (m_behaviours & eBF_FrameCount)
+				{
+					InsertFrameCountUTF16(pGameClock);
+				}
+
+				if (m_behaviours & eBF_TimeStamp)
+				{
+					InsertTimeStampUTF16(pGameClock);
+				}
+
+				if (m_behaviours & eBF_Name)
+				{
+					InsertNameUTF16();
+				}
+
+				if (m_pBuffer->m_previousSize != m_pBuffer->m_size)
+				{
+					if (wcscat_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, _TEXT(" ")) == 0)
+					{
+						++m_pBuffer->m_size;
+					}
+				}
 			}
 
 			va_list arguments;
 			va_start(arguments, format);
-			m_pBuffer->m_size += _vstprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, format, arguments);
+			m_pBuffer->m_size += vswprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, format, arguments);
 
 			if (!(m_behaviours & eBF_SuspendOutputFooter))
 			{
-				WriteBufferOutputFooter();
+				if (m_behaviours & eBF_ForceInsertNewline)
+				{
+					ForceInsertNewlineUTF16();
+				}
 			}
 
 			if (m_behaviours & eBF_OutputToDebugger)
@@ -115,6 +146,102 @@ namespace engine
 
 	//============================================================================
 
+	bool CLogFile::Write(const char* format, ...)
+	{
+		bool writtenToFile = false;
+		if (m_pBuffer != NULL)
+		{
+			CAutoMutexLock(m_pBuffer->m_mutex);
+			m_pBuffer->m_previousSize = m_pBuffer->m_size;
+
+			if (!(m_behaviours & eBF_SuspendOutputHeader))
+			{
+				if (m_behaviours & eBF_DateStamp)
+				{
+					InsertDateStampUTF8();
+				}
+
+				if (m_behaviours & eBF_LineCount)
+				{
+					InsertLineCountUTF8();
+				}
+
+				const ITimer* pGameClock = GetGameClock();
+				if (m_behaviours & eBF_FrameCount)
+				{
+					InsertFrameCountUTF8(pGameClock);
+				}
+
+				if (m_behaviours & eBF_TimeStamp)
+				{
+					InsertTimeStampUTF8(pGameClock);
+				}
+
+				if (m_behaviours & eBF_Name)
+				{
+					InsertNameUTF8();
+				}
+
+				if (m_pBuffer->m_previousSize != m_pBuffer->m_size)
+				{
+					if (strcat_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, " ") == 0)
+					{
+						++m_pBuffer->m_size;
+					}
+				}
+			}
+
+			va_list arguments;
+			va_start(arguments, format);
+			m_pBuffer->m_size += sprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, format, arguments);
+
+			if (!(m_behaviours & eBF_SuspendOutputFooter))
+			{
+				if (m_behaviours & eBF_ForceInsertNewline)
+				{
+					ForceInsertNewlineUTF8();
+				}
+			}
+
+			if (m_behaviours & eBF_OutputToDebugger)
+			{
+				CDebug::OutputToDebugger(&m_pBuffer->m_buffer[m_pBuffer->m_previousSize]);
+			}
+
+			uint32 bufferUsedCapacity = (m_pBuffer->m_size << 4) / LOGFILE_BUFFER_SIZE;
+			if ((m_behaviours & eBF_FlushEachWrite) || (bufferUsedCapacity >= LOGS_FORCE_FLUSH_THRESHOLD))
+			{
+				writtenToFile = Flush();
+			}
+		}
+
+		return writtenToFile;
+	}
+
+	//============================================================================
+
+	void CLogFile::Initialise(void)
+	{
+		if (m_pBuffer == NULL)
+		{
+			if (m_pParent != NULL)
+			{
+				m_pBuffer = m_pParent->m_pBuffer;
+			}
+			else
+			{
+				m_behaviours |= eIBF_AllocatedBuffer | eIBF_SeparateFile;
+				m_pBuffer = new SLogFileBuffer();
+			}
+		}
+		else
+		{
+			m_behaviours |= eIBF_SeparateFile;
+		}
+	}
+
+	//============================================================================
+
 	IFileSystem::eFileSystemHandle CLogFile::Open(void)
 	{
 		IFileSystem::eFileSystemHandle handle = (m_pBuffer != NULL) ? m_pBuffer->m_handle : IFileSystem::eFSH_INVALID;;
@@ -126,18 +253,38 @@ namespace engine
 				CAutoMutexLock(m_pBuffer->m_mutex);
 
 				IFileSystem* pFileSystem = GetFileSystem();
-				TCHAR fileName[MAX_PATH];
+				mchar_t<MAX_PATH> fileName;
 
-				if (pFileSystem->CreatePath(fileName, sizeof(fileName) / sizeof(TCHAR), m_name, IFileSystem::eFT_LogFile, true) == IFileSystem::eFSE_SUCCESS)
+				IFileSystem::eFileSystemError error = IFileSystem::eFSE_ERROR;
+				if (m_behaviours & eIBF_Unicode)
 				{
-					if ((m_pBuffer->m_handle = handle = pFileSystem->OpenFile(fileName, _TEXT("wb"))) != IFileSystem::eFSH_INVALID) // N.B. opened as binary otherwise \n gets mangled in unicode output...
+					error = pFileSystem->CreatePath(fileName.m_UTF16, MAX_PATH, m_name, IFileSystem::eFT_LogFile, true);
+				}
+				else
+				{
+					error = pFileSystem->CreatePath(fileName.m_UTF8, MAX_PATH, m_name.m_UTF16, IFileSystem::eFT_LogFile, true);
+				}
+
+				if (error == IFileSystem::eFSE_SUCCESS)
+				{
+					// N.B. opened as binary otherwise \n gets mangled...
+					if (m_behaviours & eIBF_Unicode)
 					{
-#if defined(_UNICODE)
-						// Insert the Byte-Order-Mark for UTF-16
-						uint16 bom = 0xfeff;
-						pFileSystem->Write(handle, &bom, sizeof(uint16), 1);
-#endif
+						handle = pFileSystem->OpenFile(fileName.m_UTF16, _TEXT("wb")); 
+
+						if (handle != IFileSystem::eFSH_INVALID)
+						{
+							// Insert the Byte-Order-Mark for UTF-16
+							uint16 bom = 0xfeff;
+							pFileSystem->Write(handle, &bom, sizeof(uint16), 1);
+						}
 					}
+					else
+					{
+						handle = pFileSystem->OpenFile(fileName.m_UTF8, "wb");
+					}
+
+					m_pBuffer->m_handle = handle;
 				}
 			}
 		}
@@ -147,53 +294,104 @@ namespace engine
 
 	//============================================================================
 
-	void CLogFile::WriteBufferOutputHeader(void)
+	void CLogFile::InsertNameUTF16(void)
 	{
-		if (m_behaviours & eBF_DateStamp)
-		{
-			const ISystemClock* pSystemClock = GetSystemClock();
-			m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%s %s]"), pSystemClock->GetLocalDateString(), pSystemClock->GetLocalTimeString());
-		}
+		m_pBuffer->m_size += swprintf_s(&m_pBuffer->m_buffer.m_UTF16[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, _TEXT("[%s]"), m_name.m_UTF16);
+	}
 
-		if (m_behaviours & eBF_LineCount)
-		{
-			m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%i]"), ++s_lineCount);
-		}
+	//============================================================================
 
-		const ITimer* pGameClock = GetGameClock();
-		if (m_behaviours & eBF_FrameCount)
-		{
-			m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%i]"), pGameClock->GetFrameCount());
-		}
+	void CLogFile::InsertNameUTF8(void)
+	{
+		m_pBuffer->m_size += sprintf_s(&m_pBuffer->m_buffer.m_UTF8[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, "[%s]", m_name.m_UTF8);
+	}
 
-		if (m_behaviours & eBF_TimeStamp)
-		{
-			m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%8.03f]"), pGameClock->GetTime());
-		}
+	//============================================================================
 
-		if (m_behaviours & eBF_Name)
-		{
-			m_pBuffer->m_size += _stprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("[%s]"), m_name);
-		}
+	void CLogFile::InsertDateStampUTF16(void)
+	{
+		const ISystemClock* pSystemClock = GetSystemClock();
+		m_pBuffer->m_size += swprintf_s(&m_pBuffer->m_buffer.m_UTF16[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, _TEXT("[%s %s]"), pSystemClock->GetLocalDateString(), pSystemClock->GetLocalTimeString());
+	}
 
-		if (m_pBuffer->m_previousSize != m_pBuffer->m_size)
+	//============================================================================
+
+	void CLogFile::InsertDateStampUTF8(void)
+	{
+		const ISystemClock* pSystemClock = GetSystemClock();
+		m_pBuffer->m_size += sprintf_s(&m_pBuffer->m_buffer.m_UTF8[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, "[%s %s]", pSystemClock->GetLocalDateString(), pSystemClock->GetLocalTimeString());
+	}
+
+	//============================================================================
+
+	void CLogFile::InsertLineCountUTF16(void)
+	{
+		m_pBuffer->m_size += swprintf_s(&m_pBuffer->m_buffer.m_UTF16[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, _TEXT("[%i]"), ++s_lineCount);
+	}
+
+	//============================================================================
+
+	void CLogFile::InsertLineCountUTF8(void)
+	{
+		m_pBuffer->m_size += sprintf_s(&m_pBuffer->m_buffer.m_UTF8[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, "[%i]", ++s_lineCount);
+	}
+
+	//============================================================================
+
+	void CLogFile::InsertFrameCountUTF16(const ITimer* pTimer)
+	{
+		m_pBuffer->m_size += swprintf_s(&m_pBuffer->m_buffer.m_UTF16[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, _TEXT("[%i]"), pTimer->GetFrameCount());
+	}
+
+	//============================================================================
+
+	void CLogFile::InsertFrameCountUTF8(const ITimer* pTimer)
+	{
+		m_pBuffer->m_size += sprintf_s(&m_pBuffer->m_buffer.m_UTF8[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, "[%i]", pTimer->GetFrameCount());
+	}
+
+	//============================================================================
+
+	void CLogFile::InsertTimeStampUTF16(const ITimer* pTimer)
+	{
+		m_pBuffer->m_size += swprintf_s(&m_pBuffer->m_buffer.m_UTF16[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, _TEXT("[%8.03f]"), pTimer->GetTime());
+	}
+
+	//============================================================================
+
+	void CLogFile::InsertTimeStampUTF8(const ITimer* pTimer)
+	{
+		m_pBuffer->m_size += sprintf_s(&m_pBuffer->m_buffer.m_UTF8[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, "[%8.03f]", pTimer->GetTime());
+	}
+
+	//============================================================================
+
+	void CLogFile::ForceInsertNewlineUTF16(void)
+	{
+		wchar_t* pNewline = _TEXT("\r\n");
+		uint32 sizeof_newline = wcslen(pNewline);
+
+		if (wcscmp(&m_pBuffer->m_buffer.m_UTF16[m_pBuffer->m_size - sizeof_newline], pNewline))
 		{
-			if (_tcscat_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT(" ")) == 0)
+			if (wcscat_s(&m_pBuffer->m_buffer.m_UTF16[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, pNewline) == 0)
 			{
-				++m_pBuffer->m_size;
+				m_pBuffer->m_size += sizeof_newline;
 			}
 		}
 	}
 
 	//============================================================================
 
-	void CLogFile::WriteBufferOutputFooter(void)
+	void CLogFile::ForceInsertNewlineUTF8()
 	{
-		if ((m_behaviours & eBF_ForceInsertNewline) && _tcscmp(&m_pBuffer->m_buffer[m_pBuffer->m_size - _tcslen(_TEXT("\r\n"))], _TEXT("\r\n")))
+		char* pNewline = "\r\n";
+		uint32 sizeof_newline = strlen(pNewline);
+
+		if (strcmp(&m_pBuffer->m_buffer.m_UTF8[m_pBuffer->m_size - sizeof_newline], pNewline))
 		{
-			if (_tcscat_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], (sizeof(m_pBuffer->m_buffer) / sizeof(TCHAR)) - m_pBuffer->m_size, _TEXT("\r\n")) == 0)
+			if (strcat_s(&m_pBuffer->m_buffer.m_UTF8[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, pNewline) == 0)
 			{
-				m_pBuffer->m_size += _tcslen(_TEXT("\r\n"));
+				m_pBuffer->m_size += sizeof_newline;
 			}
 		}
 	}
@@ -217,8 +415,16 @@ namespace engine
 
 				if (m_pBuffer->m_handle != IFileSystem::eFSH_INVALID)
 				{
-					writtenToFile = (GetFileSystem()->Write(m_pBuffer->m_handle, m_pBuffer->m_buffer, m_pBuffer->m_size * sizeof(TCHAR), 1) == 1);
-					m_pBuffer->m_buffer[0] = 0;
+					if (m_behaviours & eIBF_Unicode)
+					{
+						writtenToFile = (GetFileSystem()->Write(m_pBuffer->m_handle, m_pBuffer->m_buffer.m_UTF16, m_pBuffer->m_size * sizeof(wchar_t), 1) == 1);
+					}
+					else
+					{
+						writtenToFile = (GetFileSystem()->Write(m_pBuffer->m_handle, m_pBuffer->m_buffer.m_UTF8, m_pBuffer->m_size, 1) == 1);
+					}
+
+					m_pBuffer->m_buffer.m_UTF16[0] = 0;
 					m_pBuffer->m_size = 0;
 				}
 			}

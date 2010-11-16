@@ -16,18 +16,20 @@
 
 namespace engine
 {
+	class ITimer;
+
 	//============================================================================
 	// SLogFileBuffer
 	//============================================================================
 	struct SLogFileBuffer
 	{
-		SLogFileBuffer(void) : m_handle(IFileSystem::eFSH_INVALID), m_size(0), m_previousSize(0) { m_buffer[0] = 0; }
+		SLogFileBuffer(void) : m_handle(IFileSystem::eFSH_INVALID), m_size(0), m_previousSize(0) { m_buffer.m_UTF16[0] = 0; }
 
 		IFileSystem::eFileSystemHandle m_handle;
-		TCHAR m_buffer[LOGFILE_BUFFER_SIZE];
 		mutex m_mutex;
 		uint16 m_size;
 		uint16 m_previousSize;
+		mchar_t<LOGFILE_BUFFER_SIZE> m_buffer;
 	}; // End [struct SLogFileBuffer]
 
 	//============================================================================
@@ -36,7 +38,8 @@ namespace engine
 	class CLogFile : public ILogFile
 	{
 	public:
-		CLogFile(const TCHAR* name, CLogFile* pParent, eBehaviourFlag initialBehaviour, SLogFileBuffer* pBuffer);
+		CLogFile(const wchar_t* name, CLogFile* pParent, eBehaviourFlag initialBehaviour, SLogFileBuffer* pBuffer);
+		CLogFile(const char* name, CLogFile* pParent, eBehaviourFlag initialBehaviour, SLogFileBuffer* pBuffer);
 		~CLogFile(void);
 
 		// ILogFile
@@ -47,26 +50,41 @@ namespace engine
 		virtual void	TurnOffBehaviours(eBehaviourFlag behaviours)	{ m_behaviours &= ~(behaviours & eBF_Mask);											}
 		virtual bool	IsBehaviourOn(eBehaviourFlag behaviour) const	{ return ((m_behaviours & eBF_Mask) & behaviour) == behaviour;	}
 
-		virtual bool	Write(const TCHAR* format, ...);
+		virtual bool	Write(const wchar_t* format, ...);
+		virtual bool	Write(const char* format, ...);
 		// ~ILogFile
 
 	protected:
 		enum eInternalBehaviourFlag
 		{
+			eIBF_Unicode					= BIT(13),
 			eIBF_SeparateFile			= BIT(14),
 			eIBF_AllocatedBuffer	= BIT(15),
 
-			eIBF_Mask							= eIBF_SeparateFile | eIBF_AllocatedBuffer
+			eIBF_Mask							= eIBF_Unicode | eIBF_SeparateFile | eIBF_AllocatedBuffer
 		}; // End [enum eInternalBehaviourFlag]
 
+		void														Initialise(void);
 		IFileSystem::eFileSystemHandle	Open(void);
-		void														WriteBufferOutputHeader(void);
-		void														WriteBufferOutputFooter(void);
+		void														InsertNameUTF16(void);
+		void														InsertNameUTF8(void);
+		void														InsertDateStampUTF16(void);
+		void														InsertDateStampUTF8(void);
+		void														InsertLineCountUTF16(void);
+		void														InsertLineCountUTF8(void);
+		void														InsertFrameCountUTF16(const ITimer* pTimer);
+		void														InsertFrameCountUTF8(const ITimer* pTimer);
+		void														InsertTimeStampUTF16(const ITimer* pTimer);
+		void														InsertTimeStampUTF8(const ITimer* pTimer);
+		void														OutputToDebuggerUTF16(void);
+		void														OutputToDebuggerUTF8(void);
+		void														ForceInsertNewlineUTF16(void);
+		void														ForceInsertNewlineUTF8(void);
 		bool														Flush(void);
 		void														Close(void);
 
 	protected:
-		TCHAR m_name[LOGFILE_NAME_SIZE];
+		mchar_t<LOGFILE_NAME_SIZE> m_name;
 		CLogFile* m_pParent;
 		SLogFileBuffer* m_pBuffer;
 		uint16 m_behaviours;
