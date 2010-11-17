@@ -8,9 +8,16 @@ namespace engine
 {
 	//============================================================================
 
-	void CDebug::OutputToDebugger(const TCHAR* output)
+	void CDebug::OutputToDebugger(const wchar_t* output)
 	{
-		OutputDebugString(output);
+		OutputDebugStringW(output);
+	}
+
+	//============================================================================
+
+	void CDebug::OutputToDebugger(const char* output)
+	{
+		OutputDebugStringA(output);
 	}
 
 	//============================================================================

@@ -110,7 +110,7 @@ namespace engine
 
 				if (m_pBuffer->m_previousSize != m_pBuffer->m_size)
 				{
-					if (wcscat_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, _TEXT(" ")) == 0)
+					if (wcscat_s(&m_pBuffer->m_buffer.m_UTF16[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, _TEXT(" ")) == 0)
 					{
 						++m_pBuffer->m_size;
 					}
@@ -119,7 +119,7 @@ namespace engine
 
 			va_list arguments;
 			va_start(arguments, format);
-			m_pBuffer->m_size += vswprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, format, arguments);
+			m_pBuffer->m_size += vswprintf_s(&m_pBuffer->m_buffer.m_UTF16[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, format, arguments);
 
 			if (!(m_behaviours & eBF_SuspendOutputFooter))
 			{
@@ -131,7 +131,7 @@ namespace engine
 
 			if (m_behaviours & eBF_OutputToDebugger)
 			{
-				CDebug::OutputToDebugger(&m_pBuffer->m_buffer[m_pBuffer->m_previousSize]);
+				CDebug::OutputToDebugger(&m_pBuffer->m_buffer.m_UTF16[m_pBuffer->m_previousSize]);
 			}
 
 			uint32 bufferUsedCapacity = (m_pBuffer->m_size << 4) / LOGFILE_BUFFER_SIZE;
@@ -184,7 +184,7 @@ namespace engine
 
 				if (m_pBuffer->m_previousSize != m_pBuffer->m_size)
 				{
-					if (strcat_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, " ") == 0)
+					if (strcat_s(&m_pBuffer->m_buffer.m_UTF8[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, " ") == 0)
 					{
 						++m_pBuffer->m_size;
 					}
@@ -193,7 +193,7 @@ namespace engine
 
 			va_list arguments;
 			va_start(arguments, format);
-			m_pBuffer->m_size += sprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, format, arguments);
+			m_pBuffer->m_size += sprintf_s(&m_pBuffer->m_buffer.m_UTF8[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, format, arguments);
 
 			if (!(m_behaviours & eBF_SuspendOutputFooter))
 			{
@@ -205,7 +205,7 @@ namespace engine
 
 			if (m_behaviours & eBF_OutputToDebugger)
 			{
-				CDebug::OutputToDebugger(&m_pBuffer->m_buffer[m_pBuffer->m_previousSize]);
+				CDebug::OutputToDebugger(&m_pBuffer->m_buffer.m_UTF8[m_pBuffer->m_previousSize]);
 			}
 
 			uint32 bufferUsedCapacity = (m_pBuffer->m_size << 4) / LOGFILE_BUFFER_SIZE;

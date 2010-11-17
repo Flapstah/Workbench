@@ -11,7 +11,8 @@ namespace engine
 	class CDebug
 	{
 	public:
-		static void OutputToDebugger(const TCHAR* output);
+		static void OutputToDebugger(const wchar_t* output);
+		static void OutputToDebugger(const char* output);
 
 	protected:
 		CDebug() {}
