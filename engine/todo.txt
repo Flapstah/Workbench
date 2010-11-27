@@ -3,12 +3,6 @@ need to clean up interface classes
 	- don't want implementation details in interface as this leads to common dependencies
 	- need to move as much stuff into engine layer as possible to minimise public exposure
 	- need a way to create a new log; need warning & error variants of main log (perhaps more?)
-	- maybe need a way of forcing output to be ascii even if unicode program; or unicode if ascii?
-	- need some way of not having to wrap all log format strings in _TEXT()
-		- basic functionality written, but doesn't compile yet
-		- will need to flush if UTF8 output in UTF16 file and vice versa
-		- need to make file system support both UTF8 and UTF16 files by direct function call
-		- need to make timers return UTF8 and UTF16 times by direct function call
 	
 kernel systems
 even though kernel will (ultimately) have memory management, it must not rely on any dynamic memory
