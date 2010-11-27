@@ -55,33 +55,33 @@ namespace engine
 
 		//==========================================================================
 
-		virtual eFileSystemError	DirectoryExists(TCHAR* path) = 0;
-		virtual eFileSystemError	CreateDirectory(TCHAR* path) = 0;
+		virtual eFileSystemError	DirectoryExists(char* path) = 0;
+		virtual eFileSystemError	CreateDirectory(char* path) = 0;
 #if defined(FILE_SYSTEM_EXTENDED)
-		virtual eFileSystemError	CopyDirectory(TCHAR* sourcePath, TCHAR* destinationPath) = 0;
-		virtual eFileSystemError	MoveDirectory(TCHAR* sourcePath, TCHAR* destinationPath) = 0;
-		virtual eFileSystemError	DeleteDirectory(TCHAR* path, bool force) = 0;
+		virtual eFileSystemError	CopyDirectory(char* sourcePath, char* destinationPath) = 0;
+		virtual eFileSystemError	MoveDirectory(char* sourcePath, char* destinationPath) = 0;
+		virtual eFileSystemError	DeleteDirectory(char* path, bool force) = 0;
 #endif
 
 		//==========================================================================
 
-		virtual eFileSystemError	FileExists(TCHAR* name) = 0;
-		virtual eFileSystemHandle	OpenFile(TCHAR* name, TCHAR* mode) = 0;
+		virtual eFileSystemError	FileExists(char* name) = 0;
+		virtual eFileSystemHandle	OpenFile(char* name, char* mode) = 0;
 #if defined(FILE_SYSTEM_EXTENDED)
-		virtual eFileSystemError	CopyFile(TCHAR* sourceName, TCHAR* destinationName) = 0;
-		virtual eFileSystemError	MoveFile(TCHAR* sourceName, TCHAR* destinationName) = 0;
-		virtual eFileSystemError	DeleteFile(TCHAR* name, bool force) = 0;
+		virtual eFileSystemError	CopyFile(char* sourceName, char* destinationName) = 0;
+		virtual eFileSystemError	MoveFile(char* sourceName, char* destinationName) = 0;
+		virtual eFileSystemError	DeleteFile(char* name, bool force) = 0;
 #endif
 		virtual size_t						Read(eFileSystemHandle handle, void* pBuffer, size_t bufferSize, size_t itemSize, size_t itemCount) = 0;
 		virtual size_t						Write(eFileSystemHandle handle, const void* pBuffer, size_t itemSize, size_t itemCount) = 0;
-		virtual size_t						Print(eFileSystemHandle handle, const TCHAR* format, ...) = 0;
+		virtual size_t						Print(eFileSystemHandle handle, const char* format, ...) = 0;
 		virtual eFileSystemError	Flush(eFileSystemHandle handle) = 0;
 		virtual eFileSystemError	CloseFile(eFileSystemHandle& handle) = 0;
 		virtual eFileSystemError	CloseAllFiles(void) = 0;
 
 		//==========================================================================
 
-		virtual eFileSystemError	CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType, bool createIfNecessary) = 0;
+		virtual eFileSystemError	CreatePath(char* pBuffer, size_t bufferSize, const char* name, eFileType fileType, bool createIfNecessary) = 0;
 
 		//==========================================================================
 	}; // End [struct IFileSystem]

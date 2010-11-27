@@ -12,8 +12,8 @@ namespace engine
 {
 	//============================================================================
 
-	static CLogFile gs_MemoryLog(_TEXT("Memory"), reinterpret_cast<CLogFile*>(g_MainLog), static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
-	static CLogFile gs_MemoryErrorLog(_TEXT("Memory Error"), &gs_MemoryLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
+	static CLogFile gs_MemoryLog("Memory", reinterpret_cast<CLogFile*>(g_MainLog), static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
+	static CLogFile gs_MemoryErrorLog("Memory Error", &gs_MemoryLog, static_cast<ILogFile::eBehaviourFlag>(ILogFile::eBF_Active | ILogFile::eBF_Name | ILogFile::eBF_OutputToDebugger | ILogFile::eBF_FlushEachWrite), NULL);
 
 	//============================================================================
 
@@ -69,12 +69,12 @@ namespace engine
 				m_pAllocatedList = pNode;
 			}
 
-			MemoryLog(_TEXT("%s(%i): allocated %i(%i) bytes"), file, line, size, totalSize);
+			MemoryLog("%s(%i): allocated %i(%i) bytes", file, line, size, totalSize);
 			pMemory = &pMemory[sizeof(Node) + sizeof(GUARD)];
 		}
 		else
 		{
-			MemoryErrorLog(_TEXT("%s(%i): failed to allocate %i bytes"), file, line, size);
+			MemoryErrorLog("%s(%i): failed to allocate %i bytes", file, line, size);
 		}
 
 		return pMemory;
@@ -135,11 +135,11 @@ namespace engine
 				--m_allocatedNodes;
 				m_allocatedBytes -= pNode->m_size;
 
-				MemoryLog(_TEXT("%s(%i): freed %i(%i) bytes"), file, line, pNode->m_size - sizeof(Node) - (sizeof(GUARD) * 2), pNode->m_size);
+				MemoryLog("%s(%i): freed %i(%i) bytes", file, line, pNode->m_size - sizeof(Node) - (sizeof(GUARD) * 2), pNode->m_size);
 			}
 			else
 			{
-				MemoryErrorLog(_TEXT("%s(%i): Memory [%p] not allocated by this allocator"), file, line, pMemory);
+				MemoryErrorLog("%s(%i): Memory [%p] not allocated by this allocator", file, line, pMemory);
 			}
 		}
 	}

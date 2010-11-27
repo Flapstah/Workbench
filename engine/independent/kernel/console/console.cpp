@@ -88,11 +88,11 @@ namespace engine
 				Add(*pVariant);
 			}
 
-			Log(_TEXT("[Console]: '%s' registered as CVariantInt32"), name);
+			Log("[Console]: '%s' registered as CVariantInt32", name);
 		}
 		else
 		{
-			LogError(_TEXT("[Console]: '%s' is already registered"), name);
+			LogError("[Console]: '%s' is already registered", name);
 		}
 
 		return pVariant;
@@ -113,11 +113,11 @@ namespace engine
 				Add(*pVariant);
 			}
 
-			Log(_TEXT("[Console]: '%s' registered as CVariantFloat"), name);
+			Log("[Console]: '%s' registered as CVariantFloat", name);
 		}
 		else
 		{
-			LogError(_TEXT("[Console]: '%s' is already registered"), name);
+			LogError("[Console]: '%s' is already registered", name);
 		}
 
 		return pVariant;
@@ -138,11 +138,11 @@ namespace engine
 				Add(*pVariant);
 			}
 
-			Log(_TEXT("[Console]: '%s' registered as CVariantString"), name);
+			Log("[Console]: '%s' registered as CVariantString", name);
 		}
 		else
 		{
-			LogError(_TEXT("[Console]: '%s' is already registered"), name);
+			LogError("[Console]: '%s' is already registered", name);
 		}
 
 		return pVariant;
@@ -166,16 +166,16 @@ namespace engine
 				}
 
 				unregistered = true;
-				Log(_TEXT("[Console]: '%s' unregistered"), name);
+				Log("[Console]: '%s' unregistered", name);
 			}
 			else
 			{
-				LogError(_TEXT("[Console]: '%s' not registered as a variable"), name);
+				LogError("[Console]: '%s' not registered as a variable", name);
 			}
 		}
 		else
 		{
-			LogError(_TEXT("[Console]: '%s' not registered"), name);
+			LogError("[Console]: '%s' not registered", name);
 		}
 
 		return unregistered;
@@ -198,11 +198,11 @@ namespace engine
 			}
 
 			registered = true;
-			Log(_TEXT("[Console]: '%s' registered as CCommand"), name);
+			Log("[Console]: '%s' registered as CCommand", name);
 		}
 		else
 		{
-			LogError(_TEXT("[Console]: '%s' is already registered"), name);
+			LogError("[Console]: '%s' is already registered", name);
 		}
 
 		return registered;
@@ -226,16 +226,16 @@ namespace engine
 				}
 
 				unregistered = true;
-				Log(_TEXT("[Console]: '%s' unregistered"), name);
+				Log("[Console]: '%s' unregistered", name);
 			}
 			else
 			{
-				LogError(_TEXT("[Console]: '%s' not registered as a command"), name);
+				LogError("[Console]: '%s' not registered as a command", name);
 			}
 		}
 		else
 		{
-			LogError(_TEXT("[Console]: '%s' not registered"), name);
+			LogError("[Console]: '%s' not registered", name);
 		}
 
 		return unregistered;

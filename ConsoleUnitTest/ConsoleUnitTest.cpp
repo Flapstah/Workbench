@@ -9,16 +9,16 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Log(_TEXT("Testing the log"));
-	LogError(_TEXT("Testing the error log"));
-	LogWarning(_TEXT("Testing the warning log"));
-	LogToDo(_TEXT("Testing the todo log"));
-	LogPerformance(_TEXT("Testing the performance log"));
+	Log("Testing the log");
+	LogError("Testing the error log");
+	LogWarning("Testing the warning log");
+	LogToDo("Testing the todo log");
+	LogPerformance("Testing the performance log");
 
 	assert(1 == 0);
-	assertf(1 == 0, _TEXT("Hopefully, we're asserting that 1 does not equal 0..."));
+	assertf(1 == 0, "Hopefully, we're asserting that 1 does not equal 0...");
 
-	Log(_TEXT("Last entry"));
+	Log("Last entry");
 	return 0;
 }
 

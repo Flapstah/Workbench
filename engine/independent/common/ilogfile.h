@@ -44,7 +44,6 @@ namespace engine
 		virtual void	TurnOffBehaviours(eBehaviourFlag behaviours) = 0;
 		virtual bool	IsBehaviourOn(eBehaviourFlag behaviour) const = 0;
 
-		virtual bool	Write(const wchar_t* format, ...) = 0;
 		virtual bool	Write(const char* format, ...) = 0;
 	}; // End [struct ILogFile]
 

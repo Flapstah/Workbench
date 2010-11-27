@@ -87,7 +87,7 @@ namespace engine
 
 	bool CApplication::Initialise(void)
 	{
-		Log(_TEXT("Initialising CApplication"));
+		Log("Initialising CApplication");
 		return true;
 	}
 
@@ -99,11 +99,11 @@ namespace engine
 
 		if (canStartUp)
 		{
-			Log(_TEXT("Starting up CApplication"));
+			Log("Starting up CApplication");
 		}
 		else
 		{
-			LogError(_TEXT("Unable to start up - CApplication has not been initialised"));
+			LogError("Unable to start up - CApplication has not been initialised");
 		}
 
 		return canStartUp;

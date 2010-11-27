@@ -19,9 +19,9 @@ namespace engine
 	if (!(_condition_)) \
 	{ \
 		engine::g_AssertLog->TurnOnBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_SuspendOutputHeader | engine::ILogFile::eBF_SuspendOutputFooter)); \
-		LogAssert(_TEXT("%s(%i): "), _TEXT(__FILE__), __LINE__, _TEXT(#_condition_)); \
+		LogAssert("%s(%i): ", __FILE__, __LINE__, #_condition_); \
 		engine::g_AssertLog->TurnOffBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_SuspendOutputHeader | engine::ILogFile::eBF_SuspendOutputFooter)); \
-		LogAssert(_TEXT("condition (%s)"), _TEXT(#_condition_)); \
+		LogAssert("condition (%s)", #_condition_); \
 		DebugBreak(); \
 	}
 
@@ -29,9 +29,9 @@ namespace engine
 	if (!(_condition_)) \
 	{ \
 		engine::g_AssertLog->TurnOnBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_SuspendOutputHeader | engine::ILogFile::eBF_SuspendOutputFooter)); \
-		LogAssert(_TEXT("%s(%i): "), _TEXT(__FILE__), __LINE__, _TEXT(#_condition_)); \
+		LogAssert("%s(%i): ", __FILE__, __LINE__, #_condition_); \
 		engine::g_AssertLog->TurnOffBehaviours(engine::ILogFile::eBF_SuspendOutputHeader); \
-		LogAssert(_TEXT("condition (%s) : "), _TEXT(#_condition_)); \
+		LogAssert("condition (%s) : ", #_condition_); \
 		engine::g_AssertLog->TurnOnBehaviours(engine::ILogFile::eBF_SuspendOutputHeader); \
 		engine::g_AssertLog->TurnOffBehaviours(engine::ILogFile::eBF_SuspendOutputFooter); \
 		LogAssert(__VA_ARGS__); \

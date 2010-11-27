@@ -11,24 +11,24 @@ namespace engine
 {
 	//============================================================================
 
-	CFileSystem::eFileSystemError CFileSystem::Platform_CreatePath(TCHAR* pBuffer, size_t bufferSize, const TCHAR* name, eFileType fileType, bool createIfNecessary)
+	CFileSystem::eFileSystemError CFileSystem::Platform_CreatePath(char* pBuffer, size_t bufferSize, const char* name, eFileType fileType, bool createIfNecessary)
 	{
 		pBuffer[0] = _TEXT('\0');
 		BOOL appended = FALSE;
 		eFileSystemError error = eFSE_SUCCESS;
 
 #if defined(RELEASE)
-		if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL, SHGFP_TYPE_CURRENT, buffer)))
+		if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL, SHGFP_TYPE_CURRENT, buffer)))
 #endif
 		{
-			TCHAR* pFolder = NULL;
-			TCHAR* pExtension = NULL;
+			char* pFolder = NULL;
+			char* pExtension = NULL;
 
 #if defined(RELEASE)
-			appended = PathAppend(pBuffer, _TEXT(COMPANY_NAME));
+			appended = PathAppendA(pBuffer, COMPANY_NAME);
 			if (appended == TRUE)
 			{
-				appended = PathAppend(pBuffer, _TEXT(PROJECT_NAME));
+				appended = PathAppendA(pBuffer, PROJECT_NAME);
 			}
 
 			if (appended = TRUE)
@@ -39,8 +39,8 @@ namespace engine
 				switch (fileType)
 				{
 				case eFT_LogFile:
-					pFolder = _TEXT("Logs");
-					pExtension = _TEXT(".log");
+					pFolder = "Logs";
+					pExtension = ".log";
 					break;
 				default:
 					break;
@@ -49,7 +49,7 @@ namespace engine
 
 			if (pFolder != NULL)
 			{
-				appended = PathAppend(pBuffer, pFolder);
+				appended = PathAppendA(pBuffer, pFolder);
 
 				if (DirectoryExists(pBuffer) == eFSE_DOES_NOT_EXIST)
 				{
@@ -61,12 +61,12 @@ namespace engine
 			{
 				if (appended == TRUE)
 				{
-					appended = PathAppend(pBuffer, name);
+					appended = PathAppendA(pBuffer, name);
 				}
 
 				if ((appended == TRUE) && (pExtension != NULL))
 				{
-					appended = (_tcscat_s(pBuffer, bufferSize, pExtension) == 0);
+					appended = (strcat_s(pBuffer, bufferSize, pExtension) == 0);
 				}
 
 				if (appended == FALSE)
