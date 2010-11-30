@@ -2,7 +2,7 @@ need to clean up interface classes
 	- create application class (Windows implementation will be Win32 type application)
 	- don't want implementation details in interface as this leads to common dependencies
 	- need to move as much stuff into engine layer as possible to minimise public exposure
-	- need a way to create a new log; need warning & error variants of main log (perhaps more?)
+	- need a way to create a new log
 	
 kernel systems
 even though kernel will (ultimately) have memory management, it must not rely on any dynamic memory
