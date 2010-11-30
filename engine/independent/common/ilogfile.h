@@ -27,16 +27,16 @@ namespace engine
 			eBF_LineCount												= BIT(3),
 			eBF_FrameCount											= BIT(4),
 			eBF_TimeStamp												= BIT(5),
-			eBF_OutputToDebugger								= BIT(6),
+			eBF_FlushEachWrite									= BIT(6),
 			eBF_ForceInsertNewline							= BIT(7),
-			eBF_FlushEachWrite									= BIT(8),
-			eBF_OutputHeader										= BIT(9),
-			eBF_OutputFooter										= BIT(10),
-			eBF_OutputToFile										= BIT(11),
+			eBF_OutputHeader										= BIT(8),
+			eBF_OutputFooter										= BIT(9),
+			eBF_OutputToFile										= BIT(10),
+			eBF_OutputToDebugger								= BIT(11),
 			eBF_OutputToDebuggerStrippedHeader	= BIT(12),
 
-			eBF_Default							= eBF_Active | eBF_Name | eBF_LineCount | eBF_FrameCount | eBF_TimeStamp | eBF_OutputToDebugger | eBF_ForceInsertNewline | eBF_FlushEachWrite | eBF_OutputHeader | eBF_OutputFooter | eBF_OutputToFile | eBF_OutputToDebuggerStrippedHeader,
-			eBF_Mask								= eBF_Active | eBF_Name | eBF_DateStamp | eBF_LineCount | eBF_FrameCount | eBF_TimeStamp | eBF_OutputToDebugger | eBF_ForceInsertNewline | eBF_FlushEachWrite | eBF_OutputHeader | eBF_OutputFooter | eBF_OutputToFile | eBF_OutputToDebuggerStrippedHeader
+			eBF_Default													= eBF_Active | eBF_Name | eBF_LineCount | eBF_FrameCount | eBF_TimeStamp | eBF_FlushEachWrite | eBF_ForceInsertNewline | eBF_OutputHeader | eBF_OutputFooter | eBF_OutputToFile | eBF_OutputToDebugger | eBF_OutputToDebuggerStrippedHeader,
+			eBF_Mask														= eBF_Active | eBF_Name | eBF_DateStamp | eBF_LineCount | eBF_FrameCount | eBF_TimeStamp | eBF_FlushEachWrite | eBF_ForceInsertNewline | eBF_OutputHeader | eBF_OutputFooter | eBF_OutputToFile | eBF_OutputToDebugger | eBF_OutputToDebuggerStrippedHeader
 		}; // End [enum eBehaviourFlag]
 
 		virtual void	SetActive(bool active) = 0;
