@@ -248,15 +248,23 @@ namespace engine
 			{
 				CAutoMutexLock(m_pBuffer->m_mutex);
 
-				if (m_pBuffer->m_handle == IFileSystem::eFSH_INVALID)
+				if (m_behaviours & eBF_OutputToFile)
 				{
-					Open();
+					if (m_pBuffer->m_handle == IFileSystem::eFSH_INVALID)
+					{
+						Open();
+					}
+
+					if (m_pBuffer->m_handle != IFileSystem::eFSH_INVALID)
+					{
+						writtenToFile = (GetFileSystem()->Write(m_pBuffer->m_handle, m_pBuffer->m_buffer, m_pBuffer->m_size, 1) == 1);
+
+						m_pBuffer->m_buffer[0] = 0;
+						m_pBuffer->m_size = 0;
+					}
 				}
-
-				if (m_pBuffer->m_handle != IFileSystem::eFSH_INVALID)
+				else
 				{
-					writtenToFile = (GetFileSystem()->Write(m_pBuffer->m_handle, m_pBuffer->m_buffer, m_pBuffer->m_size, 1) == 1);
-
 					m_pBuffer->m_buffer[0] = 0;
 					m_pBuffer->m_size = 0;
 				}
