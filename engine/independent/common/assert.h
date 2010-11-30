@@ -18,24 +18,60 @@ namespace engine
 #define assert(_condition_) \
 	if (!(_condition_)) \
 	{ \
-		engine::g_AssertLog->TurnOnBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_SuspendOutputHeader | engine::ILogFile::eBF_SuspendOutputFooter)); \
-		LogAssert("%s(%i): ", __FILE__, __LINE__, #_condition_); \
-		engine::g_AssertLog->TurnOffBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_SuspendOutputHeader | engine::ILogFile::eBF_SuspendOutputFooter)); \
-		LogAssert("condition (%s)", #_condition_); \
+		if (engine::g_AssertLog->PushBehaviours()) \
+		{ \
+			engine::g_AssertLog->TurnOffBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_OutputHeader | engine::ILogFile::eBF_OutputFooter | engine::ILogFile::eBF_OutputToFile)); \
+			LogAssert("%s(%i): ", __FILE__, __LINE__); \
+			engine::g_AssertLog->PopBehaviours(); \
+			engine::g_AssertLog->PushBehaviours(); \
+			engine::g_AssertLog->TurnOffBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_LineCount | engine::ILogFile::eBF_OutputToFile)); \
+			LogAssert("condition (%s)", #_condition_); \
+			engine::g_AssertLog->PopBehaviours(); \
+			engine::g_AssertLog->PushBehaviours(); \
+			engine::g_AssertLog->TurnOffBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_OutputToDebugger)); \
+			LogAssert("%s(%i): condition (%s)", __FILE__, __LINE__, #_condition_); \
+			engine::g_AssertLog->PopBehaviours(); \
+		} \
+		else \
+		{ \
+			LogAssert("%s(%i): ", __FILE__, __LINE__, #_condition_); \
+			LogAssert("*ASSERT* condition (%s)", #_condition_); \
+		} \
 		DebugBreak(); \
 	}
 
 #define assertf(_condition_, ...) \
 	if (!(_condition_)) \
 	{ \
-		engine::g_AssertLog->TurnOnBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_SuspendOutputHeader | engine::ILogFile::eBF_SuspendOutputFooter)); \
-		LogAssert("%s(%i): ", __FILE__, __LINE__, #_condition_); \
-		engine::g_AssertLog->TurnOffBehaviours(engine::ILogFile::eBF_SuspendOutputHeader); \
-		LogAssert("condition (%s) : ", #_condition_); \
-		engine::g_AssertLog->TurnOnBehaviours(engine::ILogFile::eBF_SuspendOutputHeader); \
-		engine::g_AssertLog->TurnOffBehaviours(engine::ILogFile::eBF_SuspendOutputFooter); \
-		LogAssert(__VA_ARGS__); \
-		engine::g_AssertLog->TurnOffBehaviours(engine::ILogFile::eBF_SuspendOutputHeader); \
+		if (engine::g_AssertLog->PushBehaviours()) \
+		{ \
+			engine::g_AssertLog->TurnOffBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_OutputHeader | engine::ILogFile::eBF_OutputFooter | engine::ILogFile::eBF_OutputToFile)); \
+			LogAssert("%s(%i): ", __FILE__, __LINE__); \
+			engine::g_AssertLog->PopBehaviours(); \
+			engine::g_AssertLog->PushBehaviours(); \
+			engine::g_AssertLog->TurnOffBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_LineCount | engine::ILogFile::eBF_OutputFooter | engine::ILogFile::eBF_OutputToFile)); \
+			LogAssert("condition (%s) : ", #_condition_); \
+			engine::g_AssertLog->PopBehaviours(); \
+			engine::g_AssertLog->PushBehaviours(); \
+			engine::g_AssertLog->TurnOffBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_OutputHeader | engine::ILogFile::eBF_OutputToFile)); \
+			LogAssert(__VA_ARGS__); \
+			engine::g_AssertLog->PopBehaviours(); \
+			engine::g_AssertLog->PushBehaviours(); \
+			engine::g_AssertLog->TurnOffBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_OutputFooter | engine::ILogFile::eBF_OutputToDebugger)); \
+			LogAssert("%s(%i): condition (%s) : ", __FILE__, __LINE__, #_condition_); \
+			engine::g_AssertLog->PopBehaviours(); \
+			engine::g_AssertLog->PushBehaviours(); \
+			engine::g_AssertLog->TurnOffBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_OutputHeader | engine::ILogFile::eBF_OutputToDebugger)); \
+			engine::g_AssertLog->TurnOnBehaviours(static_cast<engine::ILogFile::eBehaviourFlag>(engine::ILogFile::eBF_FlushEachWrite)); \
+			LogAssert(__VA_ARGS__); \
+			engine::g_AssertLog->PopBehaviours(); \
+		} \
+		else \
+		{ \
+			LogAssert("%s(%i): ", __FILE__, __LINE__, #_condition_); \
+			LogAssert("condition (%s) : ", #_condition_); \
+			LogAssert(__VA_ARGS__); \
+		} \
 		DebugBreak(); \
 	}
 #endif

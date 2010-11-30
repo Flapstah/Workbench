@@ -46,6 +46,7 @@ namespace engine
 		: m_pParent(pParent)
 		, m_pBuffer(pBuffer)
 		, m_behaviours(initialBehaviour)
+		, m_behavioursStack(0)
 	{
 		Initialise();
 
@@ -64,12 +65,13 @@ namespace engine
 	bool CLogFile::Write(const char* format, ...)
 	{
 		bool writtenToFile = false;
+
 		if (m_pBuffer != NULL)
 		{
 			CAutoMutexLock(m_pBuffer->m_mutex);
-			m_pBuffer->m_previousSize = m_pBuffer->m_size;
+			uint16 strippedHeader = m_pBuffer->m_previousSize = m_pBuffer->m_size;
 
-			if (!(m_behaviours & eBF_SuspendOutputHeader))
+			if (m_behaviours & eBF_OutputHeader)
 			{
 				if (m_behaviours & eBF_DateStamp)
 				{
@@ -92,6 +94,7 @@ namespace engine
 					InsertTimeStamp(pGameClock);
 				}
 
+				strippedHeader = m_pBuffer->m_size;
 				if (m_behaviours & eBF_Name)
 				{
 					InsertName();
@@ -110,7 +113,7 @@ namespace engine
 			va_start(arguments, format);
 			m_pBuffer->m_size += vsprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, format, arguments);
 
-			if (!(m_behaviours & eBF_SuspendOutputFooter))
+			if (m_behaviours & eBF_OutputFooter)
 			{
 				if (m_behaviours & eBF_ForceInsertNewline)
 				{
@@ -120,7 +123,8 @@ namespace engine
 
 			if (m_behaviours & eBF_OutputToDebugger)
 			{
-				CDebug::OutputToDebugger(&m_pBuffer->m_buffer[m_pBuffer->m_previousSize]);
+				uint16 pos = (m_behaviours & eBF_OutputToDebuggerStrippedHeader) ? strippedHeader : m_pBuffer->m_previousSize;
+				CDebug::OutputToDebugger(&m_pBuffer->m_buffer[pos]);
 			}
 
 			uint32 bufferUsedCapacity = (m_pBuffer->m_size << 4) / LOGFILE_BUFFER_SIZE;

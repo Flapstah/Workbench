@@ -16,7 +16,7 @@
 
 namespace engine
 {
-	class ITimer;
+	struct ITimer;
 
 	//============================================================================
 	// SLogFileBuffer
@@ -42,12 +42,14 @@ namespace engine
 		~CLogFile(void);
 
 		// ILogFile
-		virtual void	SetActive(bool active)												{ (active) ? TurnOnBehaviours(eBF_Active) : TurnOffBehaviours(eBF_Active);				}
-		virtual bool	IsActive(void) const													{ return (m_pParent != NULL) ? m_pParent->IsActive() : IsBehaviourOn(eBF_Active);	}
+		virtual void	SetActive(bool active)												{ (active) ? TurnOnBehaviours(eBF_Active) : TurnOffBehaviours(eBF_Active);																	}
+		virtual bool	IsActive(void) const													{ return (m_pParent != NULL) ? m_pParent->IsActive() : IsBehaviourOn(eBF_Active);														}
 
-		virtual void	TurnOnBehaviours(eBehaviourFlag behaviours)		{ m_behaviours |= (behaviours & eBF_Mask);											}
-		virtual void	TurnOffBehaviours(eBehaviourFlag behaviours)	{ m_behaviours &= ~(behaviours & eBF_Mask);											}
-		virtual bool	IsBehaviourOn(eBehaviourFlag behaviour) const	{ return ((m_behaviours & eBF_Mask) & behaviour) == behaviour;	}
+		virtual void	TurnOnBehaviours(eBehaviourFlag behaviours)		{ m_behaviours |= (behaviours & eBF_Mask);																																	}
+		virtual void	TurnOffBehaviours(eBehaviourFlag behaviours)	{ m_behaviours &= ~(behaviours & eBF_Mask);																																	}
+		virtual bool	IsBehaviourOn(eBehaviourFlag behaviour) const	{ return ((m_behaviours & eBF_Mask) & behaviour) == behaviour;																							}
+		virtual bool	PushBehaviours(void)													{ return (m_behavioursStack == 0) ? m_behavioursStack = m_behaviours, true : false;													}
+		virtual bool  PopBehaviours(void)														{ return (m_behavioursStack != 0) ? m_behaviours = m_behavioursStack, m_behavioursStack = 0, true : false;	}
 
 		virtual bool	Write(const char* format, ...);
 		// ~ILogFile
@@ -78,6 +80,7 @@ namespace engine
 		CLogFile* m_pParent;
 		SLogFileBuffer* m_pBuffer;
 		uint16 m_behaviours;
+		uint16 m_behavioursStack;
 
 		static uint32 s_lineCount;
 
