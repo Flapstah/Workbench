@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "kernel/time/timer.h"
-#include "kernel/time/systemclock.h"
+#include "kernel/time/realtimeclock.h"
 
 //==============================================================================
 
@@ -35,11 +35,8 @@ namespace engine
 
 	//----------------------------------------------------------------------------
 	// The global instance of the game clock
-	//
-	// Use the game clock as the root of all timers (rather than the system clock)
-	// as it's current time count will be elapsed *game* time, not *real* time.
 	//----------------------------------------------------------------------------
-	CTimer g_gameClock(g_systemClock, 1.0, 0.1);
+	CTimer g_gameClock(g_realTimeClock, 1.0, 0.1);
 
 	//============================================================================
 

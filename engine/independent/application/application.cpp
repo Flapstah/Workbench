@@ -33,7 +33,7 @@ namespace engine
 
 	bool CApplication::Update(void)
 	{
-		ISystemClock* pSystemClock = GetSystemClock();
+		IRealTimeClock* pSystemClock = GetRealTimeClock();
 		pSystemClock->Tick();
 
 		ITimer* pGameClock = GetGameClock();

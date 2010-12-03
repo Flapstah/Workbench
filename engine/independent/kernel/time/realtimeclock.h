@@ -1,5 +1,5 @@
-#if !defined(__SYSTEMCLOCK_H__)
-#define __SYSTEMCLOCK_H__
+#if !defined(__REALTIMECLOCK_H__)
+#define __REALTIMECLOCK_H__
 
 //==============================================================================
 
@@ -12,32 +12,32 @@
 
 //==============================================================================
 
-#define SYSTEM_CLOCK_DATE_BUFFER_SIZE (12)
-#define SYSTEM_CLOCK_TIME_BUFFER_SIZE (12)
+#define REAL_TIME_CLOCK_DATE_BUFFER_SIZE (12)
+#define REAL_TIME_CLOCK_TIME_BUFFER_SIZE (12)
 
 //==============================================================================
 
 namespace engine
 {
 	//============================================================================
-	// CSystemClock
+	// CRealTimeClock
 	//============================================================================
-	class CSystemClock : public virtual ISystemClock, public CTimeSource
+	class CRealTimeClock : public virtual IRealTimeClock, public CTimeSource
 	{
 		typedef CTimeSource PARENT;
 
 	public:
-										CSystemClock(void)							{	Platform_Initialise();									}
-		virtual					~CSystemClock(void)							{	Platform_Uninitialise();								}
+										CRealTimeClock(void)						{	Platform_Initialise();									}
+		virtual					~CRealTimeClock(void)						{	Platform_Uninitialise();								}
 
 		// ITimeSource
 		virtual	bool		Tick(void)											{	PARENT::Tick(); return Platform_Tick();	}
 		// ~ITimeSource
 
-		// ISystemClock
+		// IRealTimeClock
 		virtual TCHAR*	GetLocalDateString(void) const	{	return Platform_GetLocalDateString();		}
 		virtual TCHAR*	GetLocalTimeString(void) const	{	return Platform_GetLocalTimeString();		}
-		// ~ISystemClock
+		// ~IRealTimeClock
 
 	protected:
 						void		Platform_Initialise(void);
@@ -48,16 +48,16 @@ namespace engine
 
 	protected:
 						double	m_secondsPerTick;
-		mutable TCHAR		m_localDate[SYSTEM_CLOCK_DATE_BUFFER_SIZE];
-		mutable TCHAR		m_localTime[SYSTEM_CLOCK_TIME_BUFFER_SIZE];
-	}; // End [class CSystemClock : public ISystemClock]
+		mutable TCHAR		m_localDate[REAL_TIME_CLOCK_DATE_BUFFER_SIZE];
+		mutable TCHAR		m_localTime[REAL_TIME_CLOCK_TIME_BUFFER_SIZE];
+	}; // End [class CRealTimeClock : public IRealTimeClock]
 
 	//============================================================================
 
 	//----------------------------------------------------------------------------
-	// The global instance of the system clock
+	// The global instance of the real time clock
 	//----------------------------------------------------------------------------
-	extern CSystemClock g_systemClock;
+	extern CRealTimeClock g_realTimeClock;
 
 	//============================================================================
 } // End [namespace engine]
@@ -68,5 +68,5 @@ namespace engine
 
 //==============================================================================
 
-#endif // End [!defined(__SYSTEMCLOCK_H__)]
+#endif // End [!defined(__REALTIMECLOCK_H__)]
 // [EOF]

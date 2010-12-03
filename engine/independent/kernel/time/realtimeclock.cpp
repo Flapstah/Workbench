@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "kernel/time/systemclock.h"
+#include "kernel/time/realtimeclock.h"
 
 //==============================================================================
 
@@ -9,15 +9,15 @@ namespace engine
 	//============================================================================
 
 	//----------------------------------------------------------------------------
-	// The global instance of the system clock
+	// The global instance of the real time clock
 	//----------------------------------------------------------------------------
-	CSystemClock g_systemClock;
+	CRealTimeClock g_realTimeClock;
 
 	//============================================================================
 
-	ISystemClock* GetSystemClock(void)
+	IRealTimeClock* GetRealTimeClock(void)
 	{
-		return &g_systemClock;
+		return &g_realTimeClock;
 	}
 
 	//============================================================================

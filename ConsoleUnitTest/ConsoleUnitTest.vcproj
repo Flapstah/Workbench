@@ -234,11 +234,11 @@
 						Name="time"
 						>
 						<File
-							RelativePath="..\engine\independent\kernel\time\systemclock.cpp"
+							RelativePath="..\engine\independent\kernel\time\realtimeclock.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\engine\independent\kernel\time\systemclock.h"
+							RelativePath="..\engine\independent\kernel\time\realtimeclock.h"
 							>
 						</File>
 						<File

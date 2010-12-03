@@ -199,7 +199,7 @@ namespace engine
 
 	void CLogFile::InsertDateStamp(void)
 	{
-		const ISystemClock* pSystemClock = GetSystemClock();
+		const IRealTimeClock* pSystemClock = GetRealTimeClock();
 		m_pBuffer->m_size += sprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, "[%s %s]", pSystemClock->GetLocalDateString(), pSystemClock->GetLocalTimeString());
 	}
 

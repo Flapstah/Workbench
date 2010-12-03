@@ -25,13 +25,13 @@ namespace engine
 	}; // End [struct ITimeSource]
 
 	//============================================================================
-	// ISystemClock
+	// IRealTimeClock
 	//============================================================================
-	struct ISystemClock : virtual public ITimeSource 
+	struct IRealTimeClock : virtual public ITimeSource 
 	{
 		virtual TCHAR*	GetLocalDateString(void) const = 0;
 		virtual TCHAR*	GetLocalTimeString(void) const = 0;
-	}; // End [struct ISystemClock : public ITimeSource]
+	}; // End [struct IRealTimeClock : public ITimeSource]
 
 	//============================================================================
 	// ITimer
@@ -48,12 +48,15 @@ namespace engine
 	}; // End [struct ITimer : public ITimeSource]
 
 	//----------------------------------------------------------------------------
-	// Returns the system clock
+	// Returns the real time clock
 	//----------------------------------------------------------------------------
-	ISystemClock* GetSystemClock(void);
+	IRealTimeClock* GetRealTimeClock(void);
 
 	//----------------------------------------------------------------------------
 	// Returns the game clock
+	//
+	// Use the game clock as the root of all timers (rather than the system clock)
+	// as it's current time count will be elapsed *game* time, not *real* time.
 	//----------------------------------------------------------------------------
 	ITimer* GetGameClock(void);
 
