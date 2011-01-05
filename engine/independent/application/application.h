@@ -22,7 +22,7 @@ namespace engine
 	class CApplication : public IApplication
 	{
 	public:
-		CApplication(uint32 desiredFPS);
+		CApplication(void);
 		virtual ~CApplication(void);
 
 		// IApplication
@@ -45,6 +45,8 @@ namespace engine
 	protected:
 		enum eFlags
 		{
+			eF_InitialState		= 0,
+
 			eF_Quit						= BIT(0),
 			eF_QuitImmediate	= BIT(1),
 			eF_Initialised		= BIT(2),

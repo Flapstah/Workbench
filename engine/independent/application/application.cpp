@@ -11,11 +11,11 @@ namespace engine
 {
 	//============================================================================
 
-	CApplication::CApplication(uint32 desiredFPS)
+	CApplication::CApplication(void)
 		: m_elapsedTime(0.1f)
 		, m_fpsBufferIndex(0)
-		, m_desiredFPS(desiredFPS)
-		, m_flags(0)
+		, m_desiredFPS(0)
+		, m_flags(eF_InitialState)
 	{
 		memset(m_fpsBuffer, 0, sizeof(m_fpsBuffer));
 		m_fpsBuffer[m_fpsBufferIndex] = m_elapsedTime;
@@ -56,6 +56,7 @@ namespace engine
 		{
 			ITimer* pGameClock = GetGameClock();
 			pGameClock->Pause(pause);
+			Log("%sausing application", (pause) ? "P" : "Unp");
 		}
 
 		return canPause;
@@ -65,7 +66,7 @@ namespace engine
 
 	bool CApplication::Quit(bool immediate)
 	{
-		bool canQuit = ((m_flags & eF_Quit) != eF_Quit);
+		bool canQuit = ((m_flags & eF_Quit) == 0);
 
 		if (canQuit)
 		{
@@ -87,8 +88,19 @@ namespace engine
 
 	bool CApplication::Initialise(void)
 	{
-		Log("Initialising CApplication");
-		return true;
+		bool canInitialise = ((m_flags & eF_Initialised) == 0);
+
+		if (canInitialise)
+		{
+			Log("Initialising CApplication");
+			m_flags |= eF_Initialised;
+		}
+		else
+		{
+			LogError("Unable to initialise - CApplication has already been initialised");
+		}
+
+		return canInitialise;
 	}
 
 	//============================================================================
@@ -123,6 +135,15 @@ namespace engine
 	{
 		bool canShutDown = ((m_flags & eF_StartedUp) == eF_StartedUp);
 
+		if (canShutDown)
+		{
+			Log("Shutting down CApplication");
+		}
+		else
+		{
+			LogError("Unable to shut down - CApplication has not been started");
+		}
+
 		return canShutDown;
 	}
 
@@ -131,6 +152,16 @@ namespace engine
 	bool CApplication::Uninitialise(void)
 	{
 		bool canUninitialise = ((m_flags & (eF_StartedUp || eF_Initialised)) == eF_Initialised);
+
+		if (canUninitialise)
+		{
+			Log("Uninitialising CApplication");
+		}
+		else
+		{
+			LogError("Unable to uninitialise - CApplication has not been initialised");
+		}
+
 		return canUninitialise;
 	}
 
