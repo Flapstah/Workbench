@@ -72,7 +72,7 @@ namespace engine
 #if defined LOGS_ENABLED
 #define _WriteLog(_pILogFile_, ...) ((_pILogFile_->IsActive()) && (_pILogFile_->Write(__VA_ARGS__)))
 #else
-#define _WriteLog(_pILogFile_, _channels_, _output_)
+#define _WriteLog(_pILogFile_, ...)
 #endif
 
 	//----------------------------------------------------------------------------
