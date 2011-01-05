@@ -86,83 +86,10 @@ namespace engine
 
 	//============================================================================
 
-	bool CApplication::Initialise(void)
-	{
-		bool canInitialise = ((m_flags & eF_Initialised) == 0);
-
-		if (canInitialise)
-		{
-			Log("Initialising CApplication");
-			m_flags |= eF_Initialised;
-		}
-		else
-		{
-			LogError("Unable to initialise - CApplication has already been initialised");
-		}
-
-		return canInitialise;
-	}
-
-	//============================================================================
-
-	bool CApplication::StartUp(void)
-	{
-		bool canStartUp = ((m_flags & eF_Initialised) == eF_Initialised);
-
-		if (canStartUp)
-		{
-			Log("Starting up CApplication");
-		}
-		else
-		{
-			LogError("Unable to start up - CApplication has not been initialised");
-		}
-
-		return canStartUp;
-	}
-
-	//============================================================================
-
 	bool CApplication::Update(double frameTime, uint32 frameCount)
 	{
 		//TODO: Here's where we need to update all the kernel bits
 		return true;
-	}
-
-	//============================================================================
-
-	bool CApplication::ShutDown(void)
-	{
-		bool canShutDown = ((m_flags & eF_StartedUp) == eF_StartedUp);
-
-		if (canShutDown)
-		{
-			Log("Shutting down CApplication");
-		}
-		else
-		{
-			LogError("Unable to shut down - CApplication has not been started");
-		}
-
-		return canShutDown;
-	}
-
-	//============================================================================
-
-	bool CApplication::Uninitialise(void)
-	{
-		bool canUninitialise = ((m_flags & (eF_StartedUp || eF_Initialised)) == eF_Initialised);
-
-		if (canUninitialise)
-		{
-			Log("Uninitialising CApplication");
-		}
-		else
-		{
-			LogError("Unable to uninitialise - CApplication has not been initialised");
-		}
-
-		return canUninitialise;
 	}
 
 	//============================================================================

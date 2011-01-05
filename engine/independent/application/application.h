@@ -26,21 +26,26 @@ namespace engine
 		virtual ~CApplication(void);
 
 		// IApplication
-		virtual void SetFrameRate(uint32 framesPerSecond)	{ m_desiredFPS = framesPerSecond;															}
-		virtual float GetFrameRate(void) const						{ return m_elapsedTime / (float)APPLICATION_FPS_BUFFER_SIZE;	}
+		virtual void	SetFrameRate(uint32 framesPerSecond)	{ m_desiredFPS = framesPerSecond;																						}
+		virtual float	GetFrameRate(void) const							{ return m_elapsedTime / (float)APPLICATION_FPS_BUFFER_SIZE;								}
 
-		virtual bool Update(void);
-
-		virtual bool Pause(bool pause);
-		virtual bool Quit(bool immediate);
+		virtual bool	Pause(bool pause);
+		virtual bool	Quit(bool immediate);
 		// ~IApplication
 
+		virtual bool	Update(void);
+
 	protected:
-		virtual bool Initialise(void);
-		virtual bool StartUp(void);
-		virtual bool Update(double frameTime, uint32 frameCount);
-		virtual bool ShutDown(void);
-		virtual bool Uninitialise(void);
+		virtual bool	Initialise(void) = 0;
+		virtual bool	StartUp(void) = 0;
+		virtual bool	Update(double frameTime, uint32 frameCount);
+		virtual bool	ShutDown(void)	= 0;
+		virtual bool	Uninitialise(void) = 0;
+
+						bool	CanInitialise(void)										{	return ((m_flags & eF_Initialised) == 0);																	}
+						bool	CanStartup(void)											{	return ((m_flags & eF_Initialised) == eF_Initialised);										}
+						bool	CanShutDown(void)											{	return ((m_flags & eF_StartedUp) == eF_StartedUp);												}
+						bool	CanUninitialise(void)									{	return ((m_flags & (eF_StartedUp || eF_Initialised)) == eF_Initialised);	}
 
 	protected:
 		enum eFlags
