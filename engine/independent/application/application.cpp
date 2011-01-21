@@ -40,7 +40,7 @@ namespace engine
 		pGameClock->Tick();
 
 		m_elapsedTime -= m_fpsBuffer[m_fpsBufferIndex];
-		m_fpsBuffer[++m_fpsBufferIndex & (APPLICATION_FPS_BUFFER_SIZE - 1)] = pGameClock->GetFrameTime();
+		m_fpsBuffer[++m_fpsBufferIndex & (ENGINE_FPS_BUFFER_SIZE - 1)] = pGameClock->GetFrameTime();
 		m_elapsedTime += m_fpsBuffer[m_fpsBufferIndex];
 
 		return Update(pGameClock->GetFrameTimePrecise(), pGameClock->GetFrameCount());

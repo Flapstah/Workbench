@@ -3,6 +3,7 @@ need to clean up interface classes
 	- don't want implementation details in interface as this leads to common dependencies
 	- need to move as much stuff into engine layer as possible to minimise public exposure
 	- need a way to create a new log
+	- go through all abstract interfaces and 'de-virtualise' as much as possible!
 	
 kernel systems
 even though kernel will (ultimately) have memory management, it must not rely on any dynamic memory

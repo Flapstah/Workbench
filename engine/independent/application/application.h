@@ -10,7 +10,7 @@
 //------------------------------------------------------------------------------
 // N.B. Ensure this is a power of 2
 //------------------------------------------------------------------------------
-#define APPLICATION_FPS_BUFFER_SIZE (1 << 4)
+#define ENGINE_FPS_BUFFER_SIZE (1 << 4)
 
 //==============================================================================
 
@@ -27,13 +27,10 @@ namespace engine
 
 		// IApplication
 		virtual void	SetFrameRate(uint32 framesPerSecond)	{ m_desiredFPS = framesPerSecond;																						}
-		virtual float	GetFrameRate(void) const							{ return m_elapsedTime / (float)APPLICATION_FPS_BUFFER_SIZE;								}
+		virtual float	GetFrameRate(void) const							{ return m_elapsedTime / (float)ENGINE_FPS_BUFFER_SIZE;											}
 
-		virtual bool	Pause(bool pause);
 		virtual bool	Quit(bool immediate);
 		// ~IApplication
-
-		virtual bool	Update(void);
 
 	protected:
 		virtual bool	Initialise(void) = 0;
@@ -59,7 +56,7 @@ namespace engine
 			eF_Running				= BIT(4)
 		};
 
-		float		m_fpsBuffer[APPLICATION_FPS_BUFFER_SIZE];
+		float		m_fpsBuffer[ENGINE_FPS_BUFFER_SIZE];
 		float		m_elapsedTime;
 		uint32	m_fpsBufferIndex;
 		uint32	m_desiredFPS;
