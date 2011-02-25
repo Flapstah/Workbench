@@ -12,13 +12,12 @@ namespace engine
 	//============================================================================
 
 	CApplication::CApplication(void)
-		: m_elapsedTime(0.1f)
+		: m_elapsedTime(0.0f)
 		, m_fpsBufferIndex(0)
 		, m_desiredFPS(0)
-		, m_flags(eF_InitialState)
+		, m_state(eS_Uninitialised)
 	{
 		memset(m_fpsBuffer, 0, sizeof(m_fpsBuffer));
-		m_fpsBuffer[m_fpsBufferIndex] = m_elapsedTime;
 	}
 
 	//============================================================================
@@ -40,7 +39,7 @@ namespace engine
 		pGameClock->Tick();
 
 		m_elapsedTime -= m_fpsBuffer[m_fpsBufferIndex];
-		m_fpsBuffer[++m_fpsBufferIndex & (ENGINE_FPS_BUFFER_SIZE - 1)] = pGameClock->GetFrameTime();
+		m_fpsBuffer[++m_fpsBufferIndex & (APPLICATION_FPS_BUFFER_SIZE - 1)] = pGameClock->GetFrameTime();
 		m_elapsedTime += m_fpsBuffer[m_fpsBufferIndex];
 
 		return Update(pGameClock->GetFrameTimePrecise(), pGameClock->GetFrameCount());
@@ -50,7 +49,7 @@ namespace engine
 
 	bool CApplication::Pause(bool pause)
 	{
-		bool canPause = ((m_flags & eF_Quit) != eF_Quit);
+		bool canPause = ((m_state == eS_Running) || (m_state == eS_Paused));
 
 		if (canPause)
 		{
@@ -66,15 +65,15 @@ namespace engine
 
 	bool CApplication::Quit(bool immediate)
 	{
-		bool canQuit = ((m_flags & eF_Quit) == 0);
+		bool canQuit = ((m_state & eS_Quit) == 0);
 
 		if (canQuit)
 		{
-			m_flags |= eF_Quit;
+			m_state |= eS_Quit;
 
 			if (immediate)
 			{
-				m_flags |= eF_QuitImmediate;
+				m_state |= eS_QuitImmediate;
 
 				ShutDown();
 				Uninitialise();

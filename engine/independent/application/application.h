@@ -10,7 +10,7 @@
 //------------------------------------------------------------------------------
 // N.B. Ensure this is a power of 2
 //------------------------------------------------------------------------------
-#define ENGINE_FPS_BUFFER_SIZE (1 << 4)
+#define APPLICATION_FPS_BUFFER_SIZE (1 << 4)
 
 //==============================================================================
 
@@ -26,41 +26,46 @@ namespace engine
 		virtual ~CApplication(void);
 
 		// IApplication
-		virtual void	SetFrameRate(uint32 framesPerSecond)	{ m_desiredFPS = framesPerSecond;																						}
-		virtual float	GetFrameRate(void) const							{ return m_elapsedTime / (float)ENGINE_FPS_BUFFER_SIZE;											}
-
+		virtual bool	Initialise(int32 argc, char* argv[]);
+		virtual bool	StartUp(void);
+		virtual bool	Update(void);
+		virtual bool	ShutDown(void);
+		virtual bool	Uninitialise(void);
 		virtual bool	Quit(bool immediate);
+
+		virtual bool	Pause(bool pause);
+		virtual bool	IsPaused(void) const									{ return (m_state == eS_Paused);																					}
+
+		virtual void	SetFrameRate(uint32 framesPerSecond)	{ m_desiredFPS = framesPerSecond;																					}
+		virtual float	GetFrameRate(void) const							{ return m_elapsedTime / static_cast<float>(APPLICATION_FPS_BUFFER_SIZE);	}
 		// ~IApplication
 
 	protected:
-		virtual bool	Initialise(void) = 0;
-		virtual bool	StartUp(void) = 0;
 		virtual bool	Update(double frameTime, uint32 frameCount);
-		virtual bool	ShutDown(void)	= 0;
-		virtual bool	Uninitialise(void) = 0;
-
-						bool	CanInitialise(void)										{	return ((m_flags & eF_Initialised) == 0);																	}
-						bool	CanStartup(void)											{	return ((m_flags & eF_Initialised) == eF_Initialised);										}
-						bool	CanShutDown(void)											{	return ((m_flags & eF_StartedUp) == eF_StartedUp);												}
-						bool	CanUninitialise(void)									{	return ((m_flags & (eF_StartedUp || eF_Initialised)) == eF_Initialised);	}
 
 	protected:
-		enum eFlags
+		enum eState
 		{
-			eF_InitialState		= 0,
+			eS_Uninitialised,
+			eS_Initialising,
+			eS_Initialised,
+			eS_StartingUp,
+			eS_StartedUp,
+			eS_Running,
+			eS_Paused,
+			eS_ShuttingDown,
+			es_ShutDown,
+			eS_Uninitialising,
 
-			eF_Quit						= BIT(0),
-			eF_QuitImmediate	= BIT(1),
-			eF_Initialised		= BIT(2),
-			eF_StartedUp			= BIT(3),
-			eF_Running				= BIT(4)
+			eS_Quitting,
+			eS_QuittingImmediately
 		};
 
-		float		m_fpsBuffer[ENGINE_FPS_BUFFER_SIZE];
+		float		m_fpsBuffer[APPLICATION_FPS_BUFFER_SIZE];
 		float		m_elapsedTime;
 		uint32	m_fpsBufferIndex;
 		uint32	m_desiredFPS;
-		uint32	m_flags;
+		uint32	m_state;
 
 	private:
 	}; // End [class CApplication : public IApplication]
