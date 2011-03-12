@@ -67,6 +67,5 @@ namespace engine
 #pragma warning(pop)
 
 //==============================================================================
-
 #endif // End [!defined(__REALTIMECLOCK_H__)]
 // [EOF]

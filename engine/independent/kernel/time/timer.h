@@ -57,6 +57,5 @@ namespace engine
 #pragma warning(pop)
 
 //==============================================================================
-
 #endif // End [!defined(__TIMER_H__)]
 // [EOF]

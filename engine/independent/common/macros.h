@@ -16,7 +16,7 @@
 //------------------------------------------------------------------------------
 // Prevent compiler warnings for intentionally unreferenced parameters
 //------------------------------------------------------------------------------
-#define IGNORE_PARAMETER(_parameter_) (_parameter_)
+#define IGNORE_PARAMETER(_parameter_) (void)(_parameter_)
 
 //------------------------------------------------------------------------------
 // Size macros

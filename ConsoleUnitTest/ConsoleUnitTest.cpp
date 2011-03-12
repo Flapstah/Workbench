@@ -9,6 +9,9 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+  IGNORE_PARAMETER(argc);
+  IGNORE_PARAMETER(argv);
+
 	Log("Testing the log");
 	LogError("Testing the error log");
 	LogWarning("Testing the warning log");
@@ -21,4 +24,3 @@ int _tmain(int argc, _TCHAR* argv[])
 	Log("Last entry");
 	return 0;
 }
-

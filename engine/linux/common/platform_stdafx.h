@@ -3,15 +3,11 @@
 
 //==============================================================================
 
-#include <windows.h>
+#include <signal.h>
 
 //==============================================================================
 
-#if defined(GetCurrentTime)
-#undef GetCurrentTime
-#endif
-
-#define DEBUG_BREAK DebugBreak()
+#define DEBUG_BREAK raise(SIGTRAP)
 
 //==============================================================================
 

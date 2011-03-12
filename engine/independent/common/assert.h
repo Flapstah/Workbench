@@ -37,7 +37,7 @@ namespace engine
 			LogAssert("%s(%i): ", __FILE__, __LINE__, #_condition_); \
 			LogAssert("*ASSERT* condition (%s)", #_condition_); \
 		} \
-		DebugBreak(); \
+		DEBUG_BREAK; \
 	}
 
 #define assertf(_condition_, ...) \
@@ -72,7 +72,7 @@ namespace engine
 			LogAssert("condition (%s) : ", #_condition_); \
 			LogAssert(__VA_ARGS__); \
 		} \
-		DebugBreak(); \
+		DEBUG_BREAK; \
 	}
 #endif
 
