@@ -41,10 +41,10 @@ namespace engine
 			static uint32 s_id;
 		}; // End [struct Node]
 
-		Node* m_pAllocatedList;
+		static Node*	m_pAllocatedList;
 
-		size_t	m_allocatedBytes;
-		size_t	m_allocatedNodes;
+		size_t				m_allocatedBytes;
+		size_t				m_allocatedNodes;
 
 	private:
 	}; // End [class COSMemory : public IMemory]
