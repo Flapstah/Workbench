@@ -363,10 +363,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\engine\independent\common\kernel.h"
-						>
-					</File>
-					<File
 						RelativePath="..\engine\independent\common\macros.h"
 						>
 					</File>

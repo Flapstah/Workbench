@@ -53,8 +53,7 @@ namespace engine
 
 		if (canPause)
 		{
-			ITimer* pGameClock = GetGameClock();
-			pGameClock->Pause(pause);
+			GetGameClock()->Pause(pause);
 			Log("%sausing application", (pause) ? "P" : "Unp");
 		}
 
@@ -63,21 +62,14 @@ namespace engine
 
 	//============================================================================
 
-	bool CApplication::Quit(bool immediate)
+	bool CApplication::Quit(void)
 	{
-		bool canQuit = ((m_state & eS_Quit) == 0);
+		bool canQuit = ((m_state == eS_Running) || (m_state == eS_Paused));
 
 		if (canQuit)
 		{
-			m_state |= eS_Quit;
-
-			if (immediate)
-			{
-				m_state |= eS_QuitImmediate;
-
-				ShutDown();
-				Uninitialise();
-			}
+			ShutDown();
+			Uninitialise();
 		}
 
 		return canQuit;

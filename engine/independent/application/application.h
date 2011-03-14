@@ -31,7 +31,7 @@ namespace engine
 		virtual bool	Update(void);
 		virtual bool	ShutDown(void);
 		virtual bool	Uninitialise(void);
-		virtual bool	Quit(bool immediate);
+		virtual bool	Quit(void);
 
 		virtual bool	Pause(bool pause);
 		virtual bool	IsPaused(void) const									{ return (m_state == eS_Paused);																					}
@@ -55,10 +55,7 @@ namespace engine
 			eS_Paused,
 			eS_ShuttingDown,
 			es_ShutDown,
-			eS_Uninitialising,
-
-			eS_Quitting,
-			eS_QuittingImmediately
+			eS_Uninitialising
 		};
 
 		float		m_fpsBuffer[APPLICATION_FPS_BUFFER_SIZE];
