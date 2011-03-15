@@ -26,7 +26,7 @@ namespace engine
 		virtual ~CApplication(void);
 
 		// IApplication
-		virtual bool	Initialise(int32 argc, char* argv[]);
+		virtual bool	Initialise(int32 argc, TCHAR* argv[]);
 		virtual bool	StartUp(void);
 		virtual bool	Update(void);
 		virtual bool	ShutDown(void);
@@ -37,7 +37,7 @@ namespace engine
 		virtual bool	IsPaused(void) const									{ return (m_state == eS_Paused);																					}
 
 		virtual void	SetFrameRate(uint32 framesPerSecond)	{ m_desiredFPS = framesPerSecond;																					}
-		virtual float	GetFrameRate(void) const							{ return m_elapsedTime / static_cast<float>(APPLICATION_FPS_BUFFER_SIZE);	}
+		virtual float	GetFrameRate(bool smoothed) const;
 		// ~IApplication
 
 	protected:
@@ -58,11 +58,13 @@ namespace engine
 			eS_Uninitialising
 		};
 
-		float		m_fpsBuffer[APPLICATION_FPS_BUFFER_SIZE];
-		float		m_elapsedTime;
-		uint32	m_fpsBufferIndex;
+		TCHAR*	m_argv[];
+		float		m_frameTimeBuffer[APPLICATION_FPS_BUFFER_SIZE];
+		float		m_frameTimeAccumulator;
+		uint32	m_frameTimeBufferIndex;
 		uint32	m_desiredFPS;
 		uint32	m_state;
+		int32		m_argc;
 
 	private:
 	}; // End [class CApplication : public IApplication]

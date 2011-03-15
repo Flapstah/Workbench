@@ -10,7 +10,7 @@ namespace engine
 	//============================================================================
 	struct IApplication
 	{
-		virtual bool	Initialise(int32 argc, char* argv[]) = 0;
+		virtual bool	Initialise(int32 argc, TCHAR* argv[]) = 0;
 		virtual bool	StartUp(void) = 0;
 		virtual bool	Update(void) = 0;
 		virtual bool	ShutDown(void)	= 0;

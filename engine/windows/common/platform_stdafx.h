@@ -12,6 +12,7 @@
 #endif
 
 #define DEBUG_BREAK DebugBreak()
+#define SLEEP Sleep
 
 //==============================================================================
 

@@ -7,7 +7,7 @@
 
 #include "common/ilogfile.h"
 
-int _tmain(int argc, _TCHAR* argv[])
+int _tmain(int argc, TCHAR* argv[])
 {
   IGNORE_PARAMETER(argc);
   IGNORE_PARAMETER(argv);
