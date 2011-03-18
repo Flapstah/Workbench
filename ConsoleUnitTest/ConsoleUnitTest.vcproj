@@ -378,6 +378,14 @@
 						RelativePath="..\engine\independent\application\application.h"
 						>
 					</File>
+					<File
+						RelativePath="..\engine\independent\application\consoleapplication.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\engine\independent\application\consoleapplication.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
