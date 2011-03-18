@@ -15,7 +15,7 @@ namespace engine
 		virtual bool	Update(void) = 0;
 		virtual bool	ShutDown(void)	= 0;
 		virtual bool	Uninitialise(void) = 0;
-		virtual bool	Quit(void);
+		virtual bool	Quit(void) = 0;
 
 		virtual bool	Pause(bool pause) = 0;
 		virtual bool	IsPaused(void) const = 0;

@@ -12,7 +12,7 @@ namespace engine
 	//============================================================================
 
 	CApplication::CApplication(void)
-		: m_argv = NULL
+		: m_argv(NULL)
 		, m_frameTimeAccumulator(0.0f)
 		, m_frameTimeBufferIndex(0)
 		, m_desiredFPS(0)
@@ -38,6 +38,8 @@ namespace engine
 		m_argv = argv;
 
 		m_state = eS_Initialised;
+
+		return true;
 	}
 
 	//============================================================================
@@ -45,21 +47,22 @@ namespace engine
 	bool CApplication::StartUp(void)
 	{
 		m_state = eS_Running;
+
+		return true;
 	}
 
 	//============================================================================
 
 	bool CApplication::Update(void)
 	{
-		IRealTimeClock* pRealTimeClock = GetRealTimeClock();
-		pRealTimeClock->Tick();
-		float frameTime = pRealTimeClock->GetFrameTime();
+		GetRealTimeClock()->Tick();
+		ITimer* pGameClock = GetGameClock();
+		float frameTime = pGameClock->GetFrameTime();
 
 		m_frameTimeAccumulator -= m_frameTimeBuffer[m_frameTimeBufferIndex];
 		m_frameTimeBuffer[++m_frameTimeBufferIndex & (APPLICATION_FPS_BUFFER_SIZE - 1)] = frameTime;
 		m_frameTimeAccumulator += m_frameTimeBuffer[m_frameTimeBufferIndex];
 
-		ITimer* pGameClock = GetGameClock();
 		float averageFPS = GetFrameRate(true);
 		float desiredFPS = static_cast<float>(m_desiredFPS);
 
@@ -85,6 +88,8 @@ namespace engine
 	bool CApplication::ShutDown(void)
 	{
 		m_state = es_ShutDown;
+
+		return true;
 	}
 
 	//============================================================================
@@ -95,6 +100,8 @@ namespace engine
 		m_argv = NULL;
 
 		m_state = eS_Uninitialised;
+
+		return true;
 	}
 
 	//============================================================================
@@ -129,7 +136,7 @@ namespace engine
 
 	//============================================================================
 
-	float CApplication::GetFrameRate(bool smoothed)
+	float CApplication::GetFrameRate(bool smoothed) const
 	{
 		float frameTime = 0.01f;
 
@@ -139,7 +146,7 @@ namespace engine
 		}
 		else
 		{
-			frameTime = GetRealTimeClock()->GetFrameTime()
+			frameTime = GetRealTimeClock()->GetFrameTime();
 		}
 
 		return 1.0f / frameTime;

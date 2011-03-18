@@ -58,7 +58,7 @@ namespace engine
 			eS_Uninitialising
 		};
 
-		TCHAR*	m_argv[];
+		TCHAR**	m_argv;
 		float		m_frameTimeBuffer[APPLICATION_FPS_BUFFER_SIZE];
 		float		m_frameTimeAccumulator;
 		uint32	m_frameTimeBufferIndex;
