@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "common/ilogfile.h"
+#include "application/consoleapplication.h"
 
 int _tmain(int argc, TCHAR* argv[])
 {
@@ -20,6 +21,19 @@ int _tmain(int argc, TCHAR* argv[])
 
 	assert(1 == 0);
 	assertf(1 == 0, "Hopefully, we're asserting that 1 does not equal 0...");
+
+	engine::CConsoleApplication theApp;
+	theApp.Initialise(argc, argv);
+	theApp.SetFrameRate(30);
+	theApp.StartUp();
+
+	for (uint32 index = 0; index < 300; ++index)
+	{
+		theApp.Update();
+	}
+
+	theApp.ShutDown();
+	theApp.Uninitialise();
 
 	Log("Last entry");
 	return 0;

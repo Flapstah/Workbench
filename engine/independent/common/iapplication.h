@@ -21,7 +21,7 @@ namespace engine
 		virtual bool	IsPaused(void) const = 0;
 
 		virtual void	SetFrameRate(uint32 framesPerSecond) = 0;
-		virtual float	GetFrameRate(void) const = 0;
+		virtual float	GetFrameRate(bool smoothed) const = 0;
 	}; // End [struct IApplication]
 
 	//============================================================================

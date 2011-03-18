@@ -73,6 +73,5 @@ namespace engine
 } // End [namespace engine]
 
 //==============================================================================
-
 #endif // End [!defined(__APPLICATION_H__)]
 // [EOF]

@@ -20,6 +20,7 @@ namespace engine
 		, m_argc(0)
 	{
 		memset(m_frameTimeBuffer, 0, sizeof(m_frameTimeBuffer));
+		m_frameTimeAccumulator = m_frameTimeBuffer[1] = 0.1f;
 	}
 
 	//============================================================================
@@ -60,11 +61,12 @@ namespace engine
 		float frameTime = pGameClock->GetFrameTime();
 
 		m_frameTimeAccumulator -= m_frameTimeBuffer[m_frameTimeBufferIndex];
-		m_frameTimeBuffer[++m_frameTimeBufferIndex & (APPLICATION_FPS_BUFFER_SIZE - 1)] = frameTime;
+		m_frameTimeBufferIndex = ++m_frameTimeBufferIndex & (APPLICATION_FPS_BUFFER_SIZE - 1);
+		m_frameTimeBuffer[m_frameTimeBufferIndex] = frameTime;
 		m_frameTimeAccumulator += m_frameTimeBuffer[m_frameTimeBufferIndex];
 
 		float averageFPS = GetFrameRate(true);
-		float desiredFPS = static_cast<float>(m_desiredFPS);
+		float desiredFPS = (m_desiredFPS == 0) ? averageFPS : static_cast<float>(m_desiredFPS);
 
 		if (averageFPS <= desiredFPS)
 		{
