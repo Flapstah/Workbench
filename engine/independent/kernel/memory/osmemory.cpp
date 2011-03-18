@@ -29,6 +29,7 @@ namespace engine
 
 	uint32 COSMemory::Node::s_id = 0;
 	static COSMemory::GUARD guard = 0xDEADC0DE;
+	COSMemory::Node* COSMemory::m_pAllocatedList = NULL;
 
 	//============================================================================
 
