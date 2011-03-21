@@ -24,7 +24,7 @@ namespace engine
 
 	public:
 										CTimer(ITimeSource& source, double scale, double maxFrameTime)
-											: m_timeSource(source), m_scale(0.0), m_maxFrameTime(0.0)
+											: m_timeSource(source), m_scale(scale), m_maxFrameTime(maxFrameTime)
 																								{	m_timeSource.AddReference();							}
 		virtual					~CTimer(void)								{ m_timeSource.Release();										}
 

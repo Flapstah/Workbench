@@ -15,14 +15,13 @@ namespace engine
 
 		if ((!m_paused) && (m_frameCount < m_timeSource.GetFrameCount()))
 		{
-			double frameTime = m_timeSource.GetFrameTimePrecise();
+			m_frameTime = (m_timeSource.GetTimePrecise() * m_scale) - m_currentTime;
 
-			if ((m_maxFrameTime > 0.0) && (frameTime > m_maxFrameTime))
+			if ((m_maxFrameTime > 0.0) && (m_frameTime > m_maxFrameTime))
 			{
-				frameTime = m_maxFrameTime;
+				m_frameTime = m_maxFrameTime;
 			}
 
-			m_frameTime = frameTime * m_scale;
 			m_currentTime += m_frameTime;
 			m_frameCount = m_timeSource.GetFrameCount();
 			ticked = true;
