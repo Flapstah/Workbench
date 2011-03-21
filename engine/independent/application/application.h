@@ -59,8 +59,8 @@ namespace engine
 		};
 
 		TCHAR**	m_argv;
-		float		m_frameTimeBuffer[APPLICATION_FPS_BUFFER_SIZE];
-		float		m_frameTimeAccumulator;
+		double	m_frameTimeBuffer[APPLICATION_FPS_BUFFER_SIZE];
+		double	m_frameTimeAccumulator;
 		uint32	m_frameTimeBufferIndex;
 		uint32	m_desiredFPS;
 		uint32	m_state;
