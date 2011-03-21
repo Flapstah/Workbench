@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ConsoleUnitTest" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output="ConsoleUnitTest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Debug Win32" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add directory="$(SolutionDir)engine/independent/" />
+					<Add directory="$(SolutionDir)engine/windows/" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="$(SolutionDir)engine/independent/" />
+					<Add directory="$(SolutionDir)engine/windows/" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="shlwapi" />
+				</Linker>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="ConsoleUnitTest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Release Win32" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-W" />
+					<Add option="-O2" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Unit filename="ReadMe.txt" />
+		<Unit filename="ConsoleUnitTest.cpp" />
+		<Unit filename="stdafx.cpp" />
+		<Unit filename="stdafx.h" />
+		<Unit filename="targetver.h" />
+		<Unit filename="../engine/todo.txt" />
+		<Unit filename="../engine/independent/kernel/time/realtimeclock.cpp" />
+		<Unit filename="../engine/independent/kernel/time/realtimeclock.h" />
+		<Unit filename="../engine/independent/kernel/time/timer.cpp" />
+		<Unit filename="../engine/independent/kernel/time/timer.h" />
+		<Unit filename="../engine/independent/kernel/time/timesource.h" />
+		<Unit filename="../engine/independent/kernel/debug/debug.h" />
+		<Unit filename="../engine/independent/kernel/filesystem/filesystem.cpp" />
+		<Unit filename="../engine/independent/kernel/filesystem/filesystem.h" />
+		<Unit filename="../engine/independent/kernel/log/logfile.cpp" />
+		<Unit filename="../engine/independent/kernel/log/logfile.h" />
+		<Unit filename="../engine/independent/kernel/memory/memory.cpp" />
+		<Unit filename="../engine/independent/kernel/memory/memory.h" />
+		<Unit filename="../engine/independent/kernel/memory/osmemory.cpp" />
+		<Unit filename="../engine/independent/kernel/memory/osmemory.h" />
+		<Unit filename="../engine/independent/kernel/console/console.cpp" />
+		<Unit filename="../engine/independent/kernel/console/console.h" />
+		<Unit filename="../engine/independent/common/assert.h" />
+		<Unit filename="../engine/independent/common/iapplication.h" />
+		<Unit filename="../engine/independent/common/iconfiguration.h" />
+		<Unit filename="../engine/independent/common/iconsole.h" />
+		<Unit filename="../engine/independent/common/ifilesystem.h" />
+		<Unit filename="../engine/independent/common/ilogfile.h" />
+		<Unit filename="../engine/independent/common/imemory.h" />
+		<Unit filename="../engine/independent/common/ithread.h" />
+		<Unit filename="../engine/independent/common/itime.h" />
+		<Unit filename="../engine/independent/common/kernel.h" />
+		<Unit filename="../engine/independent/common/macros.h" />
+		<Unit filename="../engine/independent/application/application.cpp" />
+		<Unit filename="../engine/independent/application/application.h" />
+		<Unit filename="../engine/windows/kernel/time/platform_systemclock.cpp" />
+		<Unit filename="../engine/windows/kernel/debug/platform_debug.cpp" />
+		<Unit filename="../engine/windows/kernel/filesystem/platform_filesystem.cpp" />
+		<Unit filename="../engine/windows/kernel/thread/platform_thread.cpp" />
+		<Unit filename="../engine/windows/common/platform_stdafx.h" />
+		<Unit filename="../engine/windows/common/platform_types.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
