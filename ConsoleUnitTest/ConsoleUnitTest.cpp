@@ -13,14 +13,14 @@ int _tmain(int argc, TCHAR* argv[])
   IGNORE_PARAMETER(argc);
   IGNORE_PARAMETER(argv);
 
-	Log("Testing the log");
-	LogError("Testing the error log");
-	LogWarning("Testing the warning log");
-	LogToDo("Testing the todo log");
-	LogPerformance("Testing the performance log");
+	//Log("Testing the log");
+	//LogError("Testing the error log");
+	//LogWarning("Testing the warning log");
+	//LogToDo("Testing the todo log");
+	//LogPerformance("Testing the performance log");
 
-	assert(1 == 0);
-	assertf(1 == 0, "Hopefully, we're asserting that 1 does not equal 0...");
+	//assert(1 == 0);
+	//assertf(1 == 0, "Hopefully, we're asserting that 1 does not equal 0...");
 
 	engine::CConsoleApplication theApp;
 	theApp.Initialise(argc, argv);
