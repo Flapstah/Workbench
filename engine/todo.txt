@@ -1,3 +1,5 @@
+need to improve fps reporting as setting test to 3500fps reports ~2500fps but few overbudget warnings...
+
 need to clean up interface classes
 	- create application class (Windows implementation will be Win32 type application)
 	- don't want implementation details in interface as this leads to common dependencies
