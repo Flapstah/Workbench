@@ -65,6 +65,7 @@ namespace engine
 	extern ILogFile* g_AssertLog;
 	extern ILogFile* g_ToDoLog;
 	extern ILogFile* g_PerformanceLog;
+	extern ILogFile* g_DebugLog;
 
 	//----------------------------------------------------------------------------
 	// Helper macros for log output
@@ -84,6 +85,11 @@ namespace engine
 #define LogAssert(...) _WriteLog(engine::g_AssertLog, __VA_ARGS__)
 #define LogToDo(...) _WriteLog(engine::g_ToDoLog, __VA_ARGS__)
 #define LogPerformance(...) _WriteLog(engine::g_PerformanceLog, __VA_ARGS__)
+#if defined(_DEBUG)
+#define LogDebug(...) _WriteLog(engine::g_DebugLog, __VA_ARGS__)
+#else
+#define LogDebug(...)
+#endif
 
 	//============================================================================
 } // End [namespace engine]

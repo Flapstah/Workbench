@@ -30,6 +30,7 @@ namespace engine
 	static CLogFile gs_AssertLog("Assert", &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(DEFAULT_LOG_BEHAVIOUR), NULL);
 	static CLogFile gs_ToDoLog("ToDo", &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(DEFAULT_LOG_BEHAVIOUR), NULL);
 	static CLogFile gs_PerformanceLog("Performance", &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(DEFAULT_LOG_BEHAVIOUR), NULL);
+	static CLogFile gs_DebugLog("Debug", &gs_MainLog, static_cast<ILogFile::eBehaviourFlag>(DEFAULT_LOG_BEHAVIOUR), NULL);
 
 	//============================================================================
 
@@ -39,6 +40,7 @@ namespace engine
 	ILogFile* g_AssertLog = &gs_AssertLog;
 	ILogFile* g_ToDoLog = &gs_ToDoLog;
 	ILogFile* g_PerformanceLog = &gs_PerformanceLog;
+	ILogFile* g_DebugLog = &gs_DebugLog;
 
 	//============================================================================
 
