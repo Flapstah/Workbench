@@ -4,6 +4,7 @@
 *.vcproj.*
 ConsoleUnitTest/Debug/
 ConsoleUnitTest/Logs/
+ConsoleUnitTest/Release/
 buildlog.txt
 *.orig
 Debug/
