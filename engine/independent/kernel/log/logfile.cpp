@@ -223,7 +223,7 @@ namespace engine
 
 	void CLogFile::InsertTimeStamp(const ITimer* pTimer)
 	{
-		m_pBuffer->m_size += sprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, "[%8.03f]", pTimer->GetTime());
+		m_pBuffer->m_size += sprintf_s(&m_pBuffer->m_buffer[m_pBuffer->m_size], LOGFILE_BUFFER_SIZE - m_pBuffer->m_size, "[%8.03f]", pTimer->GetTickTime());
 	}
 
 	//============================================================================

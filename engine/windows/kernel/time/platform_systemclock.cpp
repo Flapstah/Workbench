@@ -30,14 +30,23 @@ namespace engine
 
 	bool CRealTimeClock::Platform_Tick(void)
 	{
-		LARGE_INTEGER time;
-
-		::QueryPerformanceCounter(&time);
-		double currentTime = time.QuadPart * m_secondsPerTick;
+		double currentTime = Platform_GetTimePrecise();
 		m_frameTime = currentTime - m_currentTime;
 		m_currentTime = currentTime;
 
 		return true;
+	}
+
+	//============================================================================
+
+	double CRealTimeClock::Platform_GetTimePrecise(void) const
+	{
+		LARGE_INTEGER time;
+
+		::QueryPerformanceCounter(&time);
+		double currentTime = time.QuadPart * m_secondsPerTick;
+
+		return currentTime;
 	}
 
 	//============================================================================

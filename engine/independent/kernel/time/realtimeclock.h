@@ -35,6 +35,9 @@ namespace engine
 		// ~ITimeSource
 
 		// IRealTimeClock
+		virtual	float		GetRealTime(void) const					{ return static_cast<float>(Platform_GetTimePrecise());	}
+		virtual	double	GetRealTimePrecise(void) const	{	return Platform_GetTimePrecise();											}
+
 		virtual TCHAR*	GetLocalDateString(void) const	{	return Platform_GetLocalDateString();		}
 		virtual TCHAR*	GetLocalTimeString(void) const	{	return Platform_GetLocalTimeString();		}
 		// ~IRealTimeClock
@@ -43,6 +46,7 @@ namespace engine
 						void		Platform_Initialise(void);
 						void		Platform_Uninitialise(void);
 						bool		Platform_Tick(void);
+						double	Platform_GetTimePrecise(void) const;
 						TCHAR*	Platform_GetLocalDateString(void) const;
 						TCHAR*	Platform_GetLocalTimeString(void) const;
 

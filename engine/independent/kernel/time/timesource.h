@@ -23,8 +23,8 @@ namespace engine
 		// ITimeSource
 		virtual	bool		Tick(void) = 0							{ ++m_frameCount; return true;							}
 
-		virtual	float		GetTime(void) const					{ return static_cast<float>(m_currentTime);	}
-		virtual	double	GetTimePrecise(void) const	{	return m_currentTime;											}
+		virtual	float		GetTickTime(void) const			{ return static_cast<float>(m_currentTime);	}
+		virtual	double	GetTickTimePrecise(void) const	{	return m_currentTime;											}
 
 		virtual	float		GetFrameTime(void) const		{ return static_cast<float>(m_frameTime);		}
 		virtual	double	GetFrameTimePrecise(void) const	{	return m_frameTime;										}

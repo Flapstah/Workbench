@@ -12,8 +12,8 @@ namespace engine
 	{
 		virtual	bool		Tick(void) = 0;
 
-		virtual	float		GetTime(void) const = 0;
-		virtual	double	GetTimePrecise(void) const = 0;
+		virtual	float		GetTickTime(void) const = 0;
+		virtual	double	GetTickTimePrecise(void) const = 0;
 
 		virtual	float		GetFrameTime(void) const = 0;
 		virtual	double	GetFrameTimePrecise(void) const = 0;
@@ -29,6 +29,9 @@ namespace engine
 	//============================================================================
 	struct IRealTimeClock : virtual public ITimeSource 
 	{
+		virtual	float		GetRealTime(void) const = 0;
+		virtual	double	GetRealTimePrecise(void) const = 0;
+
 		virtual TCHAR*	GetLocalDateString(void) const = 0;
 		virtual TCHAR*	GetLocalTimeString(void) const = 0;
 	}; // End [struct IRealTimeClock : public ITimeSource]
