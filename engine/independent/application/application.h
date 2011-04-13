@@ -41,7 +41,7 @@ namespace engine
 		// ~IApplication
 
 	protected:
-		virtual bool	Update(double frameTime, uint32 frameCount);
+		virtual bool	Update(double frameTime);
 
 	protected:
 		enum eState
@@ -61,6 +61,7 @@ namespace engine
 		TCHAR**	m_argv;
 		double	m_frameTimeBuffer[APPLICATION_FPS_BUFFER_SIZE];
 		double	m_frameTimeAccumulator;
+		double	m_waitTimeAccumulator;
 		uint32	m_frameTimeBufferIndex;
 		uint32	m_desiredFPS;
 		uint32	m_state;

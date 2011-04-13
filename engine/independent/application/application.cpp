@@ -7,6 +7,10 @@
 
 //==============================================================================
 
+#define MINIMUM_FRAME_TIME (0.000001)
+
+//==============================================================================
+
 namespace engine
 {
 	//============================================================================
@@ -14,13 +18,14 @@ namespace engine
 	CApplication::CApplication(void)
 		: m_argv(NULL)
 		, m_frameTimeAccumulator(0.0f)
-		, m_frameTimeBufferIndex(0)
+		, m_waitTimeAccumulator(0.0f)
+		, m_frameTimeBufferIndex(APPLICATION_FPS_BUFFER_SIZE - 1)
 		, m_desiredFPS(0)
 		, m_state(eS_Uninitialised)
 		, m_argc(0)
 	{
 		memset(m_frameTimeBuffer, 0, sizeof(m_frameTimeBuffer));
-		m_frameTimeAccumulator = m_frameTimeBuffer[1] = 0.1f;
+		//m_frameTimeAccumulator = m_frameTimeBuffer[0] = 0.1f;
 	}
 
 	//============================================================================
@@ -56,29 +61,41 @@ namespace engine
 
 	bool CApplication::Update(void)
 	{
-		GetRealTimeClock()->Tick();
+		IRealTimeClock* pRealTimeClock = GetRealTimeClock();
 		ITimer* pGameClock = GetGameClock();
-		uint32 waitTime = 0;
+		double frameTime = 0.0;
 
+		pRealTimeClock->Tick();
 		if (pGameClock->Tick())
 		{
-			double frameTime = pGameClock->GetFrameTimePrecise();
-			m_frameTimeAccumulator -= m_frameTimeBuffer[m_frameTimeBufferIndex];
-			m_frameTimeBufferIndex = ++m_frameTimeBufferIndex & (APPLICATION_FPS_BUFFER_SIZE - 1);
-			m_frameTimeBuffer[m_frameTimeBufferIndex] = frameTime;
-			m_frameTimeAccumulator += m_frameTimeBuffer[m_frameTimeBufferIndex];
+			frameTime = pGameClock->GetFrameTimePrecise();
+		}
 
-			if (m_desiredFPS > 0)
+		m_frameTimeBufferIndex = ++m_frameTimeBufferIndex & (APPLICATION_FPS_BUFFER_SIZE - 1);
+		m_frameTimeAccumulator += (frameTime - m_frameTimeBuffer[m_frameTimeBufferIndex]);
+		m_frameTimeBuffer[m_frameTimeBufferIndex] = frameTime;
+
+		bool ret = Update(frameTime);
+
+		uint32 waitTime = 0;
+		double elapsedTime = pRealTimeClock->GetRealTimePrecise() - pRealTimeClock->GetTickTimePrecise();
+
+		if (m_desiredFPS > 0)
+		{
+			double desiredFrameTime = 1.0 / static_cast<double>(m_desiredFPS);
+			if (elapsedTime <= desiredFrameTime)
 			{
-				double averageFrameTime = 1.0f / static_cast<double>(m_desiredFPS);
-				if (frameTime < averageFrameTime)
-				{
-					waitTime = static_cast<uint32>((averageFrameTime - frameTime) * 1000.0);
-				}
+				m_waitTimeAccumulator += (desiredFrameTime - elapsedTime);
+				waitTime = static_cast<uint32>(m_waitTimeAccumulator * 1000.0);
+				m_waitTimeAccumulator -= (0.001 * waitTime);
+				LogDebug("elapsedTime %f, desiredFrameTime %f, slacktime %f, wait %ius (excess %f)", elapsedTime, desiredFrameTime, desiredFrameTime - elapsedTime, waitTime, m_waitTimeAccumulator);
+			}
+			else
+			{
+				Log("[CApplication::Update()] unable to sustain desired frame rate of %ifps (elapsedTime %fs, over budget by %fs)", m_desiredFPS, elapsedTime, elapsedTime - desiredFrameTime);
 			}
 		}
 
-		bool ret = Update(pGameClock->GetFrameTimePrecise(), pGameClock->GetFrameCount());
 		SLEEP(waitTime);
 		return ret;
 	}
@@ -138,7 +155,7 @@ namespace engine
 
 	float CApplication::GetFrameRate(bool smoothed) const
 	{
-		double frameTime = 0.01;
+		double frameTime = MINIMUM_FRAME_TIME;
 
 		if (smoothed)
 		{
@@ -155,7 +172,7 @@ namespace engine
 
 	//============================================================================
 
-	bool CApplication::Update(double frameTime, uint32 frameCount)
+	bool CApplication::Update(double frameTime)
 	{
 		//TODO: Here's where we need to update all the kernel bits
 		return true;

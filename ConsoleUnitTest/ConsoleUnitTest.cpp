@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "common/ilogfile.h"
+#include "common/itime.h"
 #include "application/consoleapplication.h"
 
 int _tmain(int argc, TCHAR* argv[])
@@ -24,13 +25,18 @@ int _tmain(int argc, TCHAR* argv[])
 
 	engine::CConsoleApplication theApp;
 	theApp.Initialise(argc, argv);
-	theApp.SetFrameRate(30);
+	theApp.SetFrameRate(80);
 	theApp.StartUp();
 
-	for (uint32 index = 0; index < 300; ++index)
+	double startTime = engine::GetRealTimeClock()->GetTickTimePrecise();
+
+	for (uint32 index = 0; index < 1200; ++index)
 	{
 		theApp.Update();
 	}
+
+	double endTime = engine::GetRealTimeClock()->GetTickTimePrecise();
+	Log("time: %.02f", endTime - startTime);
 
 	theApp.ShutDown();
 	theApp.Uninitialise();

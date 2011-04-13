@@ -23,7 +23,7 @@ namespace engine
 		virtual bool Update(void) { return PARENT::Update(); }
 
 	protected:
-		virtual bool	Update(double frameTime, uint32 frameCount);
+		virtual bool	Update(double frameTime);
 
 	private:
 	};
