@@ -51,7 +51,7 @@ namespace engine
 
 	//============================================================================
 
-	TCHAR* CRealTimeClock::Platform_GetLocalDateString(void) const
+	const char* CRealTimeClock::Platform_GetLocalDateString(void) const
 	{
 		::time_t absoluteTime;
 		::time(&absoluteTime);
@@ -59,14 +59,14 @@ namespace engine
 		::tm localTime;
 		::localtime_s(&localTime, &absoluteTime);
 
-		memset(m_localDate, 0, sizeof(TCHAR) * REAL_TIME_CLOCK_DATE_BUFFER_SIZE);
-		::_tcsftime(m_localDate, REAL_TIME_CLOCK_DATE_BUFFER_SIZE, _TEXT("%d/%m/%Y"), &localTime);
+		memset(m_localDate, 0, REAL_TIME_CLOCK_DATE_BUFFER_SIZE);
+		::strftime(m_localDate, REAL_TIME_CLOCK_DATE_BUFFER_SIZE, "%d/%m/%Y", &localTime);
 		return m_localDate;
 	}
 
 	//============================================================================
 
-	TCHAR* CRealTimeClock::Platform_GetLocalTimeString(void) const
+	const char* CRealTimeClock::Platform_GetLocalTimeString(void) const
 	{
 		::time_t absoluteTime;
 		::time(&absoluteTime);
@@ -74,8 +74,8 @@ namespace engine
 		::tm localTime;
 		::localtime_s(&localTime, &absoluteTime);
 
-		memset(m_localTime, 0, sizeof(TCHAR) * REAL_TIME_CLOCK_TIME_BUFFER_SIZE);
-		::_tcsftime(m_localTime, REAL_TIME_CLOCK_TIME_BUFFER_SIZE, _TEXT("%H:%M:%S"), &localTime);
+		memset(m_localTime, 0, REAL_TIME_CLOCK_TIME_BUFFER_SIZE);
+		::strftime(m_localTime, REAL_TIME_CLOCK_TIME_BUFFER_SIZE, "%H:%M:%S", &localTime);
 		return m_localTime;
 	}
 

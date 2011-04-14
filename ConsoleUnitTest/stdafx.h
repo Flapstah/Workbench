@@ -11,10 +11,6 @@
 
 #include <stdio.h>
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <tchar.h>
-#endif // defined(_WIN32) || defined(_WIN64)
-
 // TODO: reference additional headers your program requires here
 //#include <assert.h>
 #include <time.h>

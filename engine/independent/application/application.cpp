@@ -38,7 +38,7 @@ namespace engine
 
 	//============================================================================
 
-	bool CApplication::Initialise(int32 argc, TCHAR* argv[])
+	bool CApplication::Initialise(int32 argc, char* argv[])
 	{
 		m_argc = argc;
 		m_argv = argv;

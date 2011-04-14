@@ -30,7 +30,7 @@ namespace engine
 
 	//============================================================================
 
-	CFileSystem::eFileSystemError CFileSystem::DirectoryExists(char* path)
+	CFileSystem::eFileSystemError CFileSystem::DirectoryExists(const char* path)
 	{
 		struct _stat64 info;
 		eFileSystemError error = eFSE_ERROR;
@@ -57,7 +57,7 @@ namespace engine
 
 	//============================================================================
 
-	CFileSystem::eFileSystemError CFileSystem::CreateDirectory(char* path)
+	CFileSystem::eFileSystemError CFileSystem::CreateDirectory(const char* path)
 	{
 		eFileSystemError error = eFSE_ERROR;
 
@@ -85,7 +85,7 @@ namespace engine
 	//============================================================================
 
 #if defined(FILE_SYSTEM_EXTENDED)
-	CFileSystem::eFileSystemError	CFileSystem::CopyDirectory(char* sourcePath, char* destinationPath)
+	CFileSystem::eFileSystemError	CFileSystem::CopyDirectory(const char* sourcePath, const char* destinationPath)
 	{
 		// TODO:
 		return eFSE_ERROR;
@@ -93,7 +93,7 @@ namespace engine
 
 	//============================================================================
 
-	CFileSystem::eFileSystemError	CFileSystem::MoveDirectory(char* sourcePath, char* destinationPath)
+	CFileSystem::eFileSystemError	CFileSystem::MoveDirectory(const char* sourcePath, const char* destinationPath)
 	{
 		// TODO:
 		return eFSE_ERROR;
@@ -101,7 +101,7 @@ namespace engine
 
 	//============================================================================
 
-	CFileSystem::eFileSystemError	CFileSystem::DeleteDirectory(char* path, bool force)
+	CFileSystem::eFileSystemError	CFileSystem::DeleteDirectory(const char* path, bool force)
 	{
 		// TODO:
 		return eFSE_ERROR;
@@ -110,14 +110,14 @@ namespace engine
 
 	//============================================================================
 
-	CFileSystem::eFileSystemError CFileSystem::FileExists(char* name)
+	CFileSystem::eFileSystemError CFileSystem::FileExists(const char* name)
 	{
 		return eFSE_ERROR;
 	}
 
 	//============================================================================
 
-	CFileSystem::eFileSystemHandle CFileSystem::OpenFile(char* name, char* mode)
+	CFileSystem::eFileSystemHandle CFileSystem::OpenFile(const char* name, const char* mode)
 	{
 		eFileSystemHandle handle = eFSH_INVALID;
 
@@ -142,7 +142,7 @@ namespace engine
 	//============================================================================
 
 #if defined(FILE_SYSTEM_EXTENDED)
-	CFileSystem::eFileSystemError	CFileSystem::CopyFile(char* sourceName, char* destinationName)
+	CFileSystem::eFileSystemError	CFileSystem::CopyFile(const char* sourceName, const char* destinationName)
 	{
 		// TODO:
 		return eFSE_ERROR;
@@ -150,7 +150,7 @@ namespace engine
 
 	//============================================================================
 
-	CFileSystem::eFileSystemError	CFileSystem::MoveFile(char* sourceName, char* destinationName)
+	CFileSystem::eFileSystemError	CFileSystem::MoveFile(const char* sourceName, const char* destinationName)
 	{
 		// TODO:
 		return eFSE_ERROR;
@@ -158,7 +158,7 @@ namespace engine
 
 	//============================================================================
 
-	CFileSystem::eFileSystemError	CFileSystem::DeleteFile(char* name, bool force)
+	CFileSystem::eFileSystemError	CFileSystem::DeleteFile(const char* name, bool force)
 	{
 		// TODO:
 		return eFSE_ERROR;

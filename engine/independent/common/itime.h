@@ -32,8 +32,8 @@ namespace engine
 		virtual	float		GetRealTime(void) const = 0;
 		virtual	double	GetRealTimePrecise(void) const = 0;
 
-		virtual TCHAR*	GetLocalDateString(void) const = 0;
-		virtual TCHAR*	GetLocalTimeString(void) const = 0;
+		virtual const char*	GetLocalDateString(void) const = 0;
+		virtual const char*	GetLocalTimeString(void) const = 0;
 	}; // End [struct IRealTimeClock : public ITimeSource]
 
 	//============================================================================

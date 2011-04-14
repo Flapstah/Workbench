@@ -55,22 +55,22 @@ namespace engine
 
 		//==========================================================================
 
-		virtual eFileSystemError	DirectoryExists(char* path) = 0;
-		virtual eFileSystemError	CreateDirectory(char* path) = 0;
+		virtual eFileSystemError	DirectoryExists(const char* path) = 0;
+		virtual eFileSystemError	CreateDirectory(const char* path) = 0;
 #if defined(FILE_SYSTEM_EXTENDED)
-		virtual eFileSystemError	CopyDirectory(char* sourcePath, char* destinationPath) = 0;
-		virtual eFileSystemError	MoveDirectory(char* sourcePath, char* destinationPath) = 0;
-		virtual eFileSystemError	DeleteDirectory(char* path, bool force) = 0;
+		virtual eFileSystemError	CopyDirectory(const char* sourcePath, const char* destinationPath) = 0;
+		virtual eFileSystemError	MoveDirectory(const char* sourcePath, const char* destinationPath) = 0;
+		virtual eFileSystemError	DeleteDirectory(const char* path, const bool force) = 0;
 #endif
 
 		//==========================================================================
 
-		virtual eFileSystemError	FileExists(char* name) = 0;
-		virtual eFileSystemHandle	OpenFile(char* name, char* mode) = 0;
+		virtual eFileSystemError	FileExists(const char* name) = 0;
+		virtual eFileSystemHandle	OpenFile(const char* name, const char* mode) = 0;
 #if defined(FILE_SYSTEM_EXTENDED)
-		virtual eFileSystemError	CopyFile(char* sourceName, char* destinationName) = 0;
-		virtual eFileSystemError	MoveFile(char* sourceName, char* destinationName) = 0;
-		virtual eFileSystemError	DeleteFile(char* name, bool force) = 0;
+		virtual eFileSystemError	CopyFile(const char* sourceName, const char* destinationName) = 0;
+		virtual eFileSystemError	MoveFile(const char* sourceName, const char* destinationName) = 0;
+		virtual eFileSystemError	DeleteFile(const char* name, bool force) = 0;
 #endif
 		virtual size_t						Read(eFileSystemHandle handle, void* pBuffer, size_t bufferSize, size_t itemSize, size_t itemCount) = 0;
 		virtual size_t						Write(eFileSystemHandle handle, const void* pBuffer, size_t itemSize, size_t itemCount) = 0;

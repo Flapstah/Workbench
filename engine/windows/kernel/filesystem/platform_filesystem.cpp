@@ -13,7 +13,7 @@ namespace engine
 
 	CFileSystem::eFileSystemError CFileSystem::Platform_CreatePath(char* pBuffer, size_t bufferSize, const char* name, eFileType fileType, bool createIfNecessary)
 	{
-		pBuffer[0] = _TEXT('\0');
+		pBuffer[0] = 0;
 		BOOL appended = FALSE;
 		eFileSystemError error = eFSE_SUCCESS;
 

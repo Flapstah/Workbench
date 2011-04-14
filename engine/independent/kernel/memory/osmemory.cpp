@@ -25,7 +25,7 @@ namespace engine
 #define MemoryLog(...) _WriteLog(engine::g_MemoryLog, __VA_ARGS__)
 #define MemoryErrorLog(...) _WriteLog(engine::g_MemoryErrorLog, __VA_ARGS__)
 
-	//============================================================================static COSMemory::GUARD guard = 0xDEADC0DE;
+	//============================================================================
 
 	uint32 COSMemory::Node::s_id = 0;
 	static COSMemory::GUARD guard = 0xDEADC0DE;
@@ -33,7 +33,7 @@ namespace engine
 
 	//============================================================================
 
-	COSMemory::Node::Node(size_t size, TCHAR* file, uint32 line)
+	COSMemory::Node::Node(size_t size, const char* file, uint32 line)
 		: m_pNext(NULL)
 		, m_pPrevious(NULL)
 		, m_size(size)
@@ -46,7 +46,7 @@ namespace engine
 
 	//============================================================================
 
-	void* COSMemory::malloc(size_t size, TCHAR* file, uint32 line)
+	void* COSMemory::malloc(size_t size, const char* file, uint32 line)
 	{
 		size_t totalSize = size + sizeof(Node) + (sizeof(GUARD) * 2);
 
@@ -83,7 +83,7 @@ namespace engine
 
 	//============================================================================
 
-	void* COSMemory::calloc(size_t size, TCHAR* file, uint32 line)
+	void* COSMemory::calloc(size_t size, const char* file, uint32 line)
 	{
 		uint8* pMemory = static_cast<uint8*>(malloc(size, file, line));
 		if (pMemory != NULL)
@@ -96,7 +96,7 @@ namespace engine
 
 	//============================================================================
 
-	void* COSMemory::realloc(void* pMemory, size_t size, TCHAR* file, uint32 line)
+	void* COSMemory::realloc(void* pMemory, size_t size, const char* file, uint32 line)
 	{
 		uint8* pNewMemory = static_cast<uint8*>(malloc(size, file, line));
 		if (pNewMemory != NULL)
@@ -110,7 +110,7 @@ namespace engine
 
 	//============================================================================
 
-	void COSMemory::free(void* pMemory, TCHAR* file, uint32 line)
+	void COSMemory::free(void* pMemory, const char* file, uint32 line)
 	{
 		if ((pMemory != NULL) && (m_pAllocatedList != NULL))
 		{

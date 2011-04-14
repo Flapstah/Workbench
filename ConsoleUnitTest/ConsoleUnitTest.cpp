@@ -9,7 +9,7 @@
 #include "common/itime.h"
 #include "application/consoleapplication.h"
 
-int _tmain(int argc, TCHAR* argv[])
+int main(int argc, char* argv[])
 {
   IGNORE_PARAMETER(argc);
   IGNORE_PARAMETER(argv);
@@ -41,6 +41,5 @@ int _tmain(int argc, TCHAR* argv[])
 	theApp.ShutDown();
 	theApp.Uninitialise();
 
-	Log("Last entry");
 	return 0;
 }

@@ -26,7 +26,7 @@ namespace engine
 		virtual ~CApplication(void);
 
 		// IApplication
-		virtual bool	Initialise(int32 argc, TCHAR* argv[]);
+		virtual bool	Initialise(int32 argc, char* argv[]);
 		virtual bool	StartUp(void);
 		virtual bool	Update(void);
 		virtual bool	ShutDown(void);
@@ -58,7 +58,7 @@ namespace engine
 			eS_Uninitialising
 		};
 
-		TCHAR**	m_argv;
+		char**	m_argv;
 		double	m_frameTimeBuffer[APPLICATION_FPS_BUFFER_SIZE];
 		double	m_frameTimeAccumulator;
 		double	m_waitTimeAccumulator;
