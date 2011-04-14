@@ -8,4 +8,5 @@ ConsoleUnitTest/Release/
 buildlog.txt
 *.orig
 Debug/
+Release/
 
