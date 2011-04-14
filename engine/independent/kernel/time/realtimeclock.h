@@ -31,7 +31,7 @@ namespace engine
 		virtual							~CRealTimeClock(void)						{	Platform_Uninitialise();															}
 
 		// ITimeSource
-		virtual	bool				Tick(void)											{	PARENT::Tick(); return Platform_Tick();								}
+		virtual	bool				Tick(void);
 		// ~ITimeSource
 
 		// IRealTimeClock
@@ -45,7 +45,6 @@ namespace engine
 	protected:
 						void				Platform_Initialise(void);
 						void				Platform_Uninitialise(void);
-						bool				Platform_Tick(void);
 						double			Platform_GetTimePrecise(void) const;
 						const char*	Platform_GetLocalDateString(void) const;
 						const char*	Platform_GetLocalTimeString(void) const;

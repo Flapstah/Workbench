@@ -8,6 +8,19 @@ namespace engine
 {
 	//============================================================================
 
+	bool CRealTimeClock::Tick(void)
+	{
+		PARENT::Tick();
+
+		double currentTime = Platform_GetTimePrecise();
+		m_frameTime = currentTime - m_currentTime;
+		m_currentTime = currentTime;
+
+		return true;
+	}
+
+	//============================================================================
+
 	//----------------------------------------------------------------------------
 	// The global instance of the real time clock
 	//----------------------------------------------------------------------------

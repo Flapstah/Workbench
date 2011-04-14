@@ -18,7 +18,7 @@ namespace engine
 	{
 		m_secondsPerTick = usec_per_sec;
 
-		Platform_Tick();
+		Tick();
 		m_frameTime = 0.0;
 	}
 
@@ -31,16 +31,14 @@ namespace engine
 
 	//============================================================================
 
-	bool CRealTimeClock::Platform_Tick(void)
+	double CRealTimeClock::Platform_GetTimePrecise(void)
 	{
 		::timeval time;
 
 		::gettimeofday(&time, NULL);
 		double currentTime = time.tv_usec + (time.tv_sec * m_secondsPerTick);
-		m_frameTime = currentTime - m_currentTime;
-		m_currentTime = currentTime;
 
-		return true;
+		return currentTime;
 	}
 
 	//============================================================================

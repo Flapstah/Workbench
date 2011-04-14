@@ -15,7 +15,7 @@ namespace engine
 		::QueryPerformanceFrequency(&frequency);
 		m_secondsPerTick = 1.0 / frequency.QuadPart;
 
-		Platform_Tick();
+		Tick();
 		m_frameTime = 0.0;
 	}
 
@@ -24,17 +24,6 @@ namespace engine
 	void CRealTimeClock::Platform_Uninitialise(void)
 	{
 		// Nothing to do
-	}
-
-	//============================================================================
-
-	bool CRealTimeClock::Platform_Tick(void)
-	{
-		double currentTime = Platform_GetTimePrecise();
-		m_frameTime = currentTime - m_currentTime;
-		m_currentTime = currentTime;
-
-		return true;
 	}
 
 	//============================================================================
