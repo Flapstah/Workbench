@@ -16,6 +16,7 @@
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add directory="ConsoleUnitTest" />
 					<Add directory="engine/independent" />
 					<Add directory="engine/linux" />
 				</Compiler>
@@ -118,7 +119,10 @@
 		<Unit filename="engine/linux/common/platform_types.h" />
 		<Unit filename="engine/linux/kernel/time/platform_systemclock.cpp" />
 		<Extensions>
-			<code_completion />
+			<code_completion>
+				<search_path add="engine/independent" />
+				<search_path add="engine/linux" />
+			</code_completion>
 			<debugger />
 		</Extensions>
 	</Project>
