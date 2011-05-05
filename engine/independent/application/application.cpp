@@ -175,6 +175,8 @@ namespace engine
 	bool CApplication::Update(double frameTime)
 	{
 		//TODO: Here's where we need to update all the kernel bits
+		IGNORE_PARAMETER(frameTime);
+
 		return true;
 	}
 

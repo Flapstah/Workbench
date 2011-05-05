@@ -43,6 +43,9 @@ namespace engine
 	protected:
 		virtual bool	Update(double frameTime);
 
+  private:
+    PREVENT_CLASS_COPY(CApplication);
+
 	protected:
 		enum eState
 		{

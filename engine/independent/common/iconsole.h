@@ -24,6 +24,8 @@ namespace engine
 		//==========================================================================
 		struct IVariant
 		{
+		  virtual             ~IVariant(void) {};
+
 			virtual int32				GetAsInt32(void) = 0;
 			virtual float				GetAsFloat(void) = 0;
 			virtual const char*	GetAsString(void) = 0;
@@ -47,7 +49,8 @@ namespace engine
 		//==========================================================================
 		struct IArguments
 		{
-			virtual uint32 GetCount(void) = 0;
+		  virtual             ~IArguments(void) {};
+			virtual uint32      GetCount(void) = 0;
 			virtual const char* GetArgument(uint32 index) = 0;
 		}; // End [struct IArguments]
 
@@ -64,6 +67,8 @@ namespace engine
 
 			CF_EXTERNAL_BITS			= 0x0000ffff
 		};
+
+    virtual           ~IConsole(void) {};
 
 		// Variants
 		virtual IVariant* RegisterVariable(const char* name, int32& variable, int32 initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback) = 0;

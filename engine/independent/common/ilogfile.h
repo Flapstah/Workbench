@@ -39,6 +39,8 @@ namespace engine
 			eBF_Mask														= eBF_Active | eBF_Name | eBF_DateStamp | eBF_LineCount | eBF_FrameCount | eBF_TimeStamp | eBF_FlushEachWrite | eBF_ForceInsertNewline | eBF_OutputHeader | eBF_OutputFooter | eBF_OutputToFile | eBF_OutputToDebugger | eBF_OutputToDebuggerStrippedHeader
 		}; // End [enum eBehaviourFlag]
 
+    virtual       ~ILogFile(void) {};
+
 		virtual void	SetActive(bool active) = 0;
 		virtual bool	IsActive(void) const = 0;
 

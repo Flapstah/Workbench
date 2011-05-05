@@ -38,7 +38,7 @@ namespace engine
 		virtual eFileSystemError	MoveFile(const char* sourceName, const char* destinationName);
 		virtual eFileSystemError	DeleteFile(const char* name, bool force);
 #endif
-		virtual size_t						Read(eFileSystemHandle handle, void* pBuffer, size_t bufferSize, size_t itemSize, size_t itemCount);
+		virtual size_t						Read(eFileSystemHandle handle, void* pBuffer, size_t itemSize, size_t itemCount);
 		virtual size_t						Write(eFileSystemHandle handle, const void* pBuffer, size_t itemSize, size_t itemCount);
 		virtual size_t						Print(eFileSystemHandle handle, const char* format, ...);
 		virtual eFileSystemError	Flush(eFileSystemHandle handle);

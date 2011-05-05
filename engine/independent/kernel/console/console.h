@@ -54,6 +54,7 @@ namespace engine
 			CToken* m_pPrevious;
 
 		private:
+      PREVENT_CLASS_COPY(CToken);
 		}; // End [class CToken]
 
 		//==========================================================================
@@ -69,9 +70,9 @@ namespace engine
 			virtual ~CVariant(void)																									{																}
 
 			// IVariant
-			virtual void				Set(int32 value)																		{																}
-			virtual void				Set(float value)																		{																}
-			virtual void				Set(const char* value)															{																}
+			virtual void				Set(int32 value)																		{	IGNORE_PARAMETER(value);			}
+			virtual void				Set(float value)																		{	IGNORE_PARAMETER(value);			}
+			virtual void				Set(const char* value)															{	IGNORE_PARAMETER(value);			}
 
 			virtual const char*	Name(void)																					{	return CToken::Name();				}
 			virtual const char*	Help(void)																					{	return CToken::Help();				}
@@ -97,7 +98,7 @@ namespace engine
 		{
 		public:
 			CVariantInt32(const char* name, int32& variable, int32 initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback)
-				: CVariant(name, flags, help, pOnChangedCallback), m_variable(variable)	{															}
+				: CVariant(name, flags, help, pOnChangedCallback), m_variable(variable)	{	Set(initial);								}
 			virtual ~CVariantInt32(void)														{																								}
 
 			// IVariant
@@ -123,7 +124,7 @@ namespace engine
 		{
 		public:
 			CVariantFloat(const char* name, float& variable, float initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback)
-				: CVariant(name, flags, help, pOnChangedCallback), m_variable(variable)	{															}
+				: CVariant(name, flags, help, pOnChangedCallback), m_variable(variable)	{	Set(initial);								}
 			virtual ~CVariantFloat(void)														{																								}
 
 			// IVariant
@@ -149,7 +150,7 @@ namespace engine
 		{
 		public:
 			CVariantString(const char* name, char*& variable, const char* initial, uint32 flags, const char* help, IConsole::OnChangedCallback pOnChangedCallback)
-				: CVariant(name, flags, help, pOnChangedCallback), m_variable(variable)	{															}
+				: CVariant(name, flags, help, pOnChangedCallback), m_variable(variable)	{	Set(initial);								}
 			virtual ~CVariantString(void)														{																								}
 
 			// IVariant
@@ -164,6 +165,7 @@ namespace engine
 			const char* m_variable;
 
 		private:
+      PREVENT_CLASS_COPY(CVariantString);
 		}; // End [class CVariantString : public CVariant]
 
 		//==========================================================================
@@ -213,6 +215,7 @@ namespace engine
 		CToken* m_pHead;
 
 	private:
+    PREVENT_CLASS_COPY(CConsole);
 	}; // End [class CConsole : public IConsole]
 
 	//----------------------------------------------------------------------------

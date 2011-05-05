@@ -10,6 +10,8 @@ namespace engine
 	//============================================================================
 	struct ITimeSource
 	{
+    virtual         ~ITimeSource(void) {};
+
 		virtual	bool		Tick(void) = 0;
 
 		virtual	float		GetTickTime(void) const = 0;
@@ -27,8 +29,10 @@ namespace engine
 	//============================================================================
 	// IRealTimeClock
 	//============================================================================
-	struct IRealTimeClock : virtual public ITimeSource 
+	struct IRealTimeClock : virtual public ITimeSource
 	{
+    virtual         ~IRealTimeClock(void) {};
+
 		virtual	float		GetRealTime(void) const = 0;
 		virtual	double	GetRealTimePrecise(void) const = 0;
 
@@ -41,6 +45,8 @@ namespace engine
 	//============================================================================
 	struct ITimer : virtual public ITimeSource
 	{
+	  virtual         ~ITimer(void) {};
+
 		virtual void		SetScale(double scale) = 0;
 		virtual double	GetScale(void) const = 0;
 

@@ -36,6 +36,9 @@ namespace engine
 
 #if defined(WIN32) || defined(WIN64)
 	typedef CMutex<HANDLE> mutex;
+#elif defined(LINUX)
+  // TODO: Need to create platform_thread files for linux
+	typedef CMutex<HANDLE> mutex;
 #endif
 
 	//============================================================================

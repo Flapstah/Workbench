@@ -2,7 +2,6 @@
 
 #include "kernel/filesystem/filesystem.h"
 
-#include <direct.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -32,12 +31,12 @@ namespace engine
 
 	CFileSystem::eFileSystemError CFileSystem::DirectoryExists(const char* path)
 	{
-		struct _stat64 info;
+		struct stat64 info;
 		eFileSystemError error = eFSE_ERROR;
 
-		if (_stat64(path, &info) == 0)
+		if (stat64(path, &info) == 0)
 		{
-			if (info.st_mode & _S_IFDIR)
+			if (info.st_mode & S_IFDIR)
 			{
 				error = eFSE_SUCCESS;
 			}
@@ -48,6 +47,9 @@ namespace engine
 			{
 			case ENOENT:
 				error = eFSE_DOES_NOT_EXIST;
+				break;
+
+      default:
 				break;
 			}
 		}
@@ -61,7 +63,8 @@ namespace engine
 	{
 		eFileSystemError error = eFSE_ERROR;
 
-		if (_mkdir(path) == 0)
+    // TODO: might need umask() here on linux
+		if (mkdir(path, 0755) == 0)
 		{
 			error = eFSE_SUCCESS;
 		}
@@ -75,6 +78,9 @@ namespace engine
 
 			case ENOENT:
 				error = eFSE_PATH_NOT_FOUND;
+				break;
+
+      default:
 				break;
 			}
 		}
@@ -112,6 +118,8 @@ namespace engine
 
 	CFileSystem::eFileSystemError CFileSystem::FileExists(const char* name)
 	{
+	  IGNORE_PARAMETER(name);
+
 		return eFSE_ERROR;
 	}
 
@@ -125,11 +133,8 @@ namespace engine
 		{
 			if (m_handle[index].m_systemHandle == NULL)
 			{
-				if (fopen_s(&m_handle[index].m_systemHandle, name, mode))
-				{
-					m_handle[index].m_systemHandle = NULL;
-				}
-				else
+			  m_handle[index].m_systemHandle = fopen(name, mode);
+				if (m_handle[index].m_systemHandle != NULL)
 				{
 					handle = static_cast<eFileSystemHandle>(index);
 				}
@@ -167,15 +172,15 @@ namespace engine
 
 	//============================================================================
 
-	size_t CFileSystem::Read(eFileSystemHandle handle, void* pBuffer, size_t bufferSize, size_t itemSize, size_t itemCount)
+	size_t CFileSystem::Read(eFileSystemHandle handle, void* pBuffer, size_t itemSize, size_t itemCount)
 	{
-		int32 itemsRead = 0;
+		uint32 itemsRead = 0;
 
 		if (handle < MAX_OPEN_FILES)
 		{
 			if (m_handle[handle].m_systemHandle != NULL)
 			{
-				itemsRead = fread_s(pBuffer, bufferSize, itemSize, itemCount, m_handle[handle].m_systemHandle);
+				itemsRead = fread(pBuffer, itemSize, itemCount, m_handle[handle].m_systemHandle);
 
 				assert(itemsRead == itemCount);
 			}
@@ -216,7 +221,7 @@ namespace engine
 
 			if (m_handle[handle].m_systemHandle != NULL)
 			{
-				charsWritten = vfprintf_s(m_handle[handle].m_systemHandle, format, arguments);
+				charsWritten = vfprintf(m_handle[handle].m_systemHandle, format, arguments);
 			}
 		}
 

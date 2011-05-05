@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "common/ilogfile.h"
+#include "common/istring.h"
 
 #include "kernel/console/console.h"
 
@@ -60,7 +61,7 @@ namespace engine
 	const char* CConsole::CVariantInt32::GetAsString(void)
 	{
 		static char buffer[64];
-		sprintf_s(buffer, sizeof(buffer), "%i", m_variable);
+		sprintf(buffer, "%i", m_variable);
 		return buffer;
 	}
 
@@ -69,7 +70,7 @@ namespace engine
 	const char* CConsole::CVariantFloat::GetAsString(void)
 	{
 		static char buffer[64];
-		sprintf_s(buffer, sizeof(buffer), "%f", m_variable);
+		sprintf(buffer, "%f", m_variable);
 		return buffer;
 	}
 
@@ -265,7 +266,7 @@ namespace engine
 			bool added = false;
 			while (!added)
 			{
-				if (_stricmp(pHere->Name(), token.Name()) < 0)
+				if (String::CompareNoCase(pHere->Name(), token.Name()) < 0)
 				{
 					pHere->Prepend(token);
 					added = true;
@@ -321,7 +322,7 @@ namespace engine
 
 		while (pHere != NULL)
 		{
-			if (_stricmp(pHere->Name(), name) == 0)
+			if (String::CompareNoCase(pHere->Name(), name) == 0)
 			{
 				pToken = pHere;
 				pHere = NULL;
