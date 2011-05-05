@@ -17,10 +17,12 @@
 
 1299014710 /home/flapstah/Code/github/Flapstah/Workbench/ConsoleUnitTest/targetver.h
 
-1303337610 /home/flapstah/Code/github/Flapstah/Workbench/engine/linux/common/platform_stdafx.h
+1304632917 /home/flapstah/Code/github/Flapstah/Workbench/engine/linux/common/platform_stdafx.h
 	<signal.h>
 	<unistd.h>
-	<strings.h>
+	<string.h>
+	<stdarg.h>
+	<stdlib.h>
 
 1299964938 /home/flapstah/Code/github/Flapstah/Workbench/engine/linux/common/platform_types.h
 	<stdint.h>
@@ -28,27 +30,26 @@
 1299964938 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/common/assert.h
 	"common/ilogfile.h"
 
-1303156206 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/common/ilogfile.h
+1304630475 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/common/ilogfile.h
 	"common/macros.h"
 
 1299964938 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/common/macros.h
 
-1303156206 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/common/itime.h
+1304630475 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/common/itime.h
 
 1303156206 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/application/consoleapplication.h
 	"application/application.h"
 
-1303156206 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/application/application.h
+1304630475 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/application/application.h
 	"common/iapplication.h"
 
-1303156206 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/common/iapplication.h
+1304630475 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/common/iapplication.h
 
 1299014710 source:/home/flapstah/Code/github/Flapstah/Workbench/ConsoleUnitTest/stdafx.cpp
 	"stdafx.h"
 
-1303335770 source:/home/flapstah/Code/github/Flapstah/Workbench/engine/independent/application/application.cpp
+1304631340 source:/home/flapstah/Code/github/Flapstah/Workbench/engine/independent/application/application.cpp
 	"stdafx.h"
-	<string.h>
 	"common/ilogfile.h"
 	"common/itime.h"
 	"application/application.h"
@@ -59,16 +60,29 @@
 	"common/itime.h"
 	"application/consoleapplication.h"
 
-1303337610 source:/home/flapstah/Code/github/Flapstah/Workbench/engine/independent/kernel/console/console.cpp
+1304629331 source:/home/flapstah/Code/github/Flapstah/Workbench/engine/independent/kernel/console/console.cpp
 	"stdafx.h"
-	<stdio.h>
 	"common/ilogfile.h"
+	"common/istring.h"
 	"kernel/console/console.h"
 
-1303335916 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/kernel/console/console.h
-	<stdlib.h>
+1304631340 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/kernel/console/console.h
 	"common/iconsole.h"
 
-1299014710 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/common/iconsole.h
+1304631340 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/common/iconsole.h
 	"common/macros.h"
+
+1304631340 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/common/istring.h
+
+1304632403 source:/home/flapstah/Code/github/Flapstah/Workbench/engine/independent/kernel/filesystem/filesystem.cpp
+	"stdafx.h"
+	"kernel/filesystem/filesystem.h"
+	<errno.h>
+	<sys/types.h>
+	<sys/stat.h>
+
+1304631686 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/kernel/filesystem/filesystem.h
+	"common/ifilesystem.h"
+
+1304631686 /home/flapstah/Code/github/Flapstah/Workbench/engine/independent/common/ifilesystem.h
 

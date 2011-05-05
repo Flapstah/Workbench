@@ -96,6 +96,7 @@
 		<Unit filename="engine/independent/common/ifilesystem.h" />
 		<Unit filename="engine/independent/common/ilogfile.h" />
 		<Unit filename="engine/independent/common/imemory.h" />
+		<Unit filename="engine/independent/common/istring.h" />
 		<Unit filename="engine/independent/common/ithread.h" />
 		<Unit filename="engine/independent/common/itime.h" />
 		<Unit filename="engine/independent/common/macros.h" />
@@ -116,6 +117,7 @@
 		<Unit filename="engine/independent/kernel/time/timer.h" />
 		<Unit filename="engine/independent/kernel/time/timesource.h" />
 		<Unit filename="engine/linux/common/platform_stdafx.h" />
+		<Unit filename="engine/linux/common/platform_string.cpp" />
 		<Unit filename="engine/linux/common/platform_types.h" />
 		<Unit filename="engine/linux/kernel/time/platform_systemclock.cpp" />
 		<Extensions>
